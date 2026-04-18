@@ -16,8 +16,7 @@ export function StatsGrid() {
   return (
     <section
       ref={ref as React.RefObject<HTMLElement>}
-      className='reveal'
-      style={{ backgroundColor: 'var(--navy, #0F2A6B)', borderRadius: '16px' }}
+      className='bg-navy reveal rounded-2xl'
     >
       <div className='grid grid-cols-2 lg:grid-cols-4'>
         {stats.map((stat, i) => {

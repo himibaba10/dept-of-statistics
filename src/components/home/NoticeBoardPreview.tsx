@@ -43,32 +43,16 @@ export function NoticeBoardPreview() {
       {/* Section header */}
       <div className='flex items-end justify-between'>
         <div>
-          <p
-            className='mb-3 text-xs font-semibold tracking-widest uppercase'
-            style={{ color: 'var(--gold, #C9972B)' }}
-          >
+          <p className='text-gold mb-3 text-xs font-semibold tracking-widest uppercase'>
             Latest Updates
           </p>
-          <h2
-            className='section-title pb-3 text-3xl font-bold'
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              color: 'var(--navy, #0F2A6B)'
-            }}
-          >
+          <h2 className='text-navy section-title pb-3 font-serif text-3xl font-bold'>
             Notice Board
           </h2>
         </div>
         <Link
           href='/notice-board'
-          className='mb-1 flex items-center gap-1 text-xs font-semibold tracking-wide uppercase transition-colors'
-          style={{ color: 'var(--navy, #0F2A6B)' }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.color = 'var(--gold, #C9972B)')
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.color = 'var(--navy, #0F2A6B)')
-          }
+          className='text-navy hover:text-gold mb-1 flex items-center gap-1 text-xs font-semibold tracking-wide uppercase transition-colors'
         >
           View All
           <ArrowUpRight size={14} />
@@ -76,28 +60,16 @@ export function NoticeBoardPreview() {
       </div>
 
       {/* Notices list */}
-      <div
-        className='flex flex-col overflow-hidden rounded-2xl border'
-        style={{ borderColor: '#E2E8F0', backgroundColor: 'white' }}
-      >
+      <div className='flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white'>
         {/* Header strip */}
-        <div
-          className='flex items-center gap-2 border-b px-5 py-3'
-          style={{ backgroundColor: '#EEF2FF', borderColor: '#E2E8F0' }}
-        >
-          <Bell size={14} style={{ color: 'var(--navy, #0F2A6B)' }} />
-          <span
-            className='text-xs font-semibold tracking-widest uppercase'
-            style={{ color: 'var(--navy, #0F2A6B)' }}
-          >
+        <div className='bg-navy-light flex items-center gap-2 border-b border-slate-200 px-5 py-3'>
+          <Bell size={14} className='text-navy' />
+          <span className='text-navy text-xs font-semibold tracking-widest uppercase'>
             Recent Notices
           </span>
         </div>
 
-        <div
-          className='divide-y'
-          style={{ '--divide-color': '#F1F5F9' } as React.CSSProperties}
-        >
+        <div className='divide-y divide-slate-100'>
           {mockNotices.map((notice, i) => {
             const colors = tagColors[notice.tag] || {
               bg: '#F1F5F9',
@@ -106,14 +78,8 @@ export function NoticeBoardPreview() {
             return (
               <div
                 key={notice.id}
-                className='group hover:border-l-gold cursor-pointer border-l-2 border-l-white px-5 py-4 transition-colors duration-200'
+                className='group hover:border-l-gold cursor-pointer border-l-2 border-l-white px-5 py-4 transition-colors duration-200 hover:bg-slate-50'
                 style={{ animationDelay: `${i * 0.08}s` }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = '#F8FAFF')
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = 'transparent')
-                }
               >
                 {/* Tag + date */}
                 <div className='mb-2 flex items-center justify-between'>
@@ -123,48 +89,29 @@ export function NoticeBoardPreview() {
                   >
                     {notice.tag}
                   </span>
-                  <div
-                    className='flex items-center gap-1.5 text-xs'
-                    style={{ color: '#94A3B8' }}
-                  >
+                  <div className='flex items-center gap-1.5 text-xs text-slate-400'>
                     <Calendar size={11} />
                     {notice.date}
                   </div>
                 </div>
 
                 {/* Title */}
-                <p
-                  className='text-sm leading-snug font-semibold transition-colors duration-200'
-                  style={{ color: '#1E293B' }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = 'var(--navy, #0F2A6B)')
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = '#1E293B')
-                  }
-                >
+                <p className='group-hover:text-navy text-sm leading-snug font-semibold text-slate-800 transition-colors duration-200'>
                   {notice.title}
                 </p>
 
                 {/* Gold left indicator on hover */}
-                <div
-                  className='absolute top-0 bottom-0 left-0 w-0.5 opacity-0 transition-opacity duration-200 group-hover:opacity-100'
-                  style={{ backgroundColor: 'var(--gold, #C9972B)' }}
-                />
+                <div className='bg-gold absolute top-0 bottom-0 left-0 w-0.5 opacity-0 transition-opacity duration-200 group-hover:opacity-100' />
               </div>
             );
           })}
         </div>
 
         {/* Footer CTA */}
-        <div
-          className='border-t p-4'
-          style={{ borderColor: '#F1F5F9', backgroundColor: '#F8FAFC' }}
-        >
+        <div className='border-t border-slate-100 bg-slate-50 p-4'>
           <Link
             href='/notice-board'
-            className='flex w-full items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:opacity-90'
-            style={{ backgroundColor: 'var(--navy, #0F2A6B)' }}
+            className='bg-navy flex w-full items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:opacity-90'
           >
             Access Full Notice Board
             <ArrowUpRight size={14} />

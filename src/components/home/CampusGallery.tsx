@@ -49,32 +49,16 @@ export function CampusGallery() {
       {/* Section header */}
       <div className='flex items-end justify-between'>
         <div>
-          <p
-            className='mb-3 text-xs font-semibold tracking-widest uppercase'
-            style={{ color: 'var(--gold, #C9972B)' }}
-          >
+          <p className='text-gold mb-3 text-xs font-semibold tracking-widest uppercase'>
             Our Campus
           </p>
-          <h2
-            className='section-title pb-3 text-3xl font-bold'
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              color: 'var(--navy, #0F2A6B)'
-            }}
-          >
+          <h2 className='text-navy section-title pb-3 font-serif text-3xl font-bold'>
             Campus Gallery
           </h2>
         </div>
         <Link
           href='/facilities'
-          className='mb-1 flex items-center gap-1 text-xs font-semibold tracking-wide uppercase transition-colors'
-          style={{ color: 'var(--navy, #0F2A6B)' }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.color = 'var(--gold, #C9972B)')
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.color = 'var(--navy, #0F2A6B)')
-          }
+          className='text-navy hover:text-gold mb-1 flex items-center gap-1 text-xs font-semibold tracking-wide uppercase transition-colors'
         >
           View More
           <ArrowUpRight size={14} />
@@ -116,8 +100,7 @@ export function CampusGallery() {
       {/* Lightbox */}
       {lightbox >= 0 && (
         <div
-          className='fixed inset-0 z-50 flex items-center justify-center'
-          style={{ backgroundColor: 'rgba(10,22,40,0.95)' }}
+          className='bg-navy-dark/95 fixed inset-0 z-50 flex items-center justify-center'
           onClick={() => setLightbox(-1)}
         >
           <div

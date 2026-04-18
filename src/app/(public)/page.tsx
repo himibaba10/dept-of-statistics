@@ -8,7 +8,7 @@ import { StatsGrid } from '@/components/home/StatsGrid';
 
 export default function Home() {
   return (
-    <div className='flex w-full flex-col' style={{ color: '#0A1628' }}>
+    <div className='text-navy-dark flex w-full flex-col'>
       {/* Hero — full bleed, no container */}
       <HeroSlider />
 
