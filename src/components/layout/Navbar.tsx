@@ -54,11 +54,11 @@ function UserMenu() {
           />
         </button>
         {open && (
-          <div className='absolute top-full right-0 z-50 mt-2 w-44 rounded-xl border border-slate-200 bg-white py-2 shadow-xl'>
+          <div className='absolute top-full right-0 z-50 mt-2 w-48 rounded-xl border border-slate-200 bg-white py-2 shadow-xl'>
             <p className='px-4 py-1.5 text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
               Login as
             </p>
-            {(['student', 'teacher', 'official'] as const).map((role) => (
+            {(['student', 'teacher'] as const).map((role) => (
               <button
                 key={role}
                 onClick={() => {
@@ -70,6 +70,21 @@ function UserMenu() {
                 {role.charAt(0).toUpperCase() + role.slice(1)}
               </button>
             ))}
+            <Link
+              href='/auth/official/login'
+              onClick={() => setOpen(false)}
+              className='block px-4 py-2.5 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50'
+            >
+              Official
+            </Link>
+            <div className='my-1 border-t border-slate-100' />
+            <Link
+              href='/auth/official/register'
+              onClick={() => setOpen(false)}
+              className='text-navy block px-4 py-2.5 text-xs font-semibold transition-colors hover:bg-slate-50'
+            >
+              Request official access →
+            </Link>
           </div>
         )}
       </div>
