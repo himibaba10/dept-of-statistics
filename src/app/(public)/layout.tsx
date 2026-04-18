@@ -2,16 +2,14 @@ import { Footer } from '@/components/layout/Footer';
 import { Navbar } from '@/components/layout/Navbar';
 
 export default function PublicLayout({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className='flex min-h-screen flex-col bg-[#F8FAFC]'>
+    <div className="flex min-h-screen flex-col" style={{ backgroundColor: 'var(--surface, #F7F9FC)' }}>
       <Navbar />
-      <main className='mx-auto w-full max-w-7xl flex-1 px-4 py-8'>
-        {children}
-      </main>
+      <main className="flex-1">{children}</main>
       <Footer />
     </div>
   );

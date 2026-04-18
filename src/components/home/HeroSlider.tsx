@@ -1,53 +1,180 @@
 'use client';
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious
-} from '@/components/ui/carousel';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 
-const sliderImages = [
-  'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1200&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop'
+const slides = [
+  {
+    src: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1600&auto=format&fit=crop',
+    headline: 'Department of Statistics',
+    sub: 'University of Chittagong',
+    body: 'Advancing knowledge through rigorous analytical thinking, statistical research, and academic excellence.',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1600&auto=format&fit=crop',
+    headline: 'Research & Innovation',
+    sub: 'University of Chittagong',
+    body: 'Our faculty and students are pushing the boundaries of statistical science and applied data research.',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop',
+    headline: 'Shaping Future Analysts',
+    sub: 'University of Chittagong',
+    body: 'A vibrant community of learners, researchers, and professionals dedicated to the science of data.',
+  },
 ];
 
 export function HeroSlider() {
+  const [current, setCurrent] = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
+
+  const goTo = (index: number) => {
+    if (animating || index === current) return;
+    setAnimating(true);
+    setTimeout(() => {
+      setCurrent(index);
+      setAnimating(false);
+    }, 400);
+  };
+
+  useEffect(() => {
+    timerRef.current = setTimeout(() => {
+      goTo((current + 1) % slides.length);
+    }, 5500);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current]);
+
+  const slide = slides[current];
+
   return (
-    <section className='relative w-full px-12 md:px-0'>
-      <Carousel className='relative w-full' opts={{ loop: true }}>
-        <CarouselContent>
-          {sliderImages.map((src, index) => (
-            <CarouselItem key={index}>
-              <div className='relative h-75 w-full overflow-hidden rounded-xl shadow-sm md:h-100 lg:h-125'>
-                <Image
-                  src={src}
-                  alt={`Department highlights ${index + 1}`}
-                  fill
-                  className='object-cover'
-                  priority={index === 0}
-                />
-                <div className='absolute inset-0 flex items-center justify-center bg-black/40'>
-                  <div className='px-4 text-center text-white'>
-                    <h2 className='mb-4 text-3xl font-bold drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] md:text-5xl'>
-                      Department of Statistics
-                    </h2>
-                    <p className='mx-auto max-w-2xl text-lg text-blue-50 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)] md:text-xl'>
-                      Leading the way in data, analytical thinking, and research
-                      excellence.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className='absolute -left-12 z-10 md:left-4' />
-        <CarouselNext className='absolute -right-12 z-10 md:right-4' />
-      </Carousel>
+    <section className="relative w-full overflow-hidden" style={{ height: 'clamp(420px, 58vw, 640px)' }}>
+      {/* Background image */}
+      {slides.map((s, i) => (
+        <div
+          key={i}
+          className="absolute inset-0 transition-opacity duration-700"
+          style={{ opacity: i === current ? 1 : 0, zIndex: i === current ? 1 : 0 }}
+        >
+          <Image
+            src={s.src}
+            alt={s.headline}
+            fill
+            className="object-cover"
+            priority={i === 0}
+            sizes="100vw"
+          />
+        </div>
+      ))}
+
+      {/* Gradient overlays */}
+      <div
+        className="absolute inset-0 z-10"
+        style={{
+          background: 'linear-gradient(to right, rgba(10,22,40,0.90) 0%, rgba(10,22,40,0.70) 50%, rgba(10,22,40,0.30) 100%)',
+        }}
+      />
+      {/* Bottom fade */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-32 z-10"
+        style={{ background: 'linear-gradient(to top, #F7F9FC 0%, transparent 100%)' }}
+      />
+
+      {/* Content */}
+      <div
+        className="relative z-20 h-full flex items-center"
+        style={{ opacity: animating ? 0 : 1, transition: 'opacity 0.4s ease' }}
+      >
+        <div className="max-w-7xl mx-auto w-full px-6 lg:px-8">
+          <div className="max-w-xl">
+            {/* Gold label */}
+            <div
+              className="inline-flex items-center gap-2 mb-5 text-xs font-semibold tracking-widest uppercase"
+              style={{ color: 'var(--gold, #C9972B)' }}
+            >
+              <span
+                className="inline-block w-8 h-px"
+                style={{ backgroundColor: 'var(--gold, #C9972B)' }}
+              />
+              {slide.sub}
+            </div>
+
+            {/* Headline */}
+            <h1
+              className="font-bold text-white mb-4 leading-tight"
+              style={{
+                fontFamily: "'Playfair Display', Georgia, serif",
+                fontSize: 'clamp(2rem, 4vw, 3.2rem)',
+              }}
+            >
+              {slide.headline}
+            </h1>
+
+            {/* Gold rule */}
+            <div
+              className="w-16 h-1 rounded-full mb-6"
+              style={{ backgroundColor: 'var(--gold, #C9972B)' }}
+            />
+
+            {/* Body */}
+            <p
+              className="text-base leading-relaxed mb-8"
+              style={{ color: 'rgba(255,255,255,0.78)', maxWidth: '36rem' }}
+            >
+              {slide.body}
+            </p>
+
+            {/* CTAs */}
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/teachers"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-md text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 hover:translate-x-0.5"
+                style={{ backgroundColor: 'var(--gold, #C9972B)' }}
+              >
+                Explore Faculty
+                <ChevronRight size={16} />
+              </Link>
+              <Link
+                href="/courses"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-md text-sm font-semibold border transition-all duration-200 hover:bg-white/10"
+                style={{ color: 'white', borderColor: 'rgba(255,255,255,0.35)' }}
+              >
+                View Courses
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Dot indicators */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            aria-label={`Slide ${i + 1}`}
+            className="transition-all duration-300 rounded-full"
+            style={{
+              width: i === current ? '28px' : '8px',
+              height: '8px',
+              backgroundColor: i === current ? 'var(--gold, #C9972B)' : 'rgba(255,255,255,0.45)',
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Slide counter */}
+      <div
+        className="absolute bottom-8 right-8 z-20 text-xs font-semibold tabular-nums hidden sm:block"
+        style={{ color: 'rgba(255,255,255,0.5)' }}
+      >
+        {String(current + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+      </div>
     </section>
   );
 }

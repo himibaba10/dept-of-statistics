@@ -1,64 +1,154 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Calendar } from 'lucide-react';
+import { useReveal } from '@/hooks/useReveal';
+import { Calendar, ArrowUpRight, Bell } from 'lucide-react';
 import Link from 'next/link';
 
 const mockNotices = [
   {
     id: '1',
     title: 'Midterm Examination Schedule published for 2020-2021 Session',
-    date: 'April 18, 2026'
+    date: 'April 18, 2026',
+    tag: 'Exam',
   },
   {
     id: '2',
-    title: 'Guest Lecture: Modern Applications of Machine Learning',
-    date: 'April 15, 2026'
+    title: 'Guest Lecture: Modern Applications of Machine Learning in Statistics',
+    date: 'April 15, 2026',
+    tag: 'Event',
   },
   {
     id: '3',
-    title: 'Data Science Bootcamp Registration Open',
-    date: 'April 10, 2026'
-  }
+    title: 'Data Science Bootcamp Registration Open for All Students',
+    date: 'April 10, 2026',
+    tag: 'Registration',
+  },
 ];
 
+const tagColors: Record<string, { bg: string; text: string }> = {
+  Exam: { bg: '#FEF3C7', text: '#92400E' },
+  Event: { bg: '#DBEAFE', text: '#1E40AF' },
+  Registration: { bg: '#DCFCE7', text: '#166534' },
+};
+
 export function NoticeBoardPreview() {
+  const ref = useReveal();
+
   return (
-    <div className='flex flex-col gap-6 lg:col-span-1'>
-      <div className='mb-2 flex items-center justify-between border-b border-slate-200 pb-2'>
-        <h2 className='text-2xl font-bold tracking-wide text-[#1E3A8A] uppercase'>
-          Notice Board
-        </h2>
+    <div
+      ref={ref as React.RefObject<HTMLDivElement>}
+      className="reveal flex flex-col gap-8 lg:col-span-1"
+    >
+      {/* Section header */}
+      <div className="flex items-end justify-between">
+        <div>
+          <p
+            className="text-xs font-semibold tracking-widest uppercase mb-3"
+            style={{ color: 'var(--gold, #C9972B)' }}
+          >
+            Latest Updates
+          </p>
+          <h2
+            className="section-title font-bold text-3xl pb-3"
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              color: 'var(--navy, #0F2A6B)',
+            }}
+          >
+            Notice Board
+          </h2>
+        </div>
         <Link
-          href='/notice-board'
-          className='text-lg font-medium text-[#1E3A8A] hover:underline'
+          href="/notice-board"
+          className="flex items-center gap-1 text-xs font-semibold tracking-wide uppercase transition-colors mb-1"
+          style={{ color: 'var(--navy, #0F2A6B)' }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--gold, #C9972B)')}
+          onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--navy, #0F2A6B)')}
         >
           View All
+          <ArrowUpRight size={14} />
         </Link>
       </div>
 
-      <div className='flex h-full flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm'>
-        <div className='flex-1 divide-y divide-slate-100'>
-          {mockNotices.map((notice) => (
-            <div
-              key={notice.id}
-              className='group block h-full cursor-pointer p-5 transition-colors hover:bg-[#F8FAFC]'
-            >
-              <div className='mb-2 flex items-center gap-2 text-lg font-semibold text-slate-500'>
-                <Calendar className='h-5 w-5 text-[#1E3A8A]' />
-                {notice.date}
-              </div>
-              <h4 className='text-xl leading-snug font-semibold text-slate-800 transition-colors group-hover:text-[#1E3A8A]'>
-                {notice.title}
-              </h4>
-            </div>
-          ))}
+      {/* Notices list */}
+      <div
+        className="rounded-2xl overflow-hidden border flex flex-col"
+        style={{ borderColor: '#E2E8F0', backgroundColor: 'white' }}
+      >
+        {/* Header strip */}
+        <div
+          className="flex items-center gap-2 px-5 py-3 border-b"
+          style={{ backgroundColor: '#EEF2FF', borderColor: '#E2E8F0' }}
+        >
+          <Bell size={14} style={{ color: 'var(--navy, #0F2A6B)' }} />
+          <span
+            className="text-xs font-semibold tracking-widest uppercase"
+            style={{ color: 'var(--navy, #0F2A6B)' }}
+          >
+            Recent Notices
+          </span>
         </div>
-        <div className='mt-auto border-t border-slate-100 bg-slate-50 p-4'>
-          <Link href='/notice-board'>
-            <Button className='w-full bg-[#1E3A8A] hover:bg-[#1E3A8A]/90'>
-              Access Full Notice Board
-            </Button>
+
+        <div className="divide-y" style={{ '--divide-color': '#F1F5F9' } as React.CSSProperties}>
+          {mockNotices.map((notice, i) => {
+            const colors = tagColors[notice.tag] || { bg: '#F1F5F9', text: '#475569' };
+            return (
+              <div
+                key={notice.id}
+                className="group px-5 py-4 transition-colors duration-200 cursor-pointer"
+                style={{ animationDelay: `${i * 0.08}s` }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F8FAFF')}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+              >
+                {/* Tag + date */}
+                <div className="flex items-center justify-between mb-2">
+                  <span
+                    className="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: colors.bg, color: colors.text }}
+                  >
+                    {notice.tag}
+                  </span>
+                  <div
+                    className="flex items-center gap-1.5 text-xs"
+                    style={{ color: '#94A3B8' }}
+                  >
+                    <Calendar size={11} />
+                    {notice.date}
+                  </div>
+                </div>
+
+                {/* Title */}
+                <p
+                  className="text-sm font-semibold leading-snug transition-colors duration-200"
+                  style={{ color: '#1E293B' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--navy, #0F2A6B)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = '#1E293B')}
+                >
+                  {notice.title}
+                </p>
+
+                {/* Gold left indicator on hover */}
+                <div
+                  className="absolute left-0 top-0 bottom-0 w-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  style={{ backgroundColor: 'var(--gold, #C9972B)' }}
+                />
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Footer CTA */}
+        <div
+          className="p-4 border-t"
+          style={{ borderColor: '#F1F5F9', backgroundColor: '#F8FAFC' }}
+        >
+          <Link
+            href="/notice-board"
+            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-200 hover:opacity-90"
+            style={{ backgroundColor: 'var(--navy, #0F2A6B)' }}
+          >
+            Access Full Notice Board
+            <ArrowUpRight size={14} />
           </Link>
         </div>
       </div>

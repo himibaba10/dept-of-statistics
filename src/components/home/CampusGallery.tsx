@@ -3,103 +3,162 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import PhotoAlbum from 'react-photo-album';
-import 'react-photo-album/rows.css';
-import Lightbox from 'yet-another-react-lightbox';
-import 'yet-another-react-lightbox/styles.css';
+import { useReveal } from '@/hooks/useReveal';
+import { ArrowUpRight, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const photos = [
   {
-    src: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=800&auto=format&fit=crop',
-    width: 800,
-    height: 600,
-    alt: 'Campus library with students'
+    src: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=900&auto=format&fit=crop',
+    alt: 'Campus lecture hall',
+    aspect: '4/3',
+    colSpan: 2,
   },
   {
-    src: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=800&auto=format&fit=crop',
-    width: 800,
-    height: 533,
-    alt: 'Lecture hall'
+    src: 'https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=600&auto=format&fit=crop',
+    alt: 'University building exterior',
+    aspect: '4/3',
+    colSpan: 1,
   },
   {
-    src: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=800&auto=format&fit=crop',
-    width: 600,
-    height: 800,
-    alt: 'Students studying together'
+    src: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=600&auto=format&fit=crop',
+    alt: 'Students studying together',
+    aspect: '4/3',
+    colSpan: 1,
   },
   {
-    src: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=800&auto=format&fit=crop',
-    width: 800,
-    height: 533,
-    alt: 'Academic seminar'
-  }
+    src: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=900&auto=format&fit=crop',
+    alt: 'Campus library',
+    aspect: '4/3',
+    colSpan: 2,
+  },
 ];
 
 export function CampusGallery() {
-  const [index, setIndex] = useState(-1);
+  const ref = useReveal();
+  const [lightbox, setLightbox] = useState<number>(-1);
+
+  const prev = () => setLightbox((i) => (i - 1 + photos.length) % photos.length);
+  const next = () => setLightbox((i) => (i + 1) % photos.length);
 
   return (
-    <section className='flex flex-col gap-6 pb-12'>
-      <div className='flex items-center justify-between border-b border-slate-200 pb-2'>
-        <h2 className='text-2xl font-bold tracking-wide text-[#1E3A8A] uppercase'>
-          Campus Gallery
-        </h2>
+    <section
+      ref={ref as React.RefObject<HTMLElement>}
+      className="reveal flex flex-col gap-8 pb-16"
+    >
+      {/* Section header */}
+      <div className="flex items-end justify-between">
+        <div>
+          <p
+            className="text-xs font-semibold tracking-widest uppercase mb-3"
+            style={{ color: 'var(--gold, #C9972B)' }}
+          >
+            Our Campus
+          </p>
+          <h2
+            className="section-title font-bold text-3xl pb-3"
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              color: 'var(--navy, #0F2A6B)',
+            }}
+          >
+            Campus Gallery
+          </h2>
+        </div>
         <Link
-          href='/facilities'
-          className='text-lg font-medium text-[#1E3A8A] hover:underline'
+          href="/facilities"
+          className="flex items-center gap-1 text-xs font-semibold tracking-wide uppercase transition-colors mb-1"
+          style={{ color: 'var(--navy, #0F2A6B)' }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--gold, #C9972B)')}
+          onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--navy, #0F2A6B)')}
         >
           View More
+          <ArrowUpRight size={14} />
         </Link>
       </div>
 
-      {/* react-photo-album neatly arranges the images based on the target row height */}
-      <div className='overflow-hidden rounded-xl border border-slate-100 bg-white p-4 shadow-sm'>
-        <PhotoAlbum
-          layout='rows'
-          photos={photos}
-          targetRowHeight={250}
-          onClick={({ index }) => setIndex(index)}
-          render={{
-            wrapper: ({ style, ...rest }) => (
-              <div
-                {...rest}
-                style={{
-                  ...style,
-                  overflow: 'hidden',
-                  borderRadius: '0.75rem'
-                }}
-                className='group cursor-pointer'
-              />
-            ),
-            image: ({ alt, title, sizes, onClick }, { photo, width, height }) => (
-              <div
-                style={{
-                  width: '100%',
-                  position: 'relative',
-                  aspectRatio: `${width} / ${height}`
-                }}
-                onClick={onClick}
-              >
-                <Image
-                  src={photo.src}
-                  alt={alt || photo.alt || 'Gallery image'}
-                  title={title}
-                  sizes={sizes}
-                  fill
-                  className='object-cover transition-transform duration-500 group-hover:scale-105 group-hover:brightness-90'
-                />
-              </div>
-            )
-          }}
-        />
+      {/* Grid */}
+      <div className="grid grid-cols-3 gap-3 md:gap-4">
+        {photos.map((photo, i) => (
+          <div
+            key={i}
+            className="relative overflow-hidden rounded-xl cursor-pointer group"
+            style={{
+              aspectRatio: photo.aspect,
+              gridColumn: `span ${photo.colSpan}`,
+            }}
+            onClick={() => setLightbox(i)}
+          >
+            <Image
+              src={photo.src}
+              alt={photo.alt}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+            {/* Hover overlay */}
+            <div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4"
+              style={{ background: 'linear-gradient(to top, rgba(10,22,40,0.7) 0%, transparent 60%)' }}
+            >
+              <p className="text-white text-sm font-medium">{photo.alt}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
-      <Lightbox
-        slides={photos}
-        open={index >= 0}
-        index={index}
-        close={() => setIndex(-1)}
-      />
+      {/* Lightbox */}
+      {lightbox >= 0 && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ backgroundColor: 'rgba(10,22,40,0.95)' }}
+          onClick={() => setLightbox(-1)}
+        >
+          <div
+            className="relative w-full max-w-4xl mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative aspect-video rounded-xl overflow-hidden">
+              <Image
+                src={photos[lightbox].src}
+                alt={photos[lightbox].alt}
+                fill
+                className="object-cover"
+                sizes="90vw"
+              />
+            </div>
+
+            {/* Caption */}
+            <p className="text-center text-white/70 text-sm mt-3">
+              {photos[lightbox].alt}
+            </p>
+
+            {/* Controls */}
+            <button
+              onClick={() => setLightbox(-1)}
+              className="absolute -top-4 -right-4 p-2 rounded-full text-white bg-white/10 hover:bg-white/20 transition-colors"
+            >
+              <X size={18} />
+            </button>
+            <button
+              onClick={prev}
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 p-2 rounded-full text-white bg-white/10 hover:bg-white/20 transition-colors"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              onClick={next}
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 p-2 rounded-full text-white bg-white/10 hover:bg-white/20 transition-colors"
+            >
+              <ChevronRight size={20} />
+            </button>
+
+            {/* Counter */}
+            <div className="absolute top-3 left-3 text-xs font-semibold text-white/50 tabular-nums">
+              {String(lightbox + 1).padStart(2, '0')} / {String(photos.length).padStart(2, '0')}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
