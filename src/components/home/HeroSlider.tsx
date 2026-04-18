@@ -10,20 +10,20 @@ const slides = [
     src: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1600&auto=format&fit=crop',
     headline: 'Department of Statistics',
     sub: 'University of Chittagong',
-    body: 'Advancing knowledge through rigorous analytical thinking, statistical research, and academic excellence.',
+    body: 'Advancing knowledge through rigorous analytical thinking, statistical research, and academic excellence.'
   },
   {
     src: 'https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1600&auto=format&fit=crop',
     headline: 'Research & Innovation',
     sub: 'University of Chittagong',
-    body: 'Our faculty and students are pushing the boundaries of statistical science and applied data research.',
+    body: 'Our faculty and students are pushing the boundaries of statistical science and applied data research.'
   },
   {
     src: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop',
     headline: 'Shaping Future Analysts',
     sub: 'University of Chittagong',
-    body: 'A vibrant community of learners, researchers, and professionals dedicated to the science of data.',
-  },
+    body: 'A vibrant community of learners, researchers, and professionals dedicated to the science of data.'
+  }
 ];
 
 export function HeroSlider() {
@@ -53,52 +53,61 @@ export function HeroSlider() {
   const slide = slides[current];
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ height: 'clamp(420px, 58vw, 640px)' }}>
+    <section
+      className='relative w-full overflow-hidden'
+      style={{ height: 'clamp(420px, 58vw, 640px)' }}
+    >
       {/* Background image */}
       {slides.map((s, i) => (
         <div
           key={i}
-          className="absolute inset-0 transition-opacity duration-700"
-          style={{ opacity: i === current ? 1 : 0, zIndex: i === current ? 1 : 0 }}
+          className='absolute inset-0 transition-opacity duration-700'
+          style={{
+            opacity: i === current ? 1 : 0,
+            zIndex: i === current ? 1 : 0
+          }}
         >
           <Image
             src={s.src}
             alt={s.headline}
             fill
-            className="object-cover"
+            className='object-cover'
             priority={i === 0}
-            sizes="100vw"
+            sizes='100vw'
           />
         </div>
       ))}
 
       {/* Gradient overlays */}
       <div
-        className="absolute inset-0 z-10"
+        className='absolute inset-0 z-10'
         style={{
-          background: 'linear-gradient(to right, rgba(10,22,40,0.90) 0%, rgba(10,22,40,0.70) 50%, rgba(10,22,40,0.30) 100%)',
+          background:
+            'linear-gradient(to right, rgba(10,22,40,0.90) 0%, rgba(10,22,40,0.70) 50%, rgba(10,22,40,0.30) 100%)'
         }}
       />
       {/* Bottom fade */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-32 z-10"
-        style={{ background: 'linear-gradient(to top, #F7F9FC 0%, transparent 100%)' }}
+        className='absolute right-0 bottom-0 left-0 z-10 h-32'
+        style={{
+          background: 'linear-gradient(to top, #F7F9FC 0%, transparent 100%)'
+        }}
       />
 
       {/* Content */}
       <div
-        className="relative z-20 h-full flex items-center"
+        className='relative z-20 flex h-full items-center'
         style={{ opacity: animating ? 0 : 1, transition: 'opacity 0.4s ease' }}
       >
-        <div className="max-w-7xl mx-auto w-full px-6 lg:px-8">
-          <div className="max-w-xl">
+        <div className='mx-auto w-full max-w-7xl px-6 lg:px-8'>
+          <div className='max-w-xl'>
             {/* Gold label */}
             <div
-              className="inline-flex items-center gap-2 mb-5 text-xs font-semibold tracking-widest uppercase"
+              className='mb-5 inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase'
               style={{ color: 'var(--gold, #C9972B)' }}
             >
               <span
-                className="inline-block w-8 h-px"
+                className='inline-block h-px w-8'
                 style={{ backgroundColor: 'var(--gold, #C9972B)' }}
               />
               {slide.sub}
@@ -106,10 +115,10 @@ export function HeroSlider() {
 
             {/* Headline */}
             <h1
-              className="font-bold text-white mb-4 leading-tight"
+              className='mb-4 leading-tight font-bold text-white'
               style={{
                 fontFamily: "'Playfair Display', Georgia, serif",
-                fontSize: 'clamp(2rem, 4vw, 3.2rem)',
+                fontSize: 'clamp(2rem, 4vw, 3.2rem)'
               }}
             >
               {slide.headline}
@@ -117,32 +126,35 @@ export function HeroSlider() {
 
             {/* Gold rule */}
             <div
-              className="w-16 h-1 rounded-full mb-6"
+              className='mb-6 h-1 w-16 rounded-full'
               style={{ backgroundColor: 'var(--gold, #C9972B)' }}
             />
 
             {/* Body */}
             <p
-              className="text-base leading-relaxed mb-8"
+              className='mb-8 text-base leading-relaxed'
               style={{ color: 'rgba(255,255,255,0.78)', maxWidth: '36rem' }}
             >
               {slide.body}
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-wrap gap-3">
+            <div className='flex flex-wrap gap-3'>
               <Link
-                href="/teachers"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-md text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 hover:translate-x-0.5"
+                href='/teachers'
+                className='inline-flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:translate-x-0.5 hover:opacity-90'
                 style={{ backgroundColor: 'var(--gold, #C9972B)' }}
               >
                 Explore Faculty
                 <ChevronRight size={16} />
               </Link>
               <Link
-                href="/courses"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-md text-sm font-semibold border transition-all duration-200 hover:bg-white/10"
-                style={{ color: 'white', borderColor: 'rgba(255,255,255,0.35)' }}
+                href='/courses'
+                className='inline-flex items-center gap-2 rounded-md border px-6 py-3 text-sm font-semibold transition-all duration-200 hover:bg-white/10'
+                style={{
+                  color: 'white',
+                  borderColor: 'rgba(255,255,255,0.35)'
+                }}
               >
                 View Courses
               </Link>
@@ -152,17 +164,20 @@ export function HeroSlider() {
       </div>
 
       {/* Dot indicators */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+      <div className='absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-2'>
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => goTo(i)}
             aria-label={`Slide ${i + 1}`}
-            className="transition-all duration-300 rounded-full"
+            className='rounded-full transition-all duration-300'
             style={{
               width: i === current ? '28px' : '8px',
               height: '8px',
-              backgroundColor: i === current ? 'var(--gold, #C9972B)' : 'rgba(255,255,255,0.45)',
+              backgroundColor:
+                i === current
+                  ? 'var(--gold, #C9972B)'
+                  : 'rgba(255,255,255,0.45)'
             }}
           />
         ))}
@@ -170,10 +185,11 @@ export function HeroSlider() {
 
       {/* Slide counter */}
       <div
-        className="absolute bottom-8 right-8 z-20 text-xs font-semibold tabular-nums hidden sm:block"
+        className='absolute right-8 bottom-8 z-20 hidden text-xs font-semibold tabular-nums sm:block'
         style={{ color: 'rgba(255,255,255,0.5)' }}
       >
-        {String(current + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+        {String(current + 1).padStart(2, '0')} /{' '}
+        {String(slides.length).padStart(2, '0')}
       </div>
     </section>
   );
