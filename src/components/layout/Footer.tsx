@@ -1,40 +1,25 @@
 'use client';
 
+import { Mail, MapPin, Phone } from 'lucide-react';
 import Link from 'next/link';
-import { Mail, Phone, MapPin } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer
-      style={{ backgroundColor: 'var(--navy-dark, #0A1628)' }}
-      className='text-white'
-    >
+    <footer className='bg-navy-dark text-white'>
       {/* Main footer content */}
       <div className='mx-auto max-w-7xl px-6 py-16'>
         <div className='grid grid-cols-1 gap-12 md:grid-cols-3'>
           {/* Brand col */}
           <div className='space-y-4'>
             <div>
-              <h3
-                className='mb-1 text-2xl font-bold'
-                style={{
-                  fontFamily: "'Playfair Display', Georgia, serif",
-                  color: 'white'
-                }}
-              >
+              <h3 className='mb-1 font-serif text-2xl font-bold text-white'>
                 Dept. of Statistics
               </h3>
-              <p
-                className='text-xs tracking-widest uppercase'
-                style={{ color: 'var(--gold, #C9972B)' }}
-              >
+              <p className='text-gold text-xs tracking-widest uppercase'>
                 University of Chittagong
               </p>
             </div>
-            <p
-              className='text-sm leading-relaxed'
-              style={{ color: 'rgba(255,255,255,0.6)' }}
-            >
+            <p className='text-sm leading-relaxed text-white/60'>
               Committed to excellence in statistical education, research, and
               analytical thinking since our establishment.
             </p>
@@ -42,10 +27,7 @@ export function Footer() {
 
           {/* Quick links */}
           <div>
-            <h4
-              className='mb-5 text-sm font-semibold tracking-widest uppercase'
-              style={{ color: 'var(--gold, #C9972B)' }}
-            >
+            <h4 className='text-gold mb-5 text-sm font-semibold tracking-widest uppercase'>
               Quick Links
             </h4>
             <ul className='space-y-3'>
@@ -59,14 +41,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className='text-sm transition-colors duration-200'
-                    style={{ color: 'rgba(255,255,255,0.6)' }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.color = 'white')
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.color = 'rgba(255,255,255,0.6)')
-                    }
+                    className='text-sm text-white/60 transition-colors duration-200 hover:text-white'
                   >
                     {link.label}
                   </Link>
@@ -77,44 +52,20 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h4
-              className='mb-5 text-sm font-semibold tracking-widest uppercase'
-              style={{ color: 'var(--gold, #C9972B)' }}
-            >
+            <h4 className='text-gold mb-5 text-sm font-semibold tracking-widest uppercase'>
               Contact
             </h4>
             <ul className='space-y-4'>
-              <li
-                className='flex items-start gap-3 text-sm'
-                style={{ color: 'rgba(255,255,255,0.6)' }}
-              >
-                <MapPin
-                  size={16}
-                  className='mt-0.5 shrink-0'
-                  style={{ color: 'var(--gold, #C9972B)' }}
-                />
+              <li className='flex items-start gap-3 text-sm text-white/60'>
+                <MapPin size={16} className='text-gold mt-0.5 shrink-0' />
                 Dept. of Statistics, University of Chittagong, Chattogram 4331
               </li>
-              <li
-                className='flex items-center gap-3 text-sm'
-                style={{ color: 'rgba(255,255,255,0.6)' }}
-              >
-                <Mail
-                  size={16}
-                  className='shrink-0'
-                  style={{ color: 'var(--gold, #C9972B)' }}
-                />
+              <li className='flex items-center gap-3 text-sm text-white/60'>
+                <Mail size={16} className='text-gold shrink-0' />
                 statistics@cu.ac.bd
               </li>
-              <li
-                className='flex items-center gap-3 text-sm'
-                style={{ color: 'rgba(255,255,255,0.6)' }}
-              >
-                <Phone
-                  size={16}
-                  className='shrink-0'
-                  style={{ color: 'var(--gold, #C9972B)' }}
-                />
+              <li className='flex items-center gap-3 text-sm text-white/60'>
+                <Phone size={16} className='text-gold shrink-0' />
                 +880-31-726-310
               </li>
             </ul>
@@ -123,12 +74,9 @@ export function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div
-        className='border-t'
-        style={{ borderColor: 'rgba(255,255,255,0.08)' }}
-      >
+      <div className='border-t border-white/10'>
         <div className='mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-5 sm:flex-row'>
-          <p className='text-xs' style={{ color: 'rgba(255,255,255,0.4)' }}>
+          <p className='text-xs text-white/40'>
             © {new Date().getFullYear()} Department of Statistics, University of
             Chittagong. All rights reserved.
           </p>
@@ -137,14 +85,7 @@ export function Footer() {
               <Link
                 key={label}
                 href={`/${label.toLowerCase().replace(' ', '-')}`}
-                className='text-xs transition-colors duration-200'
-                style={{ color: 'rgba(255,255,255,0.4)' }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.color = 'rgba(255,255,255,0.8)')
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = 'rgba(255,255,255,0.4)')
-                }
+                className='text-xs text-white/40 transition-colors duration-200 hover:text-white/80'
               >
                 {label}
               </Link>

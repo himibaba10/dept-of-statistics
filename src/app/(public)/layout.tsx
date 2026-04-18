@@ -7,10 +7,7 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className='flex min-h-screen flex-col'
-      style={{ backgroundColor: 'var(--surface, #F7F9FC)' }}
-    >
+    <div className='bg-surface flex min-h-screen flex-col'>
       <Navbar />
       <main className='flex-1'>{children}</main>
       <Footer />

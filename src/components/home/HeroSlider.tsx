@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 const slides = [
   {
@@ -53,19 +53,12 @@ export function HeroSlider() {
   const slide = slides[current];
 
   return (
-    <section
-      className='relative w-full overflow-hidden'
-      style={{ height: 'clamp(420px, 58vw, 640px)' }}
-    >
+    <section className='relative h-[clamp(420px,58vw,640px)] w-full overflow-hidden'>
       {/* Background image */}
       {slides.map((s, i) => (
         <div
           key={i}
-          className='absolute inset-0 transition-opacity duration-700'
-          style={{
-            opacity: i === current ? 1 : 0,
-            zIndex: i === current ? 1 : 0
-          }}
+          className={`absolute inset-0 transition-opacity duration-700 ${i === current ? 'z-10 opacity-100' : 'z-0 opacity-0'}`}
         >
           <Image
             src={s.src}
@@ -79,62 +72,32 @@ export function HeroSlider() {
       ))}
 
       {/* Gradient overlays */}
-      <div
-        className='absolute inset-0 z-10'
-        style={{
-          background:
-            'linear-gradient(to right, rgba(10,22,40,0.90) 0%, rgba(10,22,40,0.70) 50%, rgba(10,22,40,0.30) 100%)'
-        }}
-      />
+      <div className='from-navy/90 via-navy/70 to-navy/30 absolute inset-0 z-10 bg-linear-to-r' />
       {/* Bottom fade */}
-      <div
-        className='absolute right-0 bottom-0 left-0 z-10 h-32'
-        style={{
-          background: 'linear-gradient(to top, #F7F9FC 0%, transparent 100%)'
-        }}
-      />
+      <div className='absolute right-0 bottom-0 left-0 z-10 h-32 bg-linear-to-r from-[#F7F9FC] to-transparent' />
 
       {/* Content */}
       <div
-        className='relative z-20 flex h-full items-center'
-        style={{ opacity: animating ? 0 : 1, transition: 'opacity 0.4s ease' }}
+        className={`relative z-20 flex h-full items-center transition-opacity duration-400 ease-in-out ${animating ? 'opacity-0' : 'opacity-100'}`}
       >
         <div className='mx-auto w-full max-w-7xl px-6 lg:px-8'>
           <div className='max-w-xl'>
             {/* Gold label */}
-            <div
-              className='mb-5 inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase'
-              style={{ color: 'var(--gold, #C9972B)' }}
-            >
-              <span
-                className='inline-block h-px w-8'
-                style={{ backgroundColor: 'var(--gold, #C9972B)' }}
-              />
+            <div className='text-gold mb-5 inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase'>
+              <span className='bg-gold inline-block h-px w-8' />
               {slide.sub}
             </div>
 
             {/* Headline */}
-            <h1
-              className='mb-4 leading-tight font-bold text-white'
-              style={{
-                fontFamily: "'Playfair Display', Georgia, serif",
-                fontSize: 'clamp(2rem, 4vw, 3.2rem)'
-              }}
-            >
+            <h1 className='mb-4 font-serif text-[clamp(2rem,4vw,3.2rem)] leading-tight font-bold text-white'>
               {slide.headline}
             </h1>
 
             {/* Gold rule */}
-            <div
-              className='mb-6 h-1 w-16 rounded-full'
-              style={{ backgroundColor: 'var(--gold, #C9972B)' }}
-            />
+            <div className='bg-gold mb-6 h-1 w-16 rounded-full' />
 
             {/* Body */}
-            <p
-              className='mb-8 text-base leading-relaxed'
-              style={{ color: 'rgba(255,255,255,0.78)', maxWidth: '36rem' }}
-            >
+            <p className='mb-8 max-w-xl text-base leading-relaxed text-white/80'>
               {slide.body}
             </p>
 
@@ -142,19 +105,14 @@ export function HeroSlider() {
             <div className='flex flex-wrap gap-3'>
               <Link
                 href='/teachers'
-                className='inline-flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:translate-x-0.5 hover:opacity-90'
-                style={{ backgroundColor: 'var(--gold, #C9972B)' }}
+                className='bg-gold inline-flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:translate-x-0.5 hover:opacity-90'
               >
                 Explore Faculty
                 <ChevronRight size={16} />
               </Link>
               <Link
                 href='/courses'
-                className='inline-flex items-center gap-2 rounded-md border px-6 py-3 text-sm font-semibold transition-all duration-200 hover:bg-white/10'
-                style={{
-                  color: 'white',
-                  borderColor: 'rgba(255,255,255,0.35)'
-                }}
+                className='inline-flex items-center gap-2 rounded-md border border-white/35 px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/10'
               >
                 View Courses
               </Link>
@@ -170,24 +128,15 @@ export function HeroSlider() {
             key={i}
             onClick={() => goTo(i)}
             aria-label={`Slide ${i + 1}`}
-            className='rounded-full transition-all duration-300'
-            style={{
-              width: i === current ? '28px' : '8px',
-              height: '8px',
-              backgroundColor:
-                i === current
-                  ? 'var(--gold, #C9972B)'
-                  : 'rgba(255,255,255,0.45)'
-            }}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              i === current ? 'bg-gold w-7' : 'w-2 bg-white/45'
+            }`}
           />
         ))}
       </div>
 
       {/* Slide counter */}
-      <div
-        className='absolute right-8 bottom-8 z-20 hidden text-xs font-semibold tabular-nums sm:block'
-        style={{ color: 'rgba(255,255,255,0.5)' }}
-      >
+      <div className='absolute right-8 bottom-8 z-20 hidden text-xs font-semibold text-white/50 tabular-nums sm:block'>
         {String(current + 1).padStart(2, '0')} /{' '}
         {String(slides.length).padStart(2, '0')}
       </div>

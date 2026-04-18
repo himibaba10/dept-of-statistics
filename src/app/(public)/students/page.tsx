@@ -27,13 +27,7 @@ export default function StudentsPage() {
       {/* Page Hero Banner */}
       <div className='bg-navy relative overflow-hidden'>
         {/* Background pattern */}
-        <div
-          className='absolute inset-0 opacity-[0.04]'
-          style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-            backgroundSize: '32px 32px'
-          }}
-        />
+        <div className='absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] bg-size-[32px_32px] opacity-[0.04]' />
         <div className='relative mx-auto max-w-7xl px-6 py-14 lg:px-8'>
           <div className='flex flex-col gap-6 md:flex-row md:items-end md:justify-center'>
             <div className='text-center'>
@@ -43,10 +37,7 @@ export default function StudentsPage() {
               <h1 className='mb-3 font-serif text-4xl font-bold text-white md:text-5xl'>
                 Our Students
               </h1>
-              <p
-                className='text-base'
-                style={{ color: 'rgba(255,255,255,0.6)', maxWidth: '480px' }}
-              >
+              <p className='mx-auto max-w-120 text-base text-white/60'>
                 Meet the bright minds shaping the future of statistical sciences
                 at the University of Chittagong.
               </p>
@@ -144,13 +135,10 @@ export default function StudentsPage() {
             {filtered.length === 0 ? (
               <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white py-20'>
                 <Users size={40} className='mb-4 text-slate-300' />
-                <p
-                  className='text-base font-semibold'
-                  style={{ color: '#475569' }}
-                >
+                <p className='text-base font-semibold text-slate-600'>
                   No students found
                 </p>
-                <p className='mt-1 text-sm' style={{ color: '#94A3B8' }}>
+                <p className='mt-1 text-sm text-slate-400'>
                   Try adjusting your filters
                 </p>
               </div>
@@ -159,14 +147,10 @@ export default function StudentsPage() {
                 {filtered.map((student) => (
                   <div
                     key={student._id}
-                    className='group overflow-hidden rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(15,42,107,0.12)]'
-                    style={{ borderColor: '#E2E8F0', backgroundColor: 'white' }}
+                    className='group overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(15,42,107,0.12)]'
                   >
                     {/* Photo */}
-                    <div
-                      className='relative h-52 overflow-hidden'
-                      style={{ backgroundColor: '#EEF2FF' }}
-                    >
+                    <div className='relative h-52 overflow-hidden bg-indigo-50'>
                       <Image
                         src={student.imageUrl}
                         alt={student.name}
@@ -176,34 +160,19 @@ export default function StudentsPage() {
                       {/* CR badge */}
                       {student.isCR && (
                         <div className='absolute top-3 right-3'>
-                          <span
-                            className='flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider text-white shadow-md'
-                            style={{ backgroundColor: '#C9972B' }}
-                          >
+                          <span className='bg-gold flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider text-white shadow-md'>
                             <Star size={10} fill='white' />
                             CR
                           </span>
                         </div>
                       )}
                       {/* Gradient */}
-                      <div
-                        className='absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100'
-                        style={{
-                          background:
-                            'linear-gradient(to top, rgba(15,42,107,0.3) 0%, transparent 60%)'
-                        }}
-                      />
+                      <div className='from-navy/30 absolute inset-0 bg-linear-to-t to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
                     </div>
 
                     {/* Info */}
                     <div className='p-5'>
-                      <h3
-                        className='mb-3 truncate text-base font-bold'
-                        style={{
-                          fontFamily: "'Playfair Display', Georgia, serif",
-                          color: '#0F2A6B'
-                        }}
-                      >
+                      <h3 className='text-navy mb-3 truncate font-serif text-base font-bold'>
                         {student.name}
                       </h3>
 
@@ -217,16 +186,10 @@ export default function StudentsPage() {
                             key={label}
                             className={label === 'Session' ? 'col-span-2' : ''}
                           >
-                            <p
-                              className='mb-0.5 text-[10px] font-bold tracking-widest uppercase'
-                              style={{ color: '#94A3B8' }}
-                            >
+                            <p className='mb-0.5 text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
                               {label}
                             </p>
-                            <p
-                              className='text-sm font-semibold'
-                              style={{ color: '#1E293B' }}
-                            >
+                            <p className='text-sm font-semibold text-slate-800'>
                               {value}
                             </p>
                           </div>
@@ -234,27 +197,12 @@ export default function StudentsPage() {
                       </div>
 
                       {/* Bottom tag */}
-                      <div
-                        className='mt-4 flex items-center justify-between border-t pt-4'
-                        style={{ borderColor: '#F1F5F9' }}
-                      >
-                        <span
-                          className='rounded-full px-2.5 py-1 text-xs font-semibold'
-                          style={{
-                            backgroundColor: '#EEF2FF',
-                            color: '#0F2A6B'
-                          }}
-                        >
+                      <div className='mt-4 flex items-center justify-between border-t border-slate-100 pt-4'>
+                        <span className='text-navy rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold'>
                           {student.session}
                         </span>
                         {student.isCR && (
-                          <span
-                            className='rounded-full px-2.5 py-1 text-xs font-semibold'
-                            style={{
-                              backgroundColor: '#FDF6E3',
-                              color: '#C9972B'
-                            }}
-                          >
+                          <span className='text-gold rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold'>
                             Class Representative
                           </span>
                         )}

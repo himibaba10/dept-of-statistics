@@ -70,10 +70,7 @@ export function CampusGallery() {
         {photos.map((photo, i) => (
           <div
             key={i}
-            className='group relative cursor-pointer overflow-hidden rounded-xl'
-            style={{
-              aspectRatio: photo.aspect
-            }}
+            className={`group relative cursor-pointer overflow-hidden rounded-xl ${photo.aspect === '3/4' ? 'aspect-3/4' : photo.aspect === '1/1' ? 'aspect-square' : photo.aspect === '4/3' ? 'aspect-4/3' : ''}`}
             onClick={() => setLightbox(i)}
           >
             <Image
@@ -84,13 +81,7 @@ export function CampusGallery() {
               sizes='(max-width: 768px) 100vw, 50vw'
             />
             {/* Hover overlay */}
-            <div
-              className='absolute inset-0 flex items-end p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100'
-              style={{
-                background:
-                  'linear-gradient(to top, rgba(10,22,40,0.7) 0%, transparent 60%)'
-              }}
-            >
+            <div className='from-navy/70 absolute inset-0 flex items-end bg-linear-to-t to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
               <p className='text-sm font-medium text-white'>{photo.alt}</p>
             </div>
           </div>

@@ -26,10 +26,10 @@ const mockNotices = [
   }
 ];
 
-const tagColors: Record<string, { bg: string; text: string }> = {
-  Exam: { bg: '#FEF3C7', text: '#92400E' },
-  Event: { bg: '#DBEAFE', text: '#1E40AF' },
-  Registration: { bg: '#DCFCE7', text: '#166534' }
+const tagColors: Record<string, string> = {
+  Exam: 'bg-[#FEF3C7] text-[#92400E]',
+  Event: 'bg-blue-100 text-blue-800',
+  Registration: 'bg-green-100 text-green-800'
 };
 
 export function NoticeBoardPreview() {
@@ -70,22 +70,18 @@ export function NoticeBoardPreview() {
         </div>
 
         <div className='divide-y divide-slate-100'>
-          {mockNotices.map((notice, i) => {
-            const colors = tagColors[notice.tag] || {
-              bg: '#F1F5F9',
-              text: '#475569'
-            };
+          {mockNotices.map((notice) => {
+            const colors =
+              tagColors[notice.tag] || 'bg-slate-100 text-slate-600';
             return (
               <div
                 key={notice.id}
                 className='group hover:border-l-gold cursor-pointer border-l-2 border-l-white px-5 py-4 transition-colors duration-200 hover:bg-slate-50'
-                style={{ animationDelay: `${i * 0.08}s` }}
               >
                 {/* Tag + date */}
                 <div className='mb-2 flex items-center justify-between'>
                   <span
-                    className='rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase'
-                    style={{ backgroundColor: colors.bg, color: colors.text }}
+                    className={`rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase ${colors}`}
                   >
                     {notice.tag}
                   </span>

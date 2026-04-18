@@ -1,7 +1,7 @@
 'use client';
 
-import { BookOpen, Building2, GraduationCap, UserCheck } from 'lucide-react';
 import { useReveal } from '@/hooks/useReveal';
+import { BookOpen, Building2, GraduationCap, UserCheck } from 'lucide-react';
 
 const stats = [
   { icon: GraduationCap, value: '450+', label: 'Students Enrolled' },
@@ -25,40 +25,22 @@ export function StatsGrid() {
           return (
             <div
               key={stat.label}
-              className='relative flex flex-col items-center justify-center px-6 py-10'
-              style={{
-                borderRight: !isLast
-                  ? '1px solid rgba(255,255,255,0.10)'
-                  : undefined,
-                borderBottom:
-                  i < 2 ? '1px solid rgba(255,255,255,0.10)' : undefined
-              }}
+              className={`relative flex flex-col items-center justify-center px-6 py-10 ${
+                !isLast ? 'border-r-white/10 max-lg:border-r' : ''
+              } ${i < 2 ? 'border-b-white/10 max-lg:border-b' : ''}`}
             >
               {/* Icon */}
-              <div
-                className='mb-4 rounded-full p-3'
-                style={{ backgroundColor: 'rgba(201,151,43,0.15)' }}
-              >
-                <Icon size={24} style={{ color: 'var(--gold, #C9972B)' }} />
+              <div className='bg-gold/15 mb-4 rounded-full p-3'>
+                <Icon size={24} className='text-gold' />
               </div>
 
               {/* Number */}
-              <span
-                className='mb-2 leading-none font-bold'
-                style={{
-                  fontFamily: "'Playfair Display', Georgia, serif",
-                  fontSize: 'clamp(2rem, 3vw, 2.5rem)',
-                  color: 'white'
-                }}
-              >
+              <span className='mb-2 font-serif text-[clamp(2rem,3vw,2.5rem)] leading-none font-bold text-white'>
                 {stat.value}
               </span>
 
               {/* Label */}
-              <span
-                className='text-center text-xs font-semibold tracking-wider uppercase'
-                style={{ color: 'rgba(255,255,255,0.55)' }}
-              >
+              <span className='text-center text-xs font-semibold tracking-wider text-white/55 uppercase'>
                 {stat.label}
               </span>
             </div>
