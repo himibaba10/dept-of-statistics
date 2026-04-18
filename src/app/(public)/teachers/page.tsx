@@ -1,0 +1,95 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
+import { mockTeachers } from '@/lib/mockData';
+import Image from 'next/image';
+
+export default function TeachersPage() {
+  return (
+    <div className='mx-auto flex w-full max-w-6xl flex-col gap-8 text-[#0F172A]'>
+      <div className='mb-4'>
+        <h1 className='mb-2 text-4xl font-bold tracking-tight text-[#1E3A8A]'>
+          Faculty Members
+        </h1>
+        <p className='text-lg text-slate-600'>
+          Meet our experienced and dedicated teaching staff.
+        </p>
+      </div>
+
+      <div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3'>
+        {mockTeachers.map((teacher) => (
+          <Card
+            key={teacher._id}
+            className='overflow-hidden border-slate-200 shadow-sm transition-shadow hover:shadow-md'
+          >
+            <div className='relative h-64 w-full bg-slate-100'>
+              <Image
+                src={teacher.imageUrl}
+                alt={teacher.name}
+                fill
+                className='object-cover object-top'
+              />
+            </div>
+            <CardHeader className='border-b border-slate-100 bg-white p-5'>
+              <CardTitle className='mb-1 text-xl font-bold text-[#1E3A8A]'>
+                {teacher.name}
+              </CardTitle>
+              <CardDescription className='text-sm font-semibold tracking-wide text-slate-600 uppercase'>
+                {teacher.designation}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className='space-y-4 bg-[#F8FAFC] p-5'>
+              <div className='space-y-2 text-sm text-slate-700'>
+                <p>
+                  <span className='mb-1 block border-b border-slate-200 pb-1 font-semibold text-slate-900'>
+                    Contact Details
+                  </span>
+                  <a
+                    href={`mailto:${teacher.email}`}
+                    className='block wrap-break-word text-[#1E3A8A] hover:underline'
+                  >
+                    {teacher.email}
+                  </a>
+                  <span>{teacher.phone}</span>
+                </p>
+                <p>
+                  <span className='mt-2 mb-1 block border-b border-slate-200 pb-1 font-semibold text-slate-900'>
+                    Office Location
+                  </span>
+                  {teacher.address}
+                </p>
+              </div>
+
+              {teacher.galleryUrls?.length > 0 && (
+                <div>
+                  <h4 className='mb-2 text-xs font-semibold text-slate-500 uppercase'>
+                    Activities / Gallery
+                  </h4>
+                  <div className='scrollbar-thin scrollbar-thumb-slate-300 flex gap-2 overflow-x-auto pb-2'>
+                    {teacher.galleryUrls.map((url, i) => (
+                      <div
+                        key={i}
+                        className='relative h-16 w-16 shrink-0 overflow-hidden rounded border border-slate-200'
+                      >
+                        <Image
+                          src={url}
+                          alt={`Gallery image ${i}`}
+                          fill
+                          className='object-cover'
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}

@@ -14,7 +14,7 @@ export interface UserBase {
 export interface Student extends UserBase {
   role: 'student';
   studentId: string;
-  session: string; 
+  session: string;
   isCR: boolean;
 }
 
@@ -22,13 +22,20 @@ export interface Teacher extends UserBase {
   role: 'teacher';
   designation: string;
   galleryUrls: string[];
-  hasAdminAccess: boolean; 
+  hasAdminAccess: boolean;
 }
+
+export interface Official extends UserBase {
+  role: 'official';
+  departmentRole: string;
+}
+
+export type User = Student | Teacher | Official;
 
 export interface Course {
   _id: string;
-  code: string; 
-  title: string; 
+  code: string;
+  title: string;
   syllabusImageUrl: string;
-  instructorId: string; 
+  instructorId: string;
 }
