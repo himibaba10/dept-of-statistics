@@ -1,6 +1,5 @@
 import { connectDB } from '@/lib/db';
 import { errorResponse, successResponse } from '@/lib/apiResponse';
-import { signAccessToken, signRefreshToken } from '@/lib/jwt';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 import { NextRequest } from 'next/server';
@@ -10,7 +9,7 @@ export async function POST(req: NextRequest) {
     await connectDB();
 
     const body = await req.json();
-    const { name, email, phone, address, bloodGroup, password, isAdmin } = body;
+    const { name, email, phone, address, bloodGroup, password } = body;
 
     // Validation
     if (!name || !phone || !password) {
@@ -25,7 +24,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Check duplicate phone
+    // Check duplicate phone among officials
     const existingPhone = await User.findOne({ phone, role: 'official' });
     if (existingPhone) {
       return errorResponse(
@@ -34,10 +33,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create user
     const user = await User.create({
       name,
       email: email || undefined,
@@ -45,38 +42,24 @@ export async function POST(req: NextRequest) {
       address: address ?? {},
       bloodGroup: bloodGroup || undefined,
       role: 'official',
-      isAdmin: isAdmin ?? false,
+      status: 'pending', // awaiting admin approval
+      isAdmin: false,
       password: hashedPassword
     });
 
-    // Issue tokens
-    const payload = {
-      userId: user._id.toString(),
-      role: user.role,
-      isAdmin: user.isAdmin
-    };
-    const accessToken = signAccessToken(payload);
-    const refreshToken = signRefreshToken(payload);
-
-    // Save refresh token to DB
-    user.refreshToken = refreshToken;
-    await user.save();
-
     return successResponse(
       {
+        message:
+          'Registration successful. Your account is pending admin approval.',
         user: {
           _id: user._id,
           name: user.name,
           email: user.email,
           phone: user.phone,
-          address: user.address,
-          bloodGroup: user.bloodGroup,
           role: user.role,
-          isAdmin: user.isAdmin,
+          status: user.status,
           createdAt: user.createdAt
-        },
-        accessToken,
-        refreshToken
+        }
       },
       201
     );

@@ -36,6 +36,20 @@ export async function POST(req: NextRequest) {
       return errorResponse('Invalid credentials', 401);
     }
 
+    // Check account status
+    if (user.status === 'pending') {
+      return errorResponse(
+        'Your account is pending admin approval. Please try again later.',
+        403
+      );
+    }
+    if (user.status === 'blocked') {
+      return errorResponse(
+        'Your account has been blocked. Contact the administrator.',
+        403
+      );
+    }
+
     // Issue tokens
     const payload = {
       userId: user._id.toString(),
@@ -58,6 +72,7 @@ export async function POST(req: NextRequest) {
         address: user.address,
         bloodGroup: user.bloodGroup,
         role: user.role,
+        status: user.status,
         isAdmin: user.isAdmin,
         createdAt: user.createdAt
       },

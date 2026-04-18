@@ -9,6 +9,7 @@ export interface IAddress {
 }
 
 export type UserRole = 'teacher' | 'student' | 'official';
+export type UserStatus = 'pending' | 'active' | 'blocked';
 
 export interface IUser extends Document {
   name: string;
@@ -17,6 +18,7 @@ export interface IUser extends Document {
   address: IAddress;
   bloodGroup?: string;
   role: UserRole;
+  status: UserStatus;
   isAdmin: boolean;
   password: string;
   refreshToken?: string;
@@ -66,6 +68,11 @@ const userSchema = new Schema<IUser>(
       type: String,
       enum: ['teacher', 'student', 'official'],
       required: [true, 'Role is required']
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'active', 'blocked'],
+      default: 'pending'
     },
     isAdmin: {
       type: Boolean,
