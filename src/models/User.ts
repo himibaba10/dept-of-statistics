@@ -146,7 +146,16 @@ const userSchema = new Schema<IUser>(
     // Teacher fields
     designation: {
       type: String,
-      trim: true
+      trim: true,
+      enum: [
+        'professor',
+        'associate professor',
+        'assistant professor',
+        'lecturer',
+        'senior lecturer',
+        'adjunct faculty',
+        'chairman'
+      ]
     },
     galleryUrls: {
       type: [String],

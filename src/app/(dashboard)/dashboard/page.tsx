@@ -5,23 +5,21 @@ import { MyClassmates } from '@/components/dashboard/MyClassmates';
 import { PublishNotices } from '@/components/dashboard/PublishNotices';
 import { StudentApprovals } from '@/components/dashboard/StudentApprovals';
 import { StudentReports } from '@/components/dashboard/StudentReports';
+import { TeacherApprovals } from '@/components/dashboard/TeacherApprovals';
+import { TeachersList } from '@/components/dashboard/TeachersList';
+import { StudentsList } from '@/components/dashboard/StudentsList';
 import { useAuth } from '@/components/providers/AuthProvider';
+import { canAccessDashboard, isSeniorTeacher } from '@/lib/authHelpers';
 import { User } from '@/types';
 import { useState } from 'react';
-
-// ── helpers ──────────────────────────────────────────────────────────────────
-
-function canAccessDashboard(user: User): boolean {
-  if (user.isAdmin) return true;
-  if (user.role === 'official') return true;
-  if (user.role === 'student' && user.isCR) return true;
-  return false;
-}
 
 type TabId =
   | 'overview'
   | 'notices'
   | 'approvals'
+  | 'teacher-approvals'
+  | 'teachers-list'
+  | 'students-list'
   | 'classmates'
   | 'courses'
   | 'students';
@@ -34,14 +32,32 @@ interface Tab {
 function getTabs(user: User): Tab[] {
   const tabs: Tab[] = [];
 
-  if (user.role === 'official' || user.isAdmin) {
+  // Officials + admin + senior teachers can publish notices
+  if (user.role === 'official' || user.isAdmin || isSeniorTeacher(user)) {
     tabs.push({ id: 'notices', label: 'Publish Notices' });
   }
 
+  // CR students + admin can approve students
   if ((user.role === 'student' && user.isCR) || user.isAdmin) {
     tabs.push({ id: 'approvals', label: 'Student Approvals' });
   }
 
+  // Senior teachers + admin can approve pending teachers
+  if (isSeniorTeacher(user) || user.isAdmin) {
+    tabs.push({ id: 'teacher-approvals', label: 'Teacher Approvals' });
+  }
+
+  // Senior teachers + admin can see teachers list
+  if (isSeniorTeacher(user) || user.isAdmin) {
+    tabs.push({ id: 'teachers-list', label: 'Teachers' });
+  }
+
+  // Senior teachers + admin can see students list
+  if (isSeniorTeacher(user) || user.isAdmin) {
+    tabs.push({ id: 'students-list', label: 'Students' });
+  }
+
+  // CR can see their own classmates
   if (user.role === 'student' && user.isCR && user.session) {
     tabs.push({ id: 'classmates', label: 'My Classmates' });
   }
@@ -57,6 +73,9 @@ function getTabs(user: User): Tab[] {
 const TAB_DESCRIPTIONS: Record<string, string> = {
   notices: 'Create, edit, or remove notices on the public notice board.',
   approvals: 'Review and approve pending student registrations.',
+  'teacher-approvals': 'Review and approve pending teacher registrations.',
+  'teachers-list': 'Browse faculty members and filter by designation.',
+  'students-list': 'Browse all active students and filter by session.',
   classmates: 'Browse your batchmates and their contact information.',
   courses: 'Assign instructors, update syllabus, and manage course offerings.',
   students: 'View academic records and session-wise analytics.'
@@ -78,7 +97,9 @@ export default function DashboardPage() {
       ? 'Official'
       : user.role === 'student' && user.isCR
         ? 'Class Representative'
-        : '';
+        : isSeniorTeacher(user)
+          ? ((user as { designation?: string }).designation ?? 'Faculty')
+          : '';
 
   return (
     <div className='space-y-8'>
@@ -149,6 +170,9 @@ export default function DashboardPage() {
         )}
         {activeTab === 'notices' && <PublishNotices />}
         {activeTab === 'approvals' && <StudentApprovals currentUser={user} />}
+        {activeTab === 'teacher-approvals' && <TeacherApprovals />}
+        {activeTab === 'teachers-list' && <TeachersList />}
+        {activeTab === 'students-list' && <StudentsList />}
         {activeTab === 'classmates' &&
           user.role === 'student' &&
           user.session && (

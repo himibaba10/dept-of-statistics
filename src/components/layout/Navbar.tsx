@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/components/providers/AuthProvider';
+import { canAccessDashboard } from '@/lib/authHelpers';
 import {
   ChevronDown,
   GraduationCap,
@@ -23,16 +24,8 @@ const navLinks = [
 ];
 
 function getDashboardHref(user: import('@/types').User | null): string {
-  if (!user) return '/';
-  if (user.role === 'teacher' && !user.isAdmin) return '/';
+  if (!user || !canAccessDashboard(user)) return '/';
   return '/dashboard';
-}
-
-function canAccessDashboard(user: import('@/types').User | null): boolean {
-  if (!user) return false;
-  if (user.role === 'teacher' && !user.isAdmin) return false;
-  if (user.role === 'student' && !user.isCR) return false;
-  return true;
 }
 
 function UserMenu() {

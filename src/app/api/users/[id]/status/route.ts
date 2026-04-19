@@ -4,7 +4,9 @@ import { verifyAccessToken } from '@/lib/jwt';
 import User from '@/models/User';
 import { NextRequest } from 'next/server';
 
-// PATCH /api/users/[id]/status — CR approves own-session students, admin approves anyone
+const SENIOR_DESIGNATIONS = ['professor', 'chairman'];
+
+// PATCH /api/users/[id]/status — CR approves own-session students, senior teachers approve teachers, admin approves anyone
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -30,8 +32,11 @@ export async function PATCH(
 
     const isCR = requester.role === 'student' && requester.isCR;
     const isAdmin = requester.isAdmin;
+    const isSeniorTeacher =
+      requester.role === 'teacher' &&
+      SENIOR_DESIGNATIONS.includes(requester.designation?.toLowerCase() ?? '');
 
-    if (!isCR && !isAdmin) {
+    if (!isCR && !isAdmin && !isSeniorTeacher) {
       return errorResponse('Forbidden', 403);
     }
 
@@ -44,7 +49,7 @@ export async function PATCH(
       return errorResponse('Invalid status value', 400);
     }
 
-    // CR can only approve students in their own session
+    // CR can only activate students in their own session
     if (isCR && !isAdmin) {
       if (target.role !== 'student') {
         return errorResponse('CR can only approve students', 403);
@@ -55,9 +60,18 @@ export async function PATCH(
           403
         );
       }
-      // CR can only activate (not block)
       if (status !== 'active') {
         return errorResponse('CR can only activate students', 403);
+      }
+    }
+
+    // Senior teachers can only activate pending teachers
+    if (isSeniorTeacher && !isAdmin) {
+      if (target.role !== 'teacher') {
+        return errorResponse('Can only approve teachers', 403);
+      }
+      if (status !== 'active') {
+        return errorResponse('Senior teachers can only activate teachers', 403);
       }
     }
 

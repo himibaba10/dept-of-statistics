@@ -16,12 +16,13 @@ const DIVISIONS = [
   'Sylhet'
 ];
 const DESIGNATIONS = [
-  'Professor',
-  'Associate Professor',
-  'Assistant Professor',
-  'Lecturer',
-  'Senior Lecturer',
-  'Adjunct Faculty'
+  'professor',
+  'associate professor',
+  'assistant professor',
+  'lecturer',
+  'senior lecturer',
+  'adjunct faculty',
+  'chairman'
 ];
 
 export default function TeacherRegisterPage() {
