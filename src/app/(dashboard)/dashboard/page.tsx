@@ -1,6 +1,7 @@
 'use client';
 
 import { ManageCourses } from '@/components/dashboard/ManageCourses';
+import { MyClassmates } from '@/components/dashboard/MyClassmates';
 import { PublishNotices } from '@/components/dashboard/PublishNotices';
 import { StudentApprovals } from '@/components/dashboard/StudentApprovals';
 import { StudentReports } from '@/components/dashboard/StudentReports';
@@ -17,7 +18,13 @@ function canAccessDashboard(user: User): boolean {
   return false;
 }
 
-type TabId = 'overview' | 'notices' | 'approvals' | 'courses' | 'students';
+type TabId =
+  | 'overview'
+  | 'notices'
+  | 'approvals'
+  | 'classmates'
+  | 'courses'
+  | 'students';
 
 interface Tab {
   id: TabId;
@@ -35,6 +42,10 @@ function getTabs(user: User): Tab[] {
     tabs.push({ id: 'approvals', label: 'Student Approvals' });
   }
 
+  if (user.role === 'student' && user.isCR && user.session) {
+    tabs.push({ id: 'classmates', label: 'My Classmates' });
+  }
+
   if (user.isAdmin) {
     tabs.push({ id: 'courses', label: 'Manage Courses' });
     tabs.push({ id: 'students', label: 'Student Reports' });
@@ -46,6 +57,7 @@ function getTabs(user: User): Tab[] {
 const TAB_DESCRIPTIONS: Record<string, string> = {
   notices: 'Create, edit, or remove notices on the public notice board.',
   approvals: 'Review and approve pending student registrations.',
+  classmates: 'Browse your batchmates and their contact information.',
   courses: 'Assign instructors, update syllabus, and manage course offerings.',
   students: 'View academic records and session-wise analytics.'
 };
@@ -137,6 +149,11 @@ export default function DashboardPage() {
         )}
         {activeTab === 'notices' && <PublishNotices />}
         {activeTab === 'approvals' && <StudentApprovals currentUser={user} />}
+        {activeTab === 'classmates' &&
+          user.role === 'student' &&
+          user.session && (
+            <MyClassmates session={user.session} currentUserId={user._id} />
+          )}
         {activeTab === 'courses' && <ManageCourses />}
         {activeTab === 'students' && <StudentReports />}
       </div>
