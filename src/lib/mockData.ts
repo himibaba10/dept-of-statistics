@@ -10,7 +10,9 @@ export const mockOfficials: Official[] = [
     bloodGroup: 'B+',
     imageUrl: 'https://i.pravatar.cc/150?u=o1',
     role: 'official',
-    departmentRole: 'Section Officer'
+    departmentRole: 'Section Officer',
+    status: 'active' as const,
+    isAdmin: false
   }
 ];
 

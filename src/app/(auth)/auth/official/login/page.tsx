@@ -1,5 +1,7 @@
 'use client';
 
+import { useAuth } from '@/components/providers/AuthProvider';
+import { Official } from '@/types';
 import { AlertCircle, Eye, EyeOff, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -7,6 +9,7 @@ import { useState } from 'react';
 
 export default function OfficialLoginPage() {
   const router = useRouter();
+  const { loginAsOfficial } = useAuth();
 
   const [form, setForm] = useState({ identifier: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -42,12 +45,12 @@ export default function OfficialLoginPage() {
         return;
       }
 
-      console.log(data);
-
-      // Store tokens
-      localStorage.setItem('accessToken', data.data.accessToken);
-      localStorage.setItem('refreshToken', data.data.refreshToken);
-      localStorage.setItem('officialUser', JSON.stringify(data.data.user));
+      // Hydrate AuthProvider + store tokens
+      loginAsOfficial(
+        data.data.user as Official,
+        data.data.accessToken,
+        data.data.refreshToken
+      );
 
       router.push('/official');
     } catch {
@@ -59,21 +62,15 @@ export default function OfficialLoginPage() {
 
   return (
     <div className='w-full max-w-md'>
-      {/* Card */}
       <div className='overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm'>
-        {/* Top accent */}
         <div className='bg-navy h-1.5 w-full' />
 
         <div className='px-8 py-8'>
-          {/* Heading */}
           <div className='mb-8'>
             <p className='text-gold mb-1 text-xs font-bold tracking-widest uppercase'>
               Official Portal
             </p>
-            <h1
-              className='text-navy text-2xl font-bold'
-              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-            >
+            <h1 className='text-navy font-serif text-2xl font-bold'>
               Welcome back
             </h1>
             <p className='mt-1 text-sm text-slate-500'>
@@ -81,7 +78,6 @@ export default function OfficialLoginPage() {
             </p>
           </div>
 
-          {/* Error */}
           {error && (
             <div className='mb-5 flex items-center gap-2.5 rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700'>
               <AlertCircle size={15} className='shrink-0' />
@@ -90,7 +86,6 @@ export default function OfficialLoginPage() {
           )}
 
           <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
-            {/* Identifier */}
             <div className='flex flex-col gap-1.5'>
               <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
                 Email or Phone
@@ -106,7 +101,6 @@ export default function OfficialLoginPage() {
               />
             </div>
 
-            {/* Password */}
             <div className='flex flex-col gap-1.5'>
               <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
                 Password
@@ -132,7 +126,6 @@ export default function OfficialLoginPage() {
               </div>
             </div>
 
-            {/* Submit */}
             <button
               type='submit'
               disabled={loading}
@@ -149,7 +142,6 @@ export default function OfficialLoginPage() {
             </button>
           </form>
 
-          {/* Footer links */}
           <div className='mt-6 flex items-center justify-between text-xs text-slate-500'>
             <Link
               href='/auth/official/register'

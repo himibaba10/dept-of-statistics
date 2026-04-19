@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/components/providers/AuthProvider';
+import { GraduationCap, LayoutDashboard, LogOut, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -10,82 +11,141 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      router.push('/');
-    } else if (!isLoading && user) {
-      if (
-        pathname.startsWith('/admin') &&
-        (user.role !== 'teacher' ||
-          !('hasAdminAccess' in user && user.hasAdminAccess))
-      ) {
-        router.push('/');
-      } else if (pathname.startsWith('/official') && user.role !== 'official') {
+    if (isLoading) return;
+
+    if (!user) {
+      // Not logged in — redirect officials to login, others to home
+      if (pathname.startsWith('/official')) {
+        router.push('/auth/official/login');
+      } else {
         router.push('/');
       }
+      return;
+    }
+
+    // Route guards
+    if (
+      pathname.startsWith('/admin') &&
+      (user.role !== 'teacher' ||
+        !('hasAdminAccess' in user && user.hasAdminAccess))
+    ) {
+      router.push('/');
+    } else if (pathname.startsWith('/official') && user.role !== 'official') {
+      router.push('/');
     }
   }, [user, isLoading, router, pathname]);
 
   if (isLoading || !user) {
     return (
-      <div className='p-8 text-center text-slate-500'>Loading dashboard...</div>
+      <div className='bg-surface flex min-h-screen items-center justify-center'>
+        <div className='flex flex-col items-center gap-3'>
+          <span className='bg-navy border-navy-light h-8 w-8 animate-spin rounded-full border-4 border-t-transparent' />
+          <p className='text-sm text-slate-500'>Loading dashboard...</p>
+        </div>
+      </div>
     );
   }
 
+  const navItems = [
+    ...(user.role === 'official'
+      ? [{ href: '/official', label: 'Official Portal', icon: LayoutDashboard }]
+      : []),
+    ...(user.role === 'teacher' &&
+    'hasAdminAccess' in user &&
+    user.hasAdminAccess
+      ? [{ href: '/admin', label: 'Admin Portal', icon: LayoutDashboard }]
+      : []),
+    { href: '/profile/edit', label: 'My Profile', icon: User }
+  ];
+
   return (
-    <div className='flex min-h-screen bg-[#F8FAFC]'>
+    <div className='bg-surface flex min-h-screen'>
       {/* Sidebar */}
-      <aside className='flex w-64 shrink-0 flex-col bg-[#1E3A8A] text-white'>
-        <div className='p-6'>
-          <Link
-            href='/'
-            className='block border-b border-white/20 pb-4 text-xl font-bold'
-          >
-            Dept. Dashboard
+      <aside className='bg-navy flex w-64 shrink-0 flex-col'>
+        {/* Brand */}
+        <div className='border-b border-white/10 p-6'>
+          <Link href='/' className='flex items-center gap-2.5'>
+            <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-white/10'>
+              <GraduationCap size={17} className='text-white' />
+            </div>
+            <div className='flex flex-col leading-none'>
+              <span className='font-serif text-sm font-bold text-white'>
+                Dept. of Statistics
+              </span>
+              <span className='text-gold mt-0.5 text-[9px] font-semibold tracking-widest uppercase'>
+                Dashboard
+              </span>
+            </div>
           </Link>
-          <div className='mt-4 text-sm text-blue-200'>Welcome, {user.name}</div>
         </div>
-        <nav className='mt-4 flex-1 space-y-2 px-4'>
-          {user.role === 'official' && (
-            <Link
-              href='/official'
-              className={`block rounded-md px-4 py-2 transition-colors ${pathname.startsWith('/official') ? 'bg-white/20 font-medium' : 'hover:bg-white/10'}`}
-            >
-              Official Portal
-            </Link>
-          )}
-          {user.role === 'teacher' &&
-            'hasAdminAccess' in user &&
-            user.hasAdminAccess && (
+
+        {/* User info */}
+        <div className='border-b border-white/10 px-5 py-4'>
+          <div className='flex items-center gap-3'>
+            <div className='bg-navy-light text-navy flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold'>
+              {user.name.charAt(0)}
+            </div>
+            <div className='min-w-0'>
+              <p className='truncate text-sm font-semibold text-white'>
+                {user.name}
+              </p>
+              <p className='text-xs text-white/50 capitalize'>{user.role}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Nav */}
+        <nav className='flex-1 space-y-1 px-3 py-4'>
+          {navItems.map(({ href, label, icon: Icon }) => {
+            const active = pathname.startsWith(href);
+            return (
               <Link
-                href='/admin'
-                className={`block rounded-md px-4 py-2 transition-colors ${pathname.startsWith('/admin') ? 'bg-white/20 font-medium' : 'hover:bg-white/10'}`}
+                key={href}
+                href={href}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150 ${
+                  active
+                    ? 'bg-white/15 text-white'
+                    : 'text-white/60 hover:bg-white/8 hover:text-white'
+                }`}
               >
-                Admin Portal
+                <Icon size={16} />
+                {label}
               </Link>
-            )}
-          <Link
-            href='/profile/edit'
-            className='block rounded-md px-4 py-2 transition-colors hover:bg-white/10'
-          >
-            My Profile
-          </Link>
+            );
+          })}
+        </nav>
+
+        {/* Bottom actions */}
+        <div className='space-y-1 border-t border-white/10 px-3 py-4'>
           <Link
             href='/'
-            className='mt-8 block rounded-md px-4 py-2 transition-colors hover:bg-white/10'
+            className='flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/60 transition-colors hover:bg-white/8 hover:text-white'
           >
-            ← Return to Site
+            ← Back to Site
           </Link>
-        </nav>
+          <button
+            onClick={() => {
+              logout();
+              router.push(
+                user.role === 'official' ? '/auth/official/login' : '/'
+              );
+            }}
+            className='flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/60 transition-colors hover:bg-red-500/20 hover:text-red-300'
+          >
+            <LogOut size={16} />
+            Logout
+          </button>
+        </div>
       </aside>
 
-      {/* Main Content */}
-      <main className='mx-auto w-full max-w-7xl flex-1 overflow-y-auto px-8 py-8'>
-        {children}
+      {/* Main content */}
+      <main className='flex-1 overflow-y-auto'>
+        <div className='mx-auto max-w-6xl px-8 py-8'>{children}</div>
       </main>
     </div>
   );

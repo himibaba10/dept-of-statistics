@@ -24,6 +24,7 @@ const navLinks = [
 
 function UserMenu() {
   const { user, login, logout, isLoading } = useAuth();
+  type MockRole = Parameters<typeof login>[0];
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -58,7 +59,7 @@ function UserMenu() {
             <p className='px-4 py-1.5 text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
               Login as
             </p>
-            {(['student', 'teacher'] as const).map((role) => (
+            {(['student', 'teacher'] as MockRole[]).map((role) => (
               <button
                 key={role}
                 onClick={() => {

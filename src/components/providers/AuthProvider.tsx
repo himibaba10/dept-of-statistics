@@ -1,71 +1,100 @@
 'use client';
 
-import { mockOfficials, mockStudents, mockTeachers } from '@/lib/mockData';
-import { User } from '@/types';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { mockStudents, mockTeachers } from '@/lib/mockData';
+import { Official, User } from '@/types';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 
 interface AuthContextType {
   user: User | null;
-  login: (type: 'student' | 'teacher' | 'official', id?: string) => void;
-  logout: () => void;
   isLoading: boolean;
+  // Mock login for student/teacher (dev only)
+  login: (type: 'student' | 'teacher', id?: string) => void;
+  // Real JWT login for officials — called after successful API response
+  loginAsOfficial: (
+    user: Official,
+    accessToken: string,
+    refreshToken: string
+  ) => void;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+/** Read initial auth state synchronously from localStorage (runs once on mount). */
+function resolveInitialUser(): User | null {
+  if (typeof window === 'undefined') return null;
 
-  // Mock initial load from localStorage
-  useEffect(() => {
-    const storedUserId = localStorage.getItem('mockUserId');
-    if (storedUserId) {
-      const allUsers: User[] = [
-        ...mockStudents,
-        ...mockTeachers,
-        ...mockOfficials
-      ];
-      const foundUser = allUsers.find((u) => u._id === storedUserId);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      if (foundUser) setUser(foundUser);
+  // 1. Try real official session first
+  const accessToken = localStorage.getItem('accessToken');
+  const storedOfficial = localStorage.getItem('officialUser');
+  if (accessToken && storedOfficial) {
+    try {
+      return JSON.parse(storedOfficial) as Official;
+    } catch {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('officialUser');
     }
-    setIsLoading(false);
+  }
+
+  // 2. Fall back to mock session (student / teacher)
+  const mockUserId = localStorage.getItem('mockUserId');
+  if (mockUserId) {
+    const found = ([...mockStudents, ...mockTeachers] as User[]).find(
+      (u) => u._id === mockUserId
+    );
+    if (found) return found;
+  }
+
+  return null;
+}
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(resolveInitialUser);
+  // localStorage is read synchronously in the initializer, so loading is never deferred
+  const isLoading = false;
+
+  // Mock login — student or teacher only
+  const login = useCallback((type: 'student' | 'teacher', id?: string) => {
+    let selected: User | undefined;
+    if (type === 'student') {
+      selected = id ? mockStudents.find((s) => s._id === id) : mockStudents[0];
+    } else {
+      selected = id
+        ? mockTeachers.find((t) => t._id === id)
+        : mockTeachers.find((t) => t.hasAdminAccess);
+    }
+    if (selected) {
+      setUser(selected);
+      localStorage.setItem('mockUserId', selected._id);
+    }
   }, []);
 
-  const login = (type: 'student' | 'teacher' | 'official', id?: string) => {
-    let selectedUser: User | undefined;
-    switch (type) {
-      case 'student':
-        selectedUser = id
-          ? mockStudents.find((s) => s._id === id)
-          : mockStudents[0];
-        break;
-      case 'teacher':
-        selectedUser = id
-          ? mockTeachers.find((t) => t._id === id)
-          : mockTeachers.find((t) => t.hasAdminAccess); // Default to admin teacher
-        break;
-      case 'official':
-        selectedUser = id
-          ? mockOfficials.find((o) => o._id === id)
-          : mockOfficials[0];
-        break;
-    }
+  // Real login — official with JWT
+  const loginAsOfficial = useCallback(
+    (officialUser: Official, accessToken: string, refreshToken: string) => {
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('officialUser', JSON.stringify(officialUser));
+      // Clear any mock session
+      localStorage.removeItem('mockUserId');
+      setUser(officialUser);
+    },
+    []
+  );
 
-    if (selectedUser) {
-      setUser(selectedUser);
-      localStorage.setItem('mockUserId', selectedUser._id);
-    }
-  };
-
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null);
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('officialUser');
     localStorage.removeItem('mockUserId');
-  };
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+    <AuthContext.Provider
+      value={{ user, isLoading, login, loginAsOfficial, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -73,8 +102,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 }

@@ -44,13 +44,7 @@ export function AuthSelector() {
           >
             Teacher
           </Button>
-          <Button
-            variant='outline'
-            onClick={() => login('official')}
-            className='h-9 px-3 text-lg'
-          >
-            Official
-          </Button>
+          {/* Official auth is handled via /auth/official/login */}
         </>
       )}
     </div>

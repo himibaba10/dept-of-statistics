@@ -25,9 +25,13 @@ export interface Teacher extends UserBase {
   hasAdminAccess: boolean;
 }
 
+export type UserStatus = 'pending' | 'active' | 'blocked';
+
 export interface Official extends UserBase {
   role: 'official';
   departmentRole: string;
+  status: UserStatus;
+  isAdmin: boolean;
 }
 
 export type User = Student | Teacher | Official;
