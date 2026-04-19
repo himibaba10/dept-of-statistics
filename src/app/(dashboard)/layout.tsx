@@ -7,6 +7,7 @@ import {
   Images,
   LayoutDashboard,
   LogOut,
+  Settings,
   UserIcon
 } from 'lucide-react';
 import Link from 'next/link';
@@ -57,7 +58,16 @@ export default function DashboardLayout({
     ...(canManageGallery(user)
       ? [{ href: '/dashboard/gallery', label: 'Campus Gallery', icon: Images }]
       : []),
-    { href: '/profile/edit', label: 'My Profile', icon: UserIcon }
+    { href: '/profile/edit', label: 'My Profile', icon: UserIcon },
+    ...(user.isAdmin
+      ? [
+          {
+            href: '/dashboard/settings',
+            label: 'General Settings',
+            icon: Settings
+          }
+        ]
+      : [])
   ];
 
   const loginRoute =

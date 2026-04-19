@@ -5,7 +5,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
-const slides = [
+interface HeroSlide {
+  src: string;
+  headline: string;
+  sub: string;
+  body: string;
+}
+
+const DEFAULT_SLIDES: HeroSlide[] = [
   {
     src: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1600&auto=format&fit=crop',
     headline: 'Department of Statistics',
@@ -27,9 +34,26 @@ const slides = [
 ];
 
 export function HeroSlider() {
+  const [slides, setSlides] = useState<HeroSlide[]>(DEFAULT_SLIDES);
   const [current, setCurrent] = useState(0);
   const [animating, setAnimating] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
+
+  // Fetch slides from settings API
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((r) => r.json())
+      .then((data) => {
+        const fetched: HeroSlide[] = data?.data?.heroSlides ?? [];
+        if (fetched.length > 0) {
+          setSlides(fetched);
+          setCurrent(0);
+        }
+      })
+      .catch(() => {
+        /* keep defaults */
+      });
+  }, []);
 
   const goTo = (index: number) => {
     if (animating || index === current) return;
@@ -48,13 +72,13 @@ export function HeroSlider() {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [current]);
+  }, [current, slides.length]);
 
-  const slide = slides[current];
+  const slide = slides[current] ?? DEFAULT_SLIDES[0];
 
   return (
     <section className='relative h-[clamp(420px,58vw,640px)] w-full overflow-hidden'>
-      {/* Background image */}
+      {/* Background images */}
       {slides.map((s, i) => (
         <div
           key={i}
