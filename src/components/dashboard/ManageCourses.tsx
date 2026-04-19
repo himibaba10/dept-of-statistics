@@ -38,6 +38,7 @@ async function uploadImage(
 interface CourseForm {
   title: string;
   code: string;
+  credit: number | '';
   description: string;
   syllabusFiles: File[];
   syllabusPreviews: string[];
@@ -48,6 +49,7 @@ interface CourseForm {
 const EMPTY_FORM: CourseForm = {
   title: '',
   code: '',
+  credit: '',
   description: '',
   syllabusFiles: [],
   syllabusPreviews: [],
@@ -105,6 +107,7 @@ export function ManageCourses() {
     setForm({
       title: course.title,
       code: course.code,
+      credit: course.credit ?? '',
       description: course.description ?? '',
       syllabusFiles: [],
       syllabusPreviews: [],
@@ -160,6 +163,10 @@ export function ManageCourses() {
       setError('Title and code are required.');
       return;
     }
+    if (form.credit === '' || Number(form.credit) <= 0) {
+      setError('A valid credit amount is required.');
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -175,6 +182,7 @@ export function ManageCourses() {
       const body = {
         title: form.title.trim(),
         code: finalCode,
+        credit: Number(form.credit),
         description: form.description.trim() || undefined,
         syllabus
       };
@@ -273,6 +281,9 @@ export function ManageCourses() {
                   <span className='bg-navy rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider text-white'>
                     {course.code}
                   </span>
+                  <span className='rounded-md bg-indigo-50 px-2 py-0.5 text-[10px] font-bold tracking-wider text-indigo-600'>
+                    {course.credit} Credits
+                  </span>
                 </div>
                 <h3 className='text-navy mb-1 font-serif text-base leading-snug font-bold'>
                   {course.title}
@@ -334,20 +345,42 @@ export function ManageCourses() {
                 </div>
               )}
 
-              {/* Title */}
-              <div>
-                <label className='mb-1.5 block text-[11px] font-bold tracking-widest text-slate-500 uppercase'>
-                  Course Title *
-                </label>
-                <input
-                  type='text'
-                  value={form.title}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, title: e.target.value }))
-                  }
-                  placeholder='e.g. Introduction to Probability'
-                  className='focus:border-navy w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-800 transition-colors outline-none'
-                />
+              {/* Title & Credit */}
+              <div className='grid grid-cols-3 gap-4'>
+                <div className='col-span-2'>
+                  <label className='mb-1.5 block text-[11px] font-bold tracking-widest text-slate-500 uppercase'>
+                    Course Title *
+                  </label>
+                  <input
+                    type='text'
+                    value={form.title}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, title: e.target.value }))
+                    }
+                    placeholder='e.g. Introduction to Probability'
+                    className='focus:border-navy w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-800 transition-colors outline-none'
+                  />
+                </div>
+                <div className='col-span-1'>
+                  <label className='mb-1.5 block text-[11px] font-bold tracking-widest text-slate-500 uppercase'>
+                    Credits *
+                  </label>
+                  <input
+                    type='number'
+                    min='0'
+                    step='0.5'
+                    value={form.credit}
+                    onChange={(e) =>
+                      setForm((f) => ({
+                        ...f,
+                        credit:
+                          e.target.value === '' ? '' : Number(e.target.value)
+                      }))
+                    }
+                    placeholder='e.g. 3'
+                    className='focus:border-navy w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-800 transition-colors outline-none'
+                  />
+                </div>
               </div>
 
               {/* Code */}

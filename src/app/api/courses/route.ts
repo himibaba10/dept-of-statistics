@@ -41,10 +41,10 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { title, code, description, syllabus } = body;
+    const { title, code, credit, description, syllabus } = body;
 
-    if (!title || !code) {
-      return errorResponse('title and code are required', 400);
+    if (!title || !code || credit === undefined) {
+      return errorResponse('title, code, and credit are required', 400);
     }
 
     const existing = await Course.findOne({ code: code.trim() });
@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
     const course = await Course.create({
       title: title.trim(),
       code: code.trim(),
+      credit: Number(credit),
       description: description?.trim(),
       syllabus: Array.isArray(syllabus) ? syllabus : []
     });

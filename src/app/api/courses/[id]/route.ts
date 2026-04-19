@@ -1,6 +1,6 @@
 import { errorResponse, successResponse } from '@/lib/apiResponse';
-import { connectDB } from '@/lib/db';
 import { isSeniorTeacher } from '@/lib/authHelpers';
+import { connectDB } from '@/lib/db';
 import { verifyAccessToken } from '@/lib/jwt';
 import Course from '@/models/Course';
 import User from '@/models/User';
@@ -61,6 +61,7 @@ export async function PATCH(
     }
     if (body.title) body.title = body.title.trim();
     if (body.description) body.description = body.description.trim();
+    if (body.credit !== undefined) body.credit = Number(body.credit);
 
     const course = await Course.findByIdAndUpdate(id, body, {
       new: true,

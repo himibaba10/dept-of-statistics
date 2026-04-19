@@ -105,9 +105,12 @@ export default function CoursesPage() {
                     {/* Thumbnail placeholder */}
                     <div className='relative flex h-48 items-center justify-center overflow-hidden bg-indigo-50 p-6'>
                       <BookOpen className='absolute -right-6 -bottom-6 h-24 w-24 rotate-12 text-[#1E3A8A]/10' />
-                      <div className='absolute top-3 right-3'>
+                      <div className='absolute top-3 right-3 flex flex-col items-end gap-2'>
                         <span className='bg-navy rounded-full px-3 py-1 text-xs font-bold tracking-wider text-white shadow'>
                           {course.code}
+                        </span>
+                        <span className='rounded-full bg-white px-3 py-1 text-xs font-bold tracking-wider text-indigo-700 shadow'>
+                          {course.credit} Credits
                         </span>
                       </div>
                     </div>
