@@ -1,10 +1,12 @@
 import { errorResponse, successResponse } from '@/lib/apiResponse';
 import { verifyAccessToken } from '@/lib/jwt';
 import sharp from 'sharp';
+import crypto from 'crypto';
 import { NextRequest } from 'next/server';
 
 const CLOUD_NAME = 'dgzjxbkez';
-const UPLOAD_PRESET = 'dept of statistics';
+const API_KEY = process.env.CLOUDINARY_API_KEY!;
+const API_SECRET = process.env.CLOUDINARY_API_SECRET!;
 
 const FOLDER_MAP: Record<string, string> = {
   student: 'Dept of Statistics/students',
@@ -12,10 +14,19 @@ const FOLDER_MAP: Record<string, string> = {
   official: 'Dept of Statistics/officials'
 };
 
-// POST /api/upload/image — compress + upload to Cloudinary, return secure_url
+function signRequest(params: Record<string, string>, secret: string): string {
+  // Alphabetical order, joined as key=value&..., then SHA-1 with secret appended
+  const str =
+    Object.keys(params)
+      .sort()
+      .map((k) => `${k}=${params[k]}`)
+      .join('&') + secret;
+  return crypto.createHash('sha1').update(str).digest('hex');
+}
+
+// POST /api/upload/image — compress + signed upload to Cloudinary
 export async function POST(req: NextRequest) {
   try {
-    // Auth check
     const authHeader = req.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       return errorResponse('Unauthorized', 401);
@@ -30,7 +41,6 @@ export async function POST(req: NextRequest) {
 
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
-
     if (!file) return errorResponse('No file provided', 400);
 
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
@@ -40,27 +50,32 @@ export async function POST(req: NextRequest) {
         400
       );
     }
-
     if (file.size > 10 * 1024 * 1024) {
       return errorResponse('File too large (max 10MB)', 400);
     }
 
-    // Compress with sharp — resize to max 800x800, convert to webp, quality 80
+    // Compress — max 800x800, WebP, quality 80
     const buffer = Buffer.from(await file.arrayBuffer());
     const compressed = await sharp(buffer)
       .resize(800, 800, { fit: 'inside', withoutEnlargement: true })
       .webp({ quality: 80 })
       .toBuffer();
 
-    // Upload to Cloudinary via unsigned upload
     const folder = FOLDER_MAP[payload.role] ?? 'Dept of Statistics';
+    const timestamp = String(Math.floor(Date.now() / 1000));
+
+    const paramsToSign: Record<string, string> = { folder, timestamp };
+    const signature = signRequest(paramsToSign, API_SECRET);
+
     const cloudForm = new FormData();
     cloudForm.append(
       'file',
       new Blob([compressed.buffer as ArrayBuffer], { type: 'image/webp' })
     );
-    cloudForm.append('upload_preset', UPLOAD_PRESET);
     cloudForm.append('folder', folder);
+    cloudForm.append('timestamp', timestamp);
+    cloudForm.append('api_key', API_KEY);
+    cloudForm.append('signature', signature);
 
     const cloudRes = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
