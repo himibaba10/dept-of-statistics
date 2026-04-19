@@ -261,8 +261,7 @@ export default function TeacherRegisterPage() {
             </div>
 
             <p className='pt-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
-              Address{' '}
-              <span className='font-normal normal-case'>(optional)</span>
+              Address
             </p>
 
             <div className='grid grid-cols-2 gap-4'>

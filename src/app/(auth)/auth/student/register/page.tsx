@@ -205,10 +205,7 @@ export default function StudentRegisterPage() {
 
               <div className='flex flex-col gap-1.5'>
                 <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
-                  Student ID{' '}
-                  <span className='font-normal text-slate-400 normal-case'>
-                    (optional)
-                  </span>
+                  Student ID
                 </label>
                 <input
                   name='studentId'
@@ -222,10 +219,7 @@ export default function StudentRegisterPage() {
 
               <div className='flex flex-col gap-1.5'>
                 <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
-                  Session{' '}
-                  <span className='font-normal text-slate-400 normal-case'>
-                    (optional)
-                  </span>
+                  Session
                 </label>
                 <input
                   name='session'
@@ -261,8 +255,7 @@ export default function StudentRegisterPage() {
             </div>
 
             <p className='pt-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
-              Address{' '}
-              <span className='font-normal normal-case'>(optional)</span>
+              Address
             </p>
 
             <div className='grid grid-cols-2 gap-4'>

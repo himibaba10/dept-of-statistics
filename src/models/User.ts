@@ -72,7 +72,7 @@ const userSchema = new Schema<IUser>(
     },
     address: {
       type: addressSchema,
-      default: {}
+      required: [true, 'Address is required']
     },
     bloodGroup: {
       type: String,
@@ -110,11 +110,23 @@ const userSchema = new Schema<IUser>(
     // Student fields
     studentId: {
       type: String,
-      trim: true
+      trim: true,
+      required: [
+        function (this) {
+          return this.role === 'student';
+        },
+        'Student ID is required for students'
+      ]
     },
     session: {
       type: String,
-      trim: true
+      trim: true,
+      required: [
+        function (this) {
+          return this.role === 'student';
+        },
+        'Session is required for students'
+      ]
     },
     isCR: {
       type: Boolean,
