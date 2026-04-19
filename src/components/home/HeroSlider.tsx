@@ -95,33 +95,28 @@ export function HeroSlider() {
         </div>
       ))}
 
-      {/* Gradient overlays */}
-      <div className='from-navy/90 via-navy/70 to-navy/30 absolute inset-0 z-10 bg-linear-to-r' />
-      {/* Bottom fade */}
-      <div className='absolute right-0 bottom-0 left-0 z-10 h-32 bg-linear-to-t from-[#F7F9FC] to-transparent' />
-
-      {/* Content */}
-      <div
-        className={`relative z-20 flex h-full items-center transition-opacity duration-400 ease-in-out ${animating ? 'opacity-0' : 'opacity-100'}`}
-      >
+      {/* Content — white card, left-aligned */}
+      <div className='absolute inset-0 z-20 flex items-center'>
         <div className='mx-auto w-full max-w-7xl px-6 lg:px-8'>
-          <div className='max-w-xl'>
+          <div
+            className={`w-full max-w-md rounded-2xl bg-white px-8 py-8 shadow-2xl transition-opacity duration-400 ease-in-out ${animating ? 'opacity-0' : 'opacity-100'}`}
+          >
             {/* Gold label */}
-            <div className='text-gold mb-5 inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase'>
+            <div className='text-gold mb-4 inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase'>
               <span className='bg-gold inline-block h-px w-8' />
               {slide.sub}
             </div>
 
             {/* Headline */}
-            <h1 className='mb-4 font-serif text-[clamp(2rem,4vw,3.2rem)] leading-tight font-bold text-white'>
+            <h1 className='text-navy mb-3 font-serif text-[clamp(1.5rem,3vw,2.4rem)] leading-tight font-bold'>
               {slide.headline}
             </h1>
 
             {/* Gold rule */}
-            <div className='bg-gold mb-6 h-1 w-16 rounded-full' />
+            <div className='bg-gold mb-4 h-1 w-14 rounded-full' />
 
             {/* Body */}
-            <p className='mb-8 max-w-xl text-base leading-relaxed text-white/80'>
+            <p className='mb-7 text-sm leading-relaxed text-slate-600'>
               {slide.body}
             </p>
 
@@ -129,40 +124,34 @@ export function HeroSlider() {
             <div className='flex flex-wrap gap-3'>
               <Link
                 href='/teachers'
-                className='bg-gold inline-flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:translate-x-0.5 hover:opacity-90'
+                className='bg-navy hover:bg-navy/90 inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200'
               >
                 Explore Faculty
-                <ChevronRight size={16} />
+                <ChevronRight size={15} />
               </Link>
               <Link
                 href='/courses'
-                className='inline-flex items-center gap-2 rounded-md border border-white/35 px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/10'
+                className='border-navy text-navy hover:bg-navy/5 inline-flex items-center gap-2 rounded-md border px-5 py-2.5 text-sm font-semibold transition-all duration-200'
               >
                 View Courses
               </Link>
             </div>
+
+            {/* Dot indicators — inside card */}
+            <div className='mt-6 flex gap-2'>
+              {slides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => goTo(i)}
+                  aria-label={`Slide ${i + 1}`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    i === current ? 'bg-gold w-6' : 'w-1.5 bg-slate-200'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Dot indicators */}
-      <div className='absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-2'>
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => goTo(i)}
-            aria-label={`Slide ${i + 1}`}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              i === current ? 'bg-gold w-7' : 'w-2 bg-white/45'
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Slide counter */}
-      <div className='absolute right-8 bottom-8 z-20 hidden text-xs font-semibold text-white/50 tabular-nums sm:block'>
-        {String(current + 1).padStart(2, '0')} /{' '}
-        {String(slides.length).padStart(2, '0')}
       </div>
     </section>
   );
