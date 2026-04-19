@@ -1,8 +1,10 @@
 import { errorResponse, successResponse } from '@/lib/apiResponse';
+import { connectDB } from '@/lib/db';
 import { verifyAccessToken } from '@/lib/jwt';
-import sharp from 'sharp';
+import User from '@/models/User';
 import crypto from 'crypto';
 import { NextRequest } from 'next/server';
+import sharp from 'sharp';
 
 const CLOUD_NAME = 'dgzjxbkez';
 const API_KEY = process.env.CLOUDINARY_API_KEY!;
@@ -27,6 +29,7 @@ function signRequest(params: Record<string, string>, secret: string): string {
 // POST /api/upload/image — compress + signed upload to Cloudinary
 export async function POST(req: NextRequest) {
   try {
+    await connectDB();
     const authHeader = req.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       return errorResponse('Unauthorized', 401);
@@ -38,6 +41,9 @@ export async function POST(req: NextRequest) {
     } catch {
       return errorResponse('Invalid or expired token', 401);
     }
+
+    const user = await User.findById(payload.userId);
+    if (!user) return errorResponse('User not found', 404);
 
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
@@ -64,7 +70,22 @@ export async function POST(req: NextRequest) {
     const folder = FOLDER_MAP[payload.role] ?? 'Dept of Statistics';
     const timestamp = String(Math.floor(Date.now() / 1000));
 
-    const paramsToSign: Record<string, string> = { folder, timestamp };
+    const firstName = user.name
+      .split(' ')[0]
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '');
+    const idPart = (user.studentId || user._id.toString().slice(-6))
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '-');
+    const publicId = `${firstName}-${idPart}`;
+
+    const paramsToSign: Record<string, string> = {
+      folder,
+      public_id: publicId,
+      overwrite: 'true',
+      invalidate: 'true',
+      timestamp
+    };
     const signature = signRequest(paramsToSign, API_SECRET);
 
     const cloudForm = new FormData();
@@ -73,6 +94,9 @@ export async function POST(req: NextRequest) {
       new Blob([compressed.buffer as ArrayBuffer], { type: 'image/webp' })
     );
     cloudForm.append('folder', folder);
+    cloudForm.append('public_id', publicId);
+    cloudForm.append('overwrite', 'true');
+    cloudForm.append('invalidate', 'true');
     cloudForm.append('timestamp', timestamp);
     cloudForm.append('api_key', API_KEY);
     cloudForm.append('signature', signature);

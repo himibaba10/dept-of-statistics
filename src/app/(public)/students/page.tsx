@@ -156,7 +156,7 @@ export default function StudentsPage() {
                   </p>
                 </div>
               ) : (
-                <div className='grid grid-cols-1 gap-5 sm:grid-cols-2'>
+                <div className='grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3'>
                   {filtered.map((student) => (
                     <div
                       key={student._id}
@@ -178,7 +178,7 @@ export default function StudentsPage() {
                           <div className='absolute top-3 right-3'>
                             <span className='bg-gold flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider text-white shadow-md'>
                               <Star size={10} fill='white' />
-                              CR
+                              <span className='translate-y-px'>CR</span>
                             </span>
                           </div>
                         )}
