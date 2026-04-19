@@ -378,21 +378,6 @@ export default function ProfileEditPage() {
               />
             </div>
           )}
-
-          {user.role === 'official' && (
-            <div className='space-y-1.5 md:col-span-2'>
-              <label className='text-sm font-medium text-slate-700'>
-                Department Role (read-only)
-              </label>
-              <Input
-                value={
-                  (user as { departmentRole?: string }).departmentRole ?? ''
-                }
-                disabled
-                className='bg-slate-50'
-              />
-            </div>
-          )}
         </div>
 
         {/* Feedback */}

@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
     const idPart = (user.studentId || user._id.toString().slice(-6))
       .toLowerCase()
       .replace(/[^a-z0-9]/g, '-');
-    const publicId = `${firstName}-${idPart}`;
+    const publicId = `${firstName}-${idPart}-${timestamp}`;
 
     const paramsToSign: Record<string, string> = {
       folder,

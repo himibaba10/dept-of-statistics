@@ -18,6 +18,8 @@ export function CampusGallery() {
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
   const [lightbox, setLightbox] = useState<number>(-1);
 
+  console.log(photos);
+
   useEffect(() => {
     fetch('/api/gallery')
       .then((r) => r.json())
@@ -104,7 +106,7 @@ export function CampusGallery() {
                     src={photos[lightbox].url}
                     alt={photos[lightbox].caption ?? 'Gallery photo'}
                     fill
-                    className='object-cover'
+                    className='rounded-xl object-contain'
                     sizes='90vw'
                   />
                 </div>

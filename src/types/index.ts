@@ -36,7 +36,6 @@ export interface Teacher extends UserBase {
 
 export interface Official extends UserBase {
   role: 'official';
-  departmentRole?: string;
 }
 
 export type User = Student | Teacher | Official;

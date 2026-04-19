@@ -34,9 +34,6 @@ export interface IUser extends Document {
   designation?: string;
   galleryUrls?: string[];
 
-  // Official-only (optional)
-  departmentRole?: string;
-
   createdAt: Date;
   updatedAt: Date;
 }
@@ -160,12 +157,6 @@ const userSchema = new Schema<IUser>(
     galleryUrls: {
       type: [String],
       default: undefined
-    },
-
-    // Official fields
-    departmentRole: {
-      type: String,
-      trim: true
     }
   },
   {
