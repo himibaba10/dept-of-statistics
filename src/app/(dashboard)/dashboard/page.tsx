@@ -8,13 +8,8 @@ import { StudentReports } from '@/components/dashboard/StudentReports';
 import { TeacherApprovals } from '@/components/dashboard/TeacherApprovals';
 import { TeachersList } from '@/components/dashboard/TeachersList';
 import { StudentsList } from '@/components/dashboard/StudentsList';
-import { ManageGallery } from '@/components/dashboard/ManageGallery';
 import { useAuth } from '@/components/providers/AuthProvider';
-import {
-  canAccessDashboard,
-  canManageGallery,
-  isSeniorTeacher
-} from '@/lib/authHelpers';
+import { canAccessDashboard, isSeniorTeacher } from '@/lib/authHelpers';
 import { User } from '@/types';
 import { useState } from 'react';
 
@@ -26,7 +21,6 @@ type TabId =
   | 'teachers-list'
   | 'students-list'
   | 'classmates'
-  | 'gallery'
   | 'courses'
   | 'students';
 
@@ -63,11 +57,6 @@ function getTabs(user: User): Tab[] {
     tabs.push({ id: 'students-list', label: 'Students' });
   }
 
-  // Gallery management — CR, official, senior teachers
-  if (canManageGallery(user)) {
-    tabs.push({ id: 'gallery', label: 'Campus Gallery' });
-  }
-
   // CR can see their own classmates
   if (user.role === 'student' && user.isCR && user.session) {
     tabs.push({ id: 'classmates', label: 'My Classmates' });
@@ -87,7 +76,6 @@ const TAB_DESCRIPTIONS: Record<string, string> = {
   'teacher-approvals': 'Review and approve pending teacher registrations.',
   'teachers-list': 'Browse faculty members and filter by designation.',
   'students-list': 'Browse all active students and filter by session.',
-  gallery: 'Upload and manage photos shown in the homepage campus gallery.',
   classmates: 'Browse your batchmates and their contact information.',
   courses: 'Assign instructors, update syllabus, and manage course offerings.',
   students: 'View academic records and session-wise analytics.'
@@ -185,7 +173,6 @@ export default function DashboardPage() {
         {activeTab === 'teacher-approvals' && <TeacherApprovals />}
         {activeTab === 'teachers-list' && <TeachersList />}
         {activeTab === 'students-list' && <StudentsList />}
-        {activeTab === 'gallery' && <ManageGallery />}
         {activeTab === 'classmates' &&
           user.role === 'student' &&
           user.session && (

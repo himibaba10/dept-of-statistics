@@ -1,19 +1,18 @@
 'use client';
 
 import { useAuth } from '@/components/providers/AuthProvider';
+import { canAccessDashboard, canManageGallery } from '@/lib/authHelpers';
 import { User } from '@/types';
-import { GraduationCap, LayoutDashboard, LogOut, UserIcon } from 'lucide-react';
+import {
+  GraduationCap,
+  Images,
+  LayoutDashboard,
+  LogOut,
+  UserIcon
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-
-function canAccessDashboard(user: User): boolean {
-  if (user.isAdmin) return true;
-  if (user.role === 'official') return true;
-  if (user.role === 'student' && user.isCR) return true;
-  if (user.role === 'teacher' && user.designation === 'professor') return true;
-  return false;
-}
 
 export default function DashboardLayout({
   children
@@ -56,6 +55,9 @@ export default function DashboardLayout({
 
   const navItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    ...(canManageGallery(user)
+      ? [{ href: '/dashboard/gallery', label: 'Campus Gallery', icon: Images }]
+      : []),
     { href: '/profile/edit', label: 'My Profile', icon: UserIcon }
   ];
 
