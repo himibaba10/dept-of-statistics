@@ -2,7 +2,6 @@
 
 import { useAuth } from '@/components/providers/AuthProvider';
 import { canAccessDashboard, canManageGallery } from '@/lib/authHelpers';
-import { User } from '@/types';
 import {
   GraduationCap,
   Images,
@@ -113,7 +112,10 @@ export default function DashboardLayout({
         {/* Nav */}
         <nav className='flex-1 space-y-1 px-3 py-4'>
           {navItems.map(({ href, label, icon: Icon }) => {
-            const active = pathname === href || pathname.startsWith(href + '/');
+            const active =
+              href === '/dashboard'
+                ? pathname === href
+                : pathname === href || pathname.startsWith(href + '/');
             return (
               <Link
                 key={href}

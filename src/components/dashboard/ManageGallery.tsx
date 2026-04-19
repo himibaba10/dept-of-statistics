@@ -154,7 +154,7 @@ export function ManageGallery() {
 
       {/* Upload modal */}
       {showForm && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4'>
+        <div className='fixed inset-0 z-50 m-0 flex items-center justify-center bg-black/40 p-4'>
           <div className='w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl'>
             <div className='flex items-center justify-between border-b border-slate-100 px-6 py-4'>
               <h3 className='font-bold text-[#1E3A8A]'>Add Gallery Photo</h3>
@@ -252,7 +252,7 @@ export function ManageGallery() {
                 <Button
                   type='submit'
                   disabled={saving}
-                  className='min-w-[120px] bg-[#1E3A8A] hover:bg-[#1E3A8A]/90'
+                  className='min-w-30 bg-[#1E3A8A] hover:bg-[#1E3A8A]/90'
                 >
                   {saving ? (
                     <span className='flex items-center gap-2'>
