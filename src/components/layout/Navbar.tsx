@@ -24,8 +24,14 @@ const navLinks = [
 
 function getDashboardHref(user: import('@/types').User | null): string {
   if (!user) return '/';
-  if (user.role === 'teacher' && !user.isAdmin) return '/'; // teachers have no dashboard
+  if (user.role === 'teacher' && !user.isAdmin) return '/';
   return '/dashboard';
+}
+
+function canAccessDashboard(user: import('@/types').User | null): boolean {
+  if (!user) return false;
+  if (user.role === 'teacher' && !user.isAdmin) return false;
+  return true;
 }
 
 function UserMenu() {
@@ -237,13 +243,15 @@ export function Navbar() {
             {/* Right: user menu + dashboard CTA */}
             <div className='hidden shrink-0 items-center gap-3 lg:flex'>
               <UserMenu />
-              <Link
-                href={dashboardHref}
-                className='bg-navy flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 hover:shadow-md'
-              >
-                <LayoutDashboard size={15} />
-                Dashboard
-              </Link>
+              {canAccessDashboard(user) && (
+                <Link
+                  href={dashboardHref}
+                  className='bg-navy flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 hover:shadow-md'
+                >
+                  <LayoutDashboard size={15} />
+                  Dashboard
+                </Link>
+              )}
             </div>
 
             {/* Mobile toggle */}
@@ -277,14 +285,16 @@ export function Navbar() {
             })}
             <div className='mt-2 flex flex-col gap-2.5 border-t border-slate-200 pt-3'>
               <UserMenu />
-              <Link
-                href={dashboardHref}
-                onClick={() => setMobileOpen(false)}
-                className='bg-navy flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white'
-              >
-                <LayoutDashboard size={15} />
-                Dashboard
-              </Link>
+              {canAccessDashboard(user) && (
+                <Link
+                  href={dashboardHref}
+                  onClick={() => setMobileOpen(false)}
+                  className='bg-navy flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white'
+                >
+                  <LayoutDashboard size={15} />
+                  Dashboard
+                </Link>
+              )}
             </div>
           </div>
         )}
