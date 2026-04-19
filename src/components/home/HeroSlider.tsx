@@ -77,11 +77,11 @@ export function HeroSlider() {
 
   return (
     <section
-      className='bg-navy flex w-full flex-col lg:flex-row'
+      className='bg-navy flex w-full flex-col gap-6 p-5 lg:flex-row'
       style={{ minHeight: 'clamp(420px, 58vw, 620px)' }}
     >
       {/* ── Left: content box ── */}
-      <div className='flex w-full items-center bg-white px-8 py-12 lg:w-2/5 lg:px-12 lg:py-16'>
+      <div className='flex w-full items-center rounded-xl bg-white px-8 py-12 lg:w-2/5 lg:px-12 lg:py-16'>
         <div
           className={`w-full transition-opacity duration-400 ease-in-out ${animating ? 'opacity-0' : 'opacity-100'}`}
         >
@@ -139,7 +139,7 @@ export function HeroSlider() {
 
       {/* ── Right: image ── */}
       <div
-        className='relative w-full overflow-hidden lg:w-3/5'
+        className='relative w-full overflow-hidden rounded-xl lg:w-3/5'
         style={{ minHeight: 'clamp(260px, 40vw, 620px)' }}
       >
         {slides.map((s, i) => (
