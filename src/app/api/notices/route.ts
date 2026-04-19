@@ -1,5 +1,5 @@
-import { connectDB } from '@/lib/db';
 import { errorResponse, successResponse } from '@/lib/apiResponse';
+import { connectDB } from '@/lib/db';
 import { verifyAccessToken } from '@/lib/jwt';
 import Notice from '@/models/Notice';
 import User from '@/models/User';
@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     if (type) filter.type = type;
 
     const notices = await Notice.find(filter)
-      .sort({ date: -1 })
+      .sort({ createdBy: -1 })
       .limit(limit)
       .populate('publishedBy', 'name role')
       .lean();
@@ -61,17 +61,16 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { title, body: noticeBody, type, date, attachmentUrl } = body;
+    const { title, body: noticeBody, type, attachmentUrl } = body;
 
-    if (!title || !noticeBody || !date) {
-      return errorResponse('title, body, and date are required', 400);
+    if (!title || !noticeBody) {
+      return errorResponse('title and body are required', 400);
     }
 
     const notice = await Notice.create({
       title,
       body: noticeBody,
       type: type ?? 'notice',
-      date: new Date(date),
       attachmentUrl: attachmentUrl || undefined,
       publishedBy: user._id
     });

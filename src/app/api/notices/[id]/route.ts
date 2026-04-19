@@ -1,5 +1,5 @@
-import { connectDB } from '@/lib/db';
 import { errorResponse, successResponse } from '@/lib/apiResponse';
+import { connectDB } from '@/lib/db';
 import { verifyAccessToken } from '@/lib/jwt';
 import Notice from '@/models/Notice';
 import User from '@/models/User';
@@ -106,7 +106,6 @@ export async function PATCH(
     if (title) notice.title = title;
     if (noticeBody) notice.body = noticeBody;
     if (type) notice.type = type;
-    if (date) notice.date = new Date(date);
     if (attachmentUrl !== undefined) notice.attachmentUrl = attachmentUrl;
 
     await notice.save();

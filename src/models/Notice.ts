@@ -6,7 +6,6 @@ export interface INotice extends Document {
   title: string;
   body: string;
   type: NoticeType;
-  date: Date;
   attachmentUrl?: string;
   publishedBy: mongoose.Types.ObjectId;
   createdAt: Date;
@@ -22,17 +21,12 @@ const noticeSchema = new Schema<INotice>(
     },
     body: {
       type: String,
-      required: [true, 'Body is required'],
       trim: true
     },
     type: {
       type: String,
       enum: ['notice', 'event', 'exam', 'circular', 'other'],
       default: 'notice'
-    },
-    date: {
-      type: Date,
-      required: [true, 'Date is required']
     },
     attachmentUrl: {
       type: String,
@@ -46,6 +40,10 @@ const noticeSchema = new Schema<INotice>(
   },
   { timestamps: true }
 );
+
+if (process.env.NODE_ENV === 'development') {
+  delete mongoose.models?.Notice;
+}
 
 const Notice: Model<INotice> =
   mongoose.models.Notice ?? mongoose.model<INotice>('Notice', noticeSchema);

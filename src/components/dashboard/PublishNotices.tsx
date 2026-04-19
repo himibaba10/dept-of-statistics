@@ -9,16 +9,8 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { fetchWithAuth } from '@/lib/fetchWithAuth';
-import {
-  Calendar,
-  Edit,
-  ImageIcon,
-  Loader2,
-  Plus,
-  Trash2,
-  X
-} from 'lucide-react';
-import { useRef, useEffect, useState } from 'react';
+import { Edit, ImageIcon, Loader2, Plus, Trash2, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 const NOTICE_TYPES = ['notice', 'event', 'exam', 'circular', 'other'] as const;
 type NoticeType = (typeof NOTICE_TYPES)[number];
@@ -28,7 +20,6 @@ interface Notice {
   title: string;
   body: string;
   type: NoticeType;
-  date: string;
   attachmentUrl?: string;
   publishedBy?: { name: string };
   createdAt: string;
@@ -38,14 +29,12 @@ interface NoticeForm {
   title: string;
   body: string;
   type: NoticeType;
-  date: string;
 }
 
 const emptyForm: NoticeForm = {
   title: '',
   body: '',
-  type: 'notice',
-  date: new Date().toISOString().slice(0, 10)
+  type: 'notice'
 };
 
 export function PublishNotices() {
@@ -126,8 +115,7 @@ export function PublishNotices() {
     setForm({
       title: notice.title,
       body: notice.body,
-      type: notice.type,
-      date: notice.date.slice(0, 10)
+      type: notice.type
     });
     if (notice.attachmentUrl) {
       setExistingImageUrl(notice.attachmentUrl);
@@ -138,8 +126,8 @@ export function PublishNotices() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.title || !form.body || !form.date) {
-      setError('Title, body, and date are required.');
+    if (!form.title || !form.body) {
+      setError('Title and body are required.');
       return;
     }
 
@@ -227,7 +215,7 @@ export function PublishNotices() {
 
       {/* Form modal */}
       {showForm && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4'>
+        <div className='fixed inset-0 z-50 m-0 flex items-center justify-center bg-black/40 p-4'>
           <div className='w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl'>
             <div className='flex items-center justify-between border-b border-slate-100 px-6 py-4'>
               <h3 className='font-bold text-[#1E3A8A]'>
@@ -254,8 +242,8 @@ export function PublishNotices() {
                 </div>
               )}
 
-              <div className='grid grid-cols-2 gap-4'>
-                <div className='col-span-2 flex flex-col gap-1.5'>
+              <div className='grid grid-cols-1 gap-4'>
+                <div className='flex flex-col gap-1.5'>
                   <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
                     Title <span className='text-red-400'>*</span>
                   </label>
@@ -288,20 +276,7 @@ export function PublishNotices() {
 
                 <div className='flex flex-col gap-1.5'>
                   <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
-                    Date <span className='text-red-400'>*</span>
-                  </label>
-                  <input
-                    name='date'
-                    type='date'
-                    value={form.date}
-                    onChange={handleChange}
-                    className='w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#1E3A8A]/10'
-                  />
-                </div>
-
-                <div className='col-span-2 flex flex-col gap-1.5'>
-                  <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
-                    Body <span className='text-red-400'>*</span>
+                    Body
                   </label>
                   <textarea
                     name='body'
@@ -314,7 +289,7 @@ export function PublishNotices() {
                 </div>
 
                 {/* Image upload */}
-                <div className='col-span-2 flex flex-col gap-1.5'>
+                <div className='flex flex-col gap-1.5'>
                   <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
                     Image{' '}
                     <span className='font-normal text-slate-400 normal-case'>
@@ -389,7 +364,7 @@ export function PublishNotices() {
                 <Button
                   type='submit'
                   disabled={submitting}
-                  className='min-w-[130px] bg-[#1E3A8A] hover:bg-[#1E3A8A]/90'
+                  className='min-w-32.5 bg-[#1E3A8A] hover:bg-[#1E3A8A]/90'
                 >
                   {submitting ? (
                     <span className='flex items-center gap-2'>
@@ -449,14 +424,6 @@ export function PublishNotices() {
                         <h4 className='font-semibold text-slate-800'>
                           {notice.title}
                         </h4>
-                      </div>
-                      <div className='flex items-center gap-1.5 text-xs text-slate-400'>
-                        <Calendar size={11} />
-                        {new Date(notice.date).toLocaleDateString('en-GB', {
-                          day: 'numeric',
-                          month: 'short',
-                          year: 'numeric'
-                        })}
                       </div>
                     </div>
                   </div>

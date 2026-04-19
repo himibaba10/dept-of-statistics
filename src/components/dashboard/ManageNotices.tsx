@@ -6,25 +6,22 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import { Calendar, Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 
 const mockNotices = [
   {
     id: '1',
     title: 'Midterm Examination Schedule published for 2020-2021 Session',
-    date: '2026-04-18',
     status: 'Published'
   },
   {
     id: '2',
     title: 'Guest Lecture: Modern Applications of Machine Learning',
-    date: '2026-04-15',
     status: 'Published'
   },
   {
     id: '3',
     title: 'Draft: Departmental Picnic Routine',
-    date: '2026-04-20',
     status: 'Draft'
   }
 ];
@@ -65,9 +62,6 @@ export function ManageNotices() {
                     {notice.title}
                   </h4>
                   <div className='flex items-center gap-4 text-xs text-slate-500'>
-                    <span className='flex items-center gap-1'>
-                      <Calendar className='h-3 w-3' /> {notice.date}
-                    </span>
                     <span
                       className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${notice.status === 'Published' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}
                     >

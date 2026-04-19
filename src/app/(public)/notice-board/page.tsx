@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, FileText, Paperclip } from 'lucide-react';
+import { FileText, Paperclip } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const TYPE_COLORS: Record<string, string> = {
@@ -17,7 +17,6 @@ interface Notice {
   title: string;
   body: string;
   type: string;
-  date: string;
   attachmentUrl?: string;
   publishedBy?: { name: string };
   createdAt: string;
@@ -98,14 +97,6 @@ export default function NoticeBoardPage() {
                   >
                     {notice.type}
                   </span>
-                  <div className='flex items-center gap-1.5 text-xs text-slate-400'>
-                    <Calendar size={11} />
-                    {new Date(notice.date).toLocaleDateString('en-GB', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric'
-                    })}
-                  </div>
                 </div>
                 <CardTitle className='text-xl leading-tight font-bold text-[#1E3A8A]'>
                   {notice.title}

@@ -1,27 +1,24 @@
 'use client';
 
 import { useReveal } from '@/hooks/useReveal';
-import { ArrowUpRight, Bell, Calendar } from 'lucide-react';
+import { ArrowUpRight, Bell } from 'lucide-react';
 import Link from 'next/link';
 
 const mockNotices = [
   {
     id: '1',
     title: 'Midterm Examination Schedule published for 2020-2021 Session',
-    date: 'April 18, 2026',
     tag: 'Exam'
   },
   {
     id: '2',
     title:
       'Guest Lecture: Modern Applications of Machine Learning in Statistics',
-    date: 'April 15, 2026',
     tag: 'Event'
   },
   {
     id: '3',
     title: 'Data Science Bootcamp Registration Open for All Students',
-    date: 'April 10, 2026',
     tag: 'Registration'
   }
 ];
@@ -85,10 +82,6 @@ export function NoticeBoardPreview() {
                   >
                     {notice.tag}
                   </span>
-                  <div className='flex items-center gap-1.5 text-xs text-slate-400'>
-                    <Calendar size={11} />
-                    {notice.date}
-                  </div>
                 </div>
 
                 {/* Title */}
