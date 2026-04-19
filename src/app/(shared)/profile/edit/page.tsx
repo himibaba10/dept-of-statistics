@@ -31,7 +31,16 @@ export default function ProfileEditPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    setFormData((prev: any) => ({ ...prev, [name]: value }));
+    setFormData((prev: any) => {
+      if (name.startsWith('address.')) {
+        const addressField = name.split('.')[1];
+        return {
+          ...prev,
+          address: { ...(prev.address || {}), [addressField]: value }
+        };
+      }
+      return { ...prev, [name]: value };
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -99,11 +108,42 @@ export default function ProfileEditPage() {
 
           <div className='space-y-2 md:col-span-2'>
             <label className='text-sm font-medium text-slate-700'>
-              Address
+              Street Address
             </label>
             <Input
-              name='address'
-              value={formData.address || ''}
+              name='address.street'
+              value={formData.address?.street || ''}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className='space-y-2'>
+            <label className='text-sm font-medium text-slate-700'>City</label>
+            <Input
+              name='address.city'
+              value={formData.address?.city || ''}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className='space-y-2'>
+            <label className='text-sm font-medium text-slate-700'>
+              State / Division
+            </label>
+            <Input
+              name='address.state'
+              value={formData.address?.state || ''}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className='space-y-2'>
+            <label className='text-sm font-medium text-slate-700'>
+              Postal Code
+            </label>
+            <Input
+              name='address.postalCode'
+              value={formData.address?.postalCode || ''}
               onChange={handleChange}
             />
           </div>

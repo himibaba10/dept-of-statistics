@@ -31,9 +31,9 @@ export default function DashboardLayout({
     // Route guards
     if (
       pathname.startsWith('/admin') &&
-      (user.role !== 'teacher' ||
-        !('hasAdminAccess' in user && user.hasAdminAccess))
+      (user.role !== 'teacher' || !user.hasAdminAccess)
     ) {
+      console.log('Inside adming');
       router.push('/');
     } else if (pathname.startsWith('/official') && user.role !== 'official') {
       router.push('/');
