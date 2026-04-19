@@ -7,11 +7,11 @@ import { useEffect, useMemo, useState } from 'react';
 
 const DESIGNATIONS = [
   'professor',
-  'associate professor',
-  'assistant professor',
+  'associate-professor',
+  'assistant-professor',
   'lecturer',
-  'senior lecturer',
-  'adjunct faculty',
+  'senior-lecturer',
+  'adjunct-faculty',
   'chairman'
 ];
 

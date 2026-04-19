@@ -149,11 +149,11 @@ const userSchema = new Schema<IUser>(
       trim: true,
       enum: [
         'professor',
-        'associate professor',
-        'assistant professor',
+        'associate-professor',
+        'assistant-professor',
         'lecturer',
-        'senior lecturer',
-        'adjunct faculty',
+        'senior-lecturer',
+        'adjunct-faculty',
         'chairman'
       ]
     },

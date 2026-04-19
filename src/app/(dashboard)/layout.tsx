@@ -11,6 +11,7 @@ function canAccessDashboard(user: User): boolean {
   if (user.isAdmin) return true;
   if (user.role === 'official') return true;
   if (user.role === 'student' && user.isCR) return true;
+  if (user.role === 'teacher' && user.designation === 'professor') return true;
   return false;
 }
 
