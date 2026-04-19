@@ -59,13 +59,7 @@ export function StudentApprovals({ currentUser }: Props) {
   };
 
   useEffect(() => {
-    fetch(`/api/users?role=student&status=pending${sessionFilter}`)
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.success) setStudents(d.data ?? []);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    fetchPending(); // eslint-disable-line react-hooks/set-state-in-effect
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
