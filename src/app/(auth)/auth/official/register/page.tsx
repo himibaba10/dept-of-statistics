@@ -24,6 +24,7 @@ export default function OfficialRegisterPage() {
     password: '',
     confirmPassword: '',
     bloodGroup: '',
+    gender: '',
     street: '',
     city: '',
     state: '',
@@ -45,8 +46,8 @@ export default function OfficialRegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!form.name || !form.phone || !form.password) {
-      setError('Name, phone, and password are required.');
+    if (!form.name || !form.phone || !form.password || !form.gender) {
+      setError('Name, phone, gender, and password are required.');
       return;
     }
     if (form.password.length < 6) {
@@ -71,6 +72,7 @@ export default function OfficialRegisterPage() {
           phone: form.phone,
           password: form.password,
           bloodGroup: form.bloodGroup || undefined,
+          gender: form.gender || undefined,
           address: {
             street: form.street || undefined,
             city: form.city || undefined,
@@ -214,6 +216,22 @@ export default function OfficialRegisterPage() {
                   onChange={handleChange}
                   className='focus:border-navy focus:ring-navy/10 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 transition-all outline-none placeholder:text-slate-400 focus:bg-white focus:ring-2'
                 />
+              </div>
+
+              <div className='flex flex-col gap-1.5'>
+                <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
+                  Gender <span className='text-red-400'>*</span>
+                </label>
+                <select
+                  name='gender'
+                  value={form.gender}
+                  onChange={handleChange}
+                  className='focus:border-navy focus:ring-navy/10 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 transition-all outline-none focus:bg-white focus:ring-2'
+                >
+                  <option value=''>Select</option>
+                  <option value='male'>Male</option>
+                  <option value='female'>Female</option>
+                </select>
               </div>
 
               <div className='flex flex-col gap-1.5'>

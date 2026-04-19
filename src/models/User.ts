@@ -17,6 +17,7 @@ export interface IUser extends Document {
   phone: string;
   address: IAddress;
   bloodGroup?: string;
+  gender?: 'male' | 'female';
   imageUrl?: string;
   role: UserRole;
   status: UserStatus;
@@ -77,6 +78,10 @@ const userSchema = new Schema<IUser>(
     bloodGroup: {
       type: String,
       enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+    },
+    gender: {
+      type: String,
+      enum: ['male', 'female']
     },
     imageUrl: {
       type: String,

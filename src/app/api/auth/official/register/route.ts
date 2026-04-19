@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     await connectDB();
 
     const body = await req.json();
-    const { name, email, phone, address, bloodGroup, password } = body;
+    const { name, email, phone, address, bloodGroup, gender, password } = body;
 
     // Validation
     if (!name || !phone || !password) {
@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
       phone,
       address: address ?? {},
       bloodGroup: bloodGroup || undefined,
+      gender: gender || undefined,
       role: 'official',
       status: 'pending', // awaiting admin approval
       isAdmin: false,

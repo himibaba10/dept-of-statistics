@@ -14,6 +14,7 @@ export interface UserBase {
     country?: string;
   };
   bloodGroup?: string;
+  gender?: 'male' | 'female';
   imageUrl?: string;
   role: Role;
   status: UserStatus;

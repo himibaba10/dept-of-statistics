@@ -20,6 +20,7 @@ interface PendingStudent {
   studentId?: string;
   session?: string;
   bloodGroup?: string;
+  gender?: 'male' | 'female';
   status: string;
   createdAt: string;
 }
@@ -153,9 +154,16 @@ export function StudentApprovals({ currentUser }: Props) {
                 >
                   <div className='space-y-1'>
                     <div className='flex items-center gap-2'>
-                      <div className='flex h-8 w-8 items-center justify-center rounded-full bg-[#DBEAFE] text-xs font-bold text-[#1E3A8A]'>
-                        {student.name.charAt(0)}
-                      </div>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={
+                          student.gender === 'female'
+                            ? '/avatar-female.png'
+                            : '/avatar-male.png'
+                        }
+                        alt={student.name}
+                        className='h-8 w-8 rounded-full object-cover'
+                      />
                       <h4 className='font-semibold text-slate-800'>
                         {student.name}
                       </h4>

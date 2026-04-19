@@ -9,8 +9,16 @@ export async function POST(req: NextRequest) {
     await connectDB();
 
     const body = await req.json();
-    const { name, email, phone, password, bloodGroup, address, designation } =
-      body;
+    const {
+      name,
+      email,
+      phone,
+      password,
+      bloodGroup,
+      gender,
+      address,
+      designation
+    } = body;
 
     if (!name || !phone || !password) {
       return errorResponse('name, phone, and password are required', 400);
@@ -39,6 +47,7 @@ export async function POST(req: NextRequest) {
       phone,
       address: address ?? {},
       bloodGroup: bloodGroup || undefined,
+      gender: gender || undefined,
       role: 'teacher',
       status: 'pending', // teachers need admin approval
       isAdmin: false,

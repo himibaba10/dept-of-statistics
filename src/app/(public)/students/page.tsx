@@ -163,18 +163,17 @@ export default function StudentsPage() {
                       className='group overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(15,42,107,0.12)]'
                     >
                       <div className='relative h-52 overflow-hidden bg-indigo-50'>
-                        {student.imageUrl ? (
-                          <Image
-                            src={student.imageUrl}
-                            alt={student.name}
-                            fill
-                            className='object-cover object-top transition-transform duration-500 group-hover:scale-105'
-                          />
-                        ) : (
-                          <div className='flex h-full items-center justify-center text-5xl font-bold text-indigo-200'>
-                            {student.name.charAt(0)}
-                          </div>
-                        )}
+                        <Image
+                          src={
+                            student.imageUrl ||
+                            (student.gender === 'female'
+                              ? '/avatar-female.png'
+                              : '/avatar-male.png')
+                          }
+                          alt={student.name}
+                          fill
+                          className='object-cover object-top transition-transform duration-500 group-hover:scale-105'
+                        />
                         {student.isCR && (
                           <div className='absolute top-3 right-3'>
                             <span className='bg-gold flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider text-white shadow-md'>

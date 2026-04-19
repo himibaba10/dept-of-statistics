@@ -52,18 +52,17 @@ export default function TeachersPage() {
               className='overflow-hidden border-slate-200 shadow-sm transition-shadow hover:shadow-md'
             >
               <div className='relative h-64 w-full bg-slate-100'>
-                {teacher.imageUrl ? (
-                  <Image
-                    src={teacher.imageUrl}
-                    alt={teacher.name}
-                    fill
-                    className='object-cover object-top'
-                  />
-                ) : (
-                  <div className='flex h-full items-center justify-center bg-indigo-50 text-4xl font-bold text-[#1E3A8A]'>
-                    {teacher.name.charAt(0)}
-                  </div>
-                )}
+                <Image
+                  src={
+                    teacher.imageUrl ||
+                    (teacher.gender === 'female'
+                      ? '/avatar-female.png'
+                      : '/avatar-male.png')
+                  }
+                  alt={teacher.name}
+                  fill
+                  className='object-cover object-top'
+                />
               </div>
               <CardHeader className='border-b border-slate-100 bg-white p-5'>
                 <CardTitle className='mb-1 text-xl font-bold text-[#1E3A8A]'>

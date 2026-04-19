@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
       phone,
       password,
       bloodGroup,
+      gender,
       address,
       studentId,
       session
@@ -60,6 +61,7 @@ export async function POST(req: NextRequest) {
       phone,
       address: address ?? {},
       bloodGroup: bloodGroup || undefined,
+      gender: gender || undefined,
       role: 'student',
       status: 'pending', // awaiting CR approval
       isAdmin: false,
