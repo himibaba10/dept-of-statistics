@@ -1,7 +1,13 @@
 'use client';
 
 import { User } from '@/types';
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState
+} from 'react';
 
 interface AuthContextType {
   user: User | null;
@@ -35,8 +41,14 @@ function resolveInitialUser(): User | null {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(resolveInitialUser);
-  const isLoading = false;
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setUser(resolveInitialUser());
+    setIsLoading(false);
+  }, []);
 
   const loginWithToken = useCallback(
     (loggedInUser: User, accessToken: string, refreshToken: string) => {

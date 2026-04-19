@@ -26,6 +26,8 @@ export default function DashboardLayout({
   useEffect(() => {
     if (isLoading) return;
 
+    console.log(user);
+
     if (!user) {
       // Send to role-appropriate login based on URL, default to student
       if (pathname.startsWith('/dashboard')) {

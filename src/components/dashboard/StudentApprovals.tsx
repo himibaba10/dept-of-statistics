@@ -47,21 +47,20 @@ export function StudentApprovals({ currentUser }: Props) {
       ? `&session=${currentUser.session}`
       : '';
 
-  const fetchPending = () => {
-    setLoading(true);
-    fetch(`/api/users?role=student&status=pending${sessionFilter}`)
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.success) setStudents(d.data ?? []);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  };
-
   useEffect(() => {
-    fetchPending(); // eslint-disable-line react-hooks/set-state-in-effect
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const fetchPending = () => {
+      setLoading(true);
+      fetch(`/api/users?role=student&status=pending${sessionFilter}`)
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.success) setStudents(d.data ?? []);
+        })
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    };
+
+    fetchPending();
+  }, [sessionFilter]);
 
   const approve = async (id: string) => {
     setApproving(id);
