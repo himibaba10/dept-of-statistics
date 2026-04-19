@@ -31,6 +31,7 @@ function getDashboardHref(user: import('@/types').User | null): string {
 function canAccessDashboard(user: import('@/types').User | null): boolean {
   if (!user) return false;
   if (user.role === 'teacher' && !user.isAdmin) return false;
+  if (user.role === 'student' && !user.isCR) return false;
   return true;
 }
 
