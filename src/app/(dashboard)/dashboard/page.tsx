@@ -62,8 +62,11 @@ function getTabs(user: User): Tab[] {
     tabs.push({ id: 'classmates', label: 'My Classmates' });
   }
 
-  if (user.isAdmin) {
+  if (user.isAdmin || isSeniorTeacher(user)) {
     tabs.push({ id: 'courses', label: 'Manage Courses' });
+  }
+
+  if (user.isAdmin) {
     tabs.push({ id: 'students', label: 'Student Reports' });
   }
 
