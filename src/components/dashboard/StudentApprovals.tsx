@@ -158,8 +158,8 @@ export function StudentApprovals({ currentUser }: Props) {
                       <img
                         src={
                           student.gender === 'female'
-                            ? '/avatar-female.png'
-                            : '/avatar-male.png'
+                            ? '/female-placeholder.webp'
+                            : '/male-placeholder.webp'
                         }
                         alt={student.name}
                         className='h-8 w-8 rounded-full object-cover'

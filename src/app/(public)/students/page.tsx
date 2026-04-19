@@ -167,8 +167,8 @@ export default function StudentsPage() {
                           src={
                             student.imageUrl ||
                             (student.gender === 'female'
-                              ? '/avatar-female.png'
-                              : '/avatar-male.png')
+                              ? '/female-placeholder.webp'
+                              : '/male-placeholder.webp')
                           }
                           alt={student.name}
                           fill

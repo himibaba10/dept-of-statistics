@@ -56,8 +56,8 @@ export default function TeachersPage() {
                   src={
                     teacher.imageUrl ||
                     (teacher.gender === 'female'
-                      ? '/avatar-female.png'
-                      : '/avatar-male.png')
+                      ? '/female-placeholder.webp'
+                      : '/male-placeholder.webp')
                   }
                   alt={teacher.name}
                   fill
