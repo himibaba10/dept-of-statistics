@@ -1,13 +1,13 @@
 'use client';
 
 import { useAuth } from '@/components/providers/AuthProvider';
-import { Official } from '@/types';
+import { Teacher } from '@/types';
 import { AlertCircle, Eye, EyeOff, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function OfficialLoginPage() {
+export default function TeacherLoginPage() {
   const router = useRouter();
   const { loginWithToken } = useAuth();
 
@@ -32,7 +32,7 @@ export default function OfficialLoginPage() {
     setError('');
 
     try {
-      const res = await fetch('/api/auth/official/login', {
+      const res = await fetch('/api/auth/teacher/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
@@ -46,12 +46,11 @@ export default function OfficialLoginPage() {
       }
 
       loginWithToken(
-        data.data.user as Official,
+        data.data.user as Teacher,
         data.data.accessToken,
         data.data.refreshToken
       );
-
-      router.push('/official');
+      router.push('/teacher');
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {
@@ -67,13 +66,13 @@ export default function OfficialLoginPage() {
         <div className='px-8 py-8'>
           <div className='mb-8'>
             <p className='text-gold mb-1 text-xs font-bold tracking-widest uppercase'>
-              Official Portal
+              Faculty Portal
             </p>
             <h1 className='text-navy font-serif text-2xl font-bold'>
               Welcome back
             </h1>
             <p className='mt-1 text-sm text-slate-500'>
-              Sign in to access your official dashboard.
+              Sign in with your email or phone number.
             </p>
           </div>
 
@@ -143,7 +142,7 @@ export default function OfficialLoginPage() {
 
           <div className='mt-6 flex items-center justify-between text-xs text-slate-500'>
             <Link
-              href='/auth/official/register'
+              href='/auth/teacher/register'
               className='text-navy font-semibold hover:underline'
             >
               Request access

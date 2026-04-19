@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -6,21 +8,36 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import { mockStudents } from '@/lib/mockData';
+import { Student } from '@/types';
 import { Eye, Filter } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function StudentReports() {
+  const [students, setStudents] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedSession, setSelectedSession] = useState<string>('All');
+
+  useEffect(() => {
+    fetch('/api/users?role=student&status=active')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success) setStudents(d.data ?? []);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
   const sessions = [
     'All',
-    ...Array.from(new Set(mockStudents.map((s) => s.session))).sort()
-  ];
+    ...Array.from(
+      new Set(students.map((s) => s.session).filter(Boolean))
+    ).sort()
+  ] as string[];
 
   const filteredStudents =
     selectedSession === 'All'
-      ? mockStudents
-      : mockStudents.filter((s) => s.session === selectedSession);
+      ? students
+      : students.filter((s) => s.session === selectedSession);
 
   return (
     <div className='space-y-6'>
@@ -56,56 +73,68 @@ export function StudentReports() {
           </CardDescription>
         </CardHeader>
         <CardContent className='p-0'>
-          <div className='flex max-h-150 flex-col divide-y divide-slate-100 overflow-y-auto'>
-            {filteredStudents.length === 0 ? (
-              <div className='p-8 text-center text-slate-500'>
-                No students found for this session.
-              </div>
-            ) : (
-              filteredStudents.map((student) => (
-                <div
-                  key={student._id}
-                  className='flex flex-col items-center justify-between gap-4 p-4 px-6 transition-colors hover:bg-slate-50 sm:flex-row'
-                >
-                  <div className='flex flex-1 items-center gap-4'>
-                    <div className='space-y-1'>
-                      <div className='flex items-center justify-between'>
-                        <h4 className='font-semibold text-slate-800'>
-                          {student.name}
-                        </h4>
-                        <span className='ml-4 block rounded-full bg-[#DBEAFE] px-2 py-0.5 text-sm font-medium text-[#1E3A8A] sm:hidden'>
-                          {student.studentId}
-                        </span>
-                      </div>
-                      <div className='flex items-center gap-3 text-xs font-medium text-slate-500'>
-                        <span className='rounded border border-slate-200 bg-slate-100 px-2 py-0.5'>
-                          Session: {student.session}
-                        </span>
-                        {student.isCR && (
-                          <span className='rounded border border-amber-200 bg-amber-100 px-2 py-0.5 text-amber-700'>
-                            Class Representative
-                          </span>
-                        )}
+          {loading ? (
+            <div className='flex items-center justify-center py-12'>
+              <span className='h-6 w-6 animate-spin rounded-full border-4 border-slate-200 border-t-[#1E3A8A]' />
+            </div>
+          ) : (
+            <div className='flex max-h-150 flex-col divide-y divide-slate-100 overflow-y-auto'>
+              {filteredStudents.length === 0 ? (
+                <div className='p-8 text-center text-slate-500'>
+                  No students found for this session.
+                </div>
+              ) : (
+                filteredStudents.map((student) => (
+                  <div
+                    key={student._id}
+                    className='flex flex-col items-center justify-between gap-4 p-4 px-6 transition-colors hover:bg-slate-50 sm:flex-row'
+                  >
+                    <div className='flex flex-1 items-center gap-4'>
+                      <div className='space-y-1'>
+                        <div className='flex items-center justify-between'>
+                          <h4 className='font-semibold text-slate-800'>
+                            {student.name}
+                          </h4>
+                          {student.studentId && (
+                            <span className='ml-4 block rounded-full bg-[#DBEAFE] px-2 py-0.5 text-sm font-medium text-[#1E3A8A] sm:hidden'>
+                              {student.studentId}
+                            </span>
+                          )}
+                        </div>
+                        <div className='flex items-center gap-3 text-xs font-medium text-slate-500'>
+                          {student.session && (
+                            <span className='rounded border border-slate-200 bg-slate-100 px-2 py-0.5'>
+                              Session: {student.session}
+                            </span>
+                          )}
+                          {student.isCR && (
+                            <span className='rounded border border-amber-200 bg-amber-100 px-2 py-0.5 text-amber-700'>
+                              Class Representative
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className='flex w-full shrink-0 items-center justify-between gap-4 sm:w-auto sm:justify-end'>
-                    <span className='hidden rounded-full bg-[#DBEAFE] px-3 py-1 text-sm font-bold text-[#1E3A8A] sm:block'>
-                      ID: {student.studentId}
-                    </span>
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      className='h-8 whitespace-nowrap shadow-sm'
-                    >
-                      <Eye className='mr-2 h-4 w-4' /> View Report
-                    </Button>
+                    <div className='flex w-full shrink-0 items-center justify-between gap-4 sm:w-auto sm:justify-end'>
+                      {student.studentId && (
+                        <span className='hidden rounded-full bg-[#DBEAFE] px-3 py-1 text-sm font-bold text-[#1E3A8A] sm:block'>
+                          ID: {student.studentId}
+                        </span>
+                      )}
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        className='h-8 whitespace-nowrap shadow-sm'
+                      >
+                        <Eye className='mr-2 h-4 w-4' /> View Report
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              ))
-            )}
-          </div>
+                ))
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

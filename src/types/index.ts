@@ -1,37 +1,41 @@
 export type Role = 'student' | 'teacher' | 'official';
+export type UserStatus = 'pending' | 'active' | 'blocked';
 
 export interface UserBase {
   _id: string;
   name: string;
-  email: string;
+  email?: string;
   phone: string;
-  address: string;
-  bloodGroup: string;
-  imageUrl: string;
+  address?: {
+    street?: string;
+    city?: string;
+    state?: string;
+    postalCode?: string;
+    country?: string;
+  };
+  bloodGroup?: string;
+  imageUrl?: string;
   role: Role;
+  status: UserStatus;
+  isAdmin: boolean;
 }
 
 export interface Student extends UserBase {
   role: 'student';
-  studentId: string;
-  session: string;
-  isCR: boolean;
+  studentId?: string;
+  session?: string;
+  isCR?: boolean;
 }
 
 export interface Teacher extends UserBase {
   role: 'teacher';
-  designation: string;
-  galleryUrls: string[];
-  hasAdminAccess: boolean;
+  designation?: string;
+  galleryUrls?: string[];
 }
-
-export type UserStatus = 'pending' | 'active' | 'blocked';
 
 export interface Official extends UserBase {
   role: 'official';
-  departmentRole: string;
-  status: UserStatus;
-  isAdmin: boolean;
+  departmentRole?: string;
 }
 
 export type User = Student | Teacher | Official;

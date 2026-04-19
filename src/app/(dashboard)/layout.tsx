@@ -6,6 +6,12 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
+const LOGIN_ROUTES: Record<string, string> = {
+  student: '/auth/student/login',
+  teacher: '/auth/teacher/login',
+  official: '/auth/official/login'
+};
+
 export default function DashboardLayout({
   children
 }: {
@@ -19,23 +25,29 @@ export default function DashboardLayout({
     if (isLoading) return;
 
     if (!user) {
-      // Not logged in — redirect officials to login, others to home
+      // Redirect to the appropriate login page based on the route
       if (pathname.startsWith('/official')) {
         router.push('/auth/official/login');
+      } else if (pathname.startsWith('/teacher')) {
+        router.push('/auth/teacher/login');
+      } else if (pathname.startsWith('/student')) {
+        router.push('/auth/student/login');
+      } else if (pathname.startsWith('/admin')) {
+        router.push('/auth/teacher/login');
       } else {
         router.push('/');
       }
       return;
     }
 
-    // Route guards
-    if (
-      pathname.startsWith('/admin') &&
-      (user.role !== 'teacher' || !user.hasAdminAccess)
-    ) {
-      console.log('Inside adming');
+    // Role guards
+    if (pathname.startsWith('/official') && user.role !== 'official') {
       router.push('/');
-    } else if (pathname.startsWith('/official') && user.role !== 'official') {
+    } else if (pathname.startsWith('/teacher') && user.role !== 'teacher') {
+      router.push('/');
+    } else if (pathname.startsWith('/student') && user.role !== 'student') {
+      router.push('/');
+    } else if (pathname.startsWith('/admin') && !user.isAdmin) {
       router.push('/');
     }
   }, [user, isLoading, router, pathname]);
@@ -55,13 +67,19 @@ export default function DashboardLayout({
     ...(user.role === 'official'
       ? [{ href: '/official', label: 'Official Portal', icon: LayoutDashboard }]
       : []),
-    ...(user.role === 'teacher' &&
-    'hasAdminAccess' in user &&
-    user.hasAdminAccess
-      ? [{ href: '/admin', label: 'Admin Portal', icon: LayoutDashboard }]
+    ...(user.role === 'teacher'
+      ? [{ href: '/teacher', label: 'Faculty Portal', icon: LayoutDashboard }]
+      : []),
+    ...(user.role === 'student'
+      ? [{ href: '/student', label: 'Student Portal', icon: LayoutDashboard }]
+      : []),
+    ...(user.isAdmin
+      ? [{ href: '/admin', label: 'Admin Panel', icon: LayoutDashboard }]
       : []),
     { href: '/profile/edit', label: 'My Profile', icon: User }
   ];
+
+  const loginRoute = LOGIN_ROUTES[user.role] ?? '/';
 
   return (
     <div className='bg-surface flex min-h-screen'>
@@ -131,9 +149,7 @@ export default function DashboardLayout({
           <button
             onClick={() => {
               logout();
-              router.push(
-                user.role === 'official' ? '/auth/official/login' : '/'
-              );
+              router.push(loginRoute);
             }}
             className='flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/60 transition-colors hover:bg-red-500/20 hover:text-red-300'
           >

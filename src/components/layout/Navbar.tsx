@@ -22,9 +22,14 @@ const navLinks = [
   { href: '/notice-board', label: 'Notice Board' }
 ];
 
+const DASHBOARD_ROUTES: Record<string, string> = {
+  student: '/student',
+  teacher: '/teacher',
+  official: '/official'
+};
+
 function UserMenu() {
-  const { user, login, logout, isLoading } = useAuth();
-  type MockRole = Parameters<typeof login>[0];
+  const { user, logout, isLoading } = useAuth();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -55,22 +60,24 @@ function UserMenu() {
           />
         </button>
         {open && (
-          <div className='absolute top-full right-0 z-50 mt-2 w-48 rounded-xl border border-slate-200 bg-white py-2 shadow-xl'>
+          <div className='absolute top-full right-0 z-50 mt-2 w-52 rounded-xl border border-slate-200 bg-white py-2 shadow-xl'>
             <p className='px-4 py-1.5 text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
               Login as
             </p>
-            {(['student', 'teacher'] as MockRole[]).map((role) => (
-              <button
-                key={role}
-                onClick={() => {
-                  login(role);
-                  setOpen(false);
-                }}
-                className='w-full px-4 py-2.5 text-left text-sm font-medium text-slate-800 capitalize transition-colors hover:bg-slate-50'
-              >
-                {role.charAt(0).toUpperCase() + role.slice(1)}
-              </button>
-            ))}
+            <Link
+              href='/auth/student/login'
+              onClick={() => setOpen(false)}
+              className='block px-4 py-2.5 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50'
+            >
+              Student
+            </Link>
+            <Link
+              href='/auth/teacher/login'
+              onClick={() => setOpen(false)}
+              className='block px-4 py-2.5 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50'
+            >
+              Faculty
+            </Link>
             <Link
               href='/auth/official/login'
               onClick={() => setOpen(false)}
@@ -78,19 +85,13 @@ function UserMenu() {
             >
               Official
             </Link>
-            <div className='my-1 border-t border-slate-100' />
-            <Link
-              href='/auth/official/register'
-              onClick={() => setOpen(false)}
-              className='text-navy block px-4 py-2.5 text-xs font-semibold transition-colors hover:bg-slate-50'
-            >
-              Request official access →
-            </Link>
           </div>
         )}
       </div>
     );
   }
+
+  const dashboardHref = DASHBOARD_ROUTES[user.role] ?? '/';
 
   return (
     <div ref={ref} className='relative'>
@@ -124,7 +125,7 @@ function UserMenu() {
             </p>
           </div>
           <Link
-            href={user.role === 'official' ? '/official' : '/dashboard'}
+            href={dashboardHref}
             onClick={() => setOpen(false)}
             className='flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50'
           >
@@ -160,18 +161,15 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const { user } = useAuth();
+
+  const dashboardHref = user ? (DASHBOARD_ROUTES[user.role] ?? '/') : '/';
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 16);
     window.addEventListener('scroll', handler, { passive: true });
     return () => window.removeEventListener('scroll', handler);
   }, []);
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMobileOpen(false);
-  }, [pathname]);
 
   return (
     <header className='sticky top-0 z-50 w-full'>
@@ -240,7 +238,7 @@ export function Navbar() {
             <div className='hidden shrink-0 items-center gap-3 lg:flex'>
               <UserMenu />
               <Link
-                href='/admin'
+                href={dashboardHref}
                 className='bg-navy flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 hover:shadow-md'
               >
                 <LayoutDashboard size={15} />
@@ -268,6 +266,7 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  onClick={() => setMobileOpen(false)}
                   className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors ${
                     active ? 'bg-navy-light text-navy' : 'text-slate-600'
                   }`}
@@ -279,7 +278,8 @@ export function Navbar() {
             <div className='mt-2 flex flex-col gap-2.5 border-t border-slate-200 pt-3'>
               <UserMenu />
               <Link
-                href='/admin'
+                href={dashboardHref}
+                onClick={() => setMobileOpen(false)}
                 className='bg-navy flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white'
               >
                 <LayoutDashboard size={15} />

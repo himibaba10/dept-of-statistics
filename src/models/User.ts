@@ -17,11 +17,25 @@ export interface IUser extends Document {
   phone: string;
   address: IAddress;
   bloodGroup?: string;
+  imageUrl?: string;
   role: UserRole;
   status: UserStatus;
   isAdmin: boolean;
   password: string;
   refreshToken?: string;
+
+  // Student-only (optional)
+  studentId?: string;
+  session?: string;
+  isCR?: boolean;
+
+  // Teacher-only (optional)
+  designation?: string;
+  galleryUrls?: string[];
+
+  // Official-only (optional)
+  departmentRole?: string;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -48,7 +62,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       trim: true,
       lowercase: true,
-      sparse: true, // allows multiple null values
+      sparse: true,
       match: [/^\S+@\S+\.\S+$/, 'Invalid email format']
     },
     phone: {
@@ -63,6 +77,10 @@ const userSchema = new Schema<IUser>(
     bloodGroup: {
       type: String,
       enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+    },
+    imageUrl: {
+      type: String,
+      trim: true
     },
     role: {
       type: String,
@@ -87,6 +105,36 @@ const userSchema = new Schema<IUser>(
     refreshToken: {
       type: String,
       select: false
+    },
+
+    // Student fields
+    studentId: {
+      type: String,
+      trim: true
+    },
+    session: {
+      type: String,
+      trim: true
+    },
+    isCR: {
+      type: Boolean,
+      default: false
+    },
+
+    // Teacher fields
+    designation: {
+      type: String,
+      trim: true
+    },
+    galleryUrls: {
+      type: [String],
+      default: undefined
+    },
+
+    // Official fields
+    departmentRole: {
+      type: String,
+      trim: true
     }
   },
   {
@@ -94,7 +142,6 @@ const userSchema = new Schema<IUser>(
   }
 );
 
-// Prevent model re-registration in dev hot-reloads
 const User: Model<IUser> =
   mongoose.models.User ?? mongoose.model<IUser>('User', userSchema);
 

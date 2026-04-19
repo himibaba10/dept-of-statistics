@@ -1,13 +1,13 @@
 'use client';
 
 import { useAuth } from '@/components/providers/AuthProvider';
-import { Official } from '@/types';
+import { Student } from '@/types';
 import { AlertCircle, Eye, EyeOff, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function OfficialLoginPage() {
+export default function StudentLoginPage() {
   const router = useRouter();
   const { loginWithToken } = useAuth();
 
@@ -32,7 +32,7 @@ export default function OfficialLoginPage() {
     setError('');
 
     try {
-      const res = await fetch('/api/auth/official/login', {
+      const res = await fetch('/api/auth/student/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
@@ -46,12 +46,11 @@ export default function OfficialLoginPage() {
       }
 
       loginWithToken(
-        data.data.user as Official,
+        data.data.user as Student,
         data.data.accessToken,
         data.data.refreshToken
       );
-
-      router.push('/official');
+      router.push('/student');
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {
@@ -67,13 +66,13 @@ export default function OfficialLoginPage() {
         <div className='px-8 py-8'>
           <div className='mb-8'>
             <p className='text-gold mb-1 text-xs font-bold tracking-widest uppercase'>
-              Official Portal
+              Student Portal
             </p>
             <h1 className='text-navy font-serif text-2xl font-bold'>
               Welcome back
             </h1>
             <p className='mt-1 text-sm text-slate-500'>
-              Sign in to access your official dashboard.
+              Sign in with your email, phone, or student ID.
             </p>
           </div>
 
@@ -87,13 +86,13 @@ export default function OfficialLoginPage() {
           <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
             <div className='flex flex-col gap-1.5'>
               <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
-                Email or Phone
+                Email, Phone, or Student ID
               </label>
               <input
                 name='identifier'
                 type='text'
                 autoComplete='username'
-                placeholder='your@email.com or 01XXXXXXXXX'
+                placeholder='e.g. 2101, 01XXXXXXXXX, or your@email.com'
                 value={form.identifier}
                 onChange={handleChange}
                 className='focus:border-navy focus:ring-navy/10 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 transition-all duration-200 outline-none placeholder:text-slate-400 focus:bg-white focus:ring-2'
@@ -143,10 +142,10 @@ export default function OfficialLoginPage() {
 
           <div className='mt-6 flex items-center justify-between text-xs text-slate-500'>
             <Link
-              href='/auth/official/register'
+              href='/auth/student/register'
               className='text-navy font-semibold hover:underline'
             >
-              Request access
+              Create an account
             </Link>
             <Link href='/' className='transition-colors hover:text-slate-700'>
               ← Back to site
