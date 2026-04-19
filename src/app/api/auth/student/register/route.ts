@@ -1,5 +1,5 @@
-import { connectDB } from '@/lib/db';
 import { errorResponse, successResponse } from '@/lib/apiResponse';
+import { connectDB } from '@/lib/db';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 import { NextRequest } from 'next/server';
@@ -20,6 +20,8 @@ export async function POST(req: NextRequest) {
       studentId,
       session
     } = body;
+
+    console.log(gender);
 
     if (!name || !phone || !password) {
       return errorResponse('name, phone, and password are required', 400);

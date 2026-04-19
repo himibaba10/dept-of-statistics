@@ -159,7 +159,10 @@ const userSchema = new Schema<IUser>(
   }
 );
 
-const User: Model<IUser> =
-  mongoose.models.User ?? mongoose.model<IUser>('User', userSchema);
+if (process.env.NODE_ENV === 'development') {
+  delete mongoose.models?.User;
+}
+
+const User: Model<IUser> = mongoose.model<IUser>('User', userSchema);
 
 export default User;

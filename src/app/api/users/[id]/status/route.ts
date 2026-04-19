@@ -1,5 +1,5 @@
-import { connectDB } from '@/lib/db';
 import { errorResponse, successResponse } from '@/lib/apiResponse';
+import { connectDB } from '@/lib/db';
 import { verifyAccessToken } from '@/lib/jwt';
 import User from '@/models/User';
 import { NextRequest } from 'next/server';
@@ -13,13 +13,14 @@ export async function PATCH(
     await connectDB();
 
     const authHeader = req.headers.get('authorization');
+
     if (!authHeader?.startsWith('Bearer ')) {
       return errorResponse('Unauthorized', 401);
     }
 
     let payload;
     try {
-      payload = verifyAccessToken(authHeader.slice(7));
+      payload = verifyAccessToken(authHeader.split(' ')[1]);
     } catch {
       return errorResponse('Invalid or expired token', 401);
     }
