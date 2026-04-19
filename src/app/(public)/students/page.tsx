@@ -156,13 +156,13 @@ export default function StudentsPage() {
                   </p>
                 </div>
               ) : (
-                <div className='grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3'>
+                <div className='grid grid-cols-1 gap-5 sm:grid-cols-2'>
                   {filtered.map((student) => (
                     <div
                       key={student._id}
                       className='group overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(15,42,107,0.12)]'
                     >
-                      <div className='relative h-52 overflow-hidden bg-indigo-50'>
+                      <div className='relative h-80 overflow-hidden bg-indigo-50'>
                         <Image
                           src={
                             student.imageUrl ||
@@ -172,7 +172,7 @@ export default function StudentsPage() {
                           }
                           alt={student.name}
                           fill
-                          className='object-cover object-top transition-transform duration-500 group-hover:scale-105'
+                          className='object-cover object-center transition-transform duration-500 group-hover:scale-105'
                         />
                         {student.isCR && (
                           <div className='absolute top-3 right-3'>
@@ -221,6 +221,56 @@ export default function StudentsPage() {
                               </p>
                             </div>
                           )}
+                          {student.email && (
+                            <div className='col-span-2'>
+                              <p className='mb-0.5 text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
+                                Email
+                              </p>
+                              <p className='text-sm font-semibold text-slate-800'>
+                                {student.email}
+                              </p>
+                            </div>
+                          )}
+                          {student.phone && (
+                            <div>
+                              <p className='mb-0.5 text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
+                                Phone
+                              </p>
+                              <p className='text-sm font-semibold text-slate-800'>
+                                {student.phone}
+                              </p>
+                            </div>
+                          )}
+                          {student.gender && (
+                            <div>
+                              <p className='mb-0.5 text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
+                                Gender
+                              </p>
+                              <p className='text-sm font-semibold text-slate-800 capitalize'>
+                                {student.gender}
+                              </p>
+                            </div>
+                          )}
+                          {student.address &&
+                            Object.values(student.address).filter(Boolean)
+                              .length > 0 && (
+                              <div className='col-span-2'>
+                                <p className='mb-0.5 text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
+                                  Address
+                                </p>
+                                <p className='text-sm font-semibold text-slate-800'>
+                                  {[
+                                    student.address.street,
+                                    student.address.city,
+                                    student.address.state,
+                                    student.address.postalCode,
+                                    student.address.country
+                                  ]
+                                    .filter(Boolean)
+                                    .join(', ')}
+                                </p>
+                              </div>
+                            )}
                         </div>
 
                         <div className='mt-4 flex items-center justify-between border-t border-slate-100 pt-4'>
