@@ -74,7 +74,7 @@ export function HeroSlider() {
       {/* Gradient overlays */}
       <div className='from-navy/90 via-navy/70 to-navy/30 absolute inset-0 z-10 bg-linear-to-r' />
       {/* Bottom fade */}
-      <div className='absolute right-0 bottom-0 left-0 z-10 h-32 bg-linear-to-r from-[#F7F9FC] to-transparent' />
+      <div className='absolute right-0 bottom-0 left-0 z-10 h-32 bg-linear-to-t from-[#F7F9FC] to-transparent' />
 
       {/* Content */}
       <div

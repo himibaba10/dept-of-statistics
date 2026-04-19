@@ -5,6 +5,16 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+const DIVISIONS = [
+  'Barishal',
+  'Chattogram',
+  'Dhaka',
+  'Khulna',
+  'Mymensingh',
+  'Rajshahi',
+  'Rangpur',
+  'Sylhet'
+];
 
 export default function OfficialRegisterPage() {
   const [form, setForm] = useState({
@@ -266,14 +276,19 @@ export default function OfficialRegisterPage() {
                 <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
                   State / Division
                 </label>
-                <input
+                <select
                   name='state'
-                  type='text'
-                  placeholder='Chattogram Division'
                   value={form.state}
                   onChange={handleChange}
-                  className='focus:border-navy focus:ring-navy/10 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 transition-all outline-none placeholder:text-slate-400 focus:bg-white focus:ring-2'
-                />
+                  className='focus:border-navy focus:ring-navy/10 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 transition-all outline-none focus:bg-white focus:ring-2'
+                >
+                  <option value=''>Select Division</option>
+                  {DIVISIONS.map((div) => (
+                    <option key={div} value={div}>
+                      {div}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className='flex flex-col gap-1.5'>
                 <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>

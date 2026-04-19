@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { AlertCircle, Eye, EyeOff, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff, LogIn, AlertCircle } from 'lucide-react';
+import { useState } from 'react';
 
 export default function OfficialLoginPage() {
   const router = useRouter();
@@ -41,6 +41,8 @@ export default function OfficialLoginPage() {
         setError(data.message ?? 'Login failed.');
         return;
       }
+
+      console.log(data);
 
       // Store tokens
       localStorage.setItem('accessToken', data.data.accessToken);
