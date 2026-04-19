@@ -17,6 +17,7 @@ interface AuthContextType {
     accessToken: string,
     refreshToken: string
   ) => void;
+  updateUser: (updated: User) => void;
   logout: () => void;
 }
 
@@ -64,6 +65,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const updateUser = useCallback((updated: User) => {
+    setUser(updated);
+    localStorage.setItem('authUser', JSON.stringify(updated));
+  }, []);
+
   const logout = useCallback(() => {
     setUser(null);
     localStorage.removeItem('accessToken');
@@ -72,7 +78,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, loginWithToken, logout }}>
+    <AuthContext.Provider
+      value={{ user, isLoading, loginWithToken, updateUser, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
