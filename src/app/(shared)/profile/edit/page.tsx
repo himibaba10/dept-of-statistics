@@ -9,6 +9,18 @@ import { Camera, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
+const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+const DIVISIONS = [
+  'Barishal',
+  'Chattogram',
+  'Dhaka',
+  'Khulna',
+  'Mymensingh',
+  'Rajshahi',
+  'Rangpur',
+  'Sylhet'
+];
+
 interface FormData {
   name: string;
   email: string;
@@ -75,7 +87,9 @@ export default function ProfileEditPage() {
     );
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     if (name.startsWith('address.')) {
       const field = name.split('.')[1] as keyof FormData['address'];
@@ -261,12 +275,19 @@ export default function ProfileEditPage() {
             <label className='text-sm font-medium text-slate-700'>
               Blood Group
             </label>
-            <Input
+            <select
               name='bloodGroup'
               value={formData.bloodGroup}
               onChange={handleChange}
-              placeholder='e.g. B+'
-            />
+              className='border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 disabled:bg-input/50 h-8 w-full min-w-0 flex-1 rounded-lg border bg-transparent px-2.5 py-1 text-base transition-colors outline-none focus-visible:ring-3 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
+            >
+              <option value=''>Select Blood Group</option>
+              {BLOOD_GROUPS.map((bg) => (
+                <option key={bg} value={bg}>
+                  {bg}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className='space-y-1.5 md:col-span-2'>
@@ -293,11 +314,19 @@ export default function ProfileEditPage() {
             <label className='text-sm font-medium text-slate-700'>
               State / Division
             </label>
-            <Input
+            <select
               name='address.state'
               value={formData.address.state}
               onChange={handleChange}
-            />
+              className='border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 disabled:bg-input/50 h-8 w-full min-w-0 flex-1 rounded-lg border bg-transparent px-2.5 py-1 text-base transition-colors outline-none focus-visible:ring-3 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
+            >
+              <option value=''>Select Division</option>
+              {DIVISIONS.map((div) => (
+                <option key={div} value={div}>
+                  {div}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className='space-y-1.5'>
@@ -385,7 +414,7 @@ export default function ProfileEditPage() {
           <Button
             type='submit'
             disabled={saving}
-            className='min-w-[120px] bg-[#1E3A8A] hover:bg-[#1E3A8A]/90'
+            className='min-w-30 bg-[#1E3A8A] hover:bg-[#1E3A8A]/90'
           >
             {saving ? (
               <span className='flex items-center gap-2'>

@@ -73,7 +73,12 @@ const userSchema = new Schema<IUser>(
     },
     address: {
       type: addressSchema,
-      required: [true, 'Address is required']
+      required: [
+        function (this: IUser) {
+          return this.role === 'student' || this.role === 'official';
+        },
+        'Address is required for students and officials'
+      ]
     },
     bloodGroup: {
       type: String,

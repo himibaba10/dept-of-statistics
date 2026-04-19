@@ -279,13 +279,19 @@ export default function TeacherRegisterPage() {
             </div>
 
             <p className='pt-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
-              Address
+              Address{' '}
+              <span className='font-normal text-slate-400 normal-case'>
+                (optional)
+              </span>
             </p>
 
             <div className='grid grid-cols-2 gap-4'>
               <div className='col-span-2 flex flex-col gap-1.5'>
                 <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
-                  Street
+                  Street{' '}
+                  <span className='font-normal text-slate-400 normal-case'>
+                    (optional)
+                  </span>
                 </label>
                 <input
                   name='street'
@@ -298,7 +304,10 @@ export default function TeacherRegisterPage() {
               </div>
               <div className='flex flex-col gap-1.5'>
                 <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
-                  City
+                  City{' '}
+                  <span className='font-normal text-slate-400 normal-case'>
+                    (optional)
+                  </span>
                 </label>
                 <input
                   name='city'
@@ -311,7 +320,10 @@ export default function TeacherRegisterPage() {
               </div>
               <div className='flex flex-col gap-1.5'>
                 <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
-                  Division
+                  Division{' '}
+                  <span className='font-normal text-slate-400 normal-case'>
+                    (optional)
+                  </span>
                 </label>
                 <select
                   name='state'
@@ -329,7 +341,10 @@ export default function TeacherRegisterPage() {
               </div>
               <div className='flex flex-col gap-1.5'>
                 <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
-                  Postal Code
+                  Postal Code{' '}
+                  <span className='font-normal text-slate-400 normal-case'>
+                    (optional)
+                  </span>
                 </label>
                 <input
                   name='postalCode'
