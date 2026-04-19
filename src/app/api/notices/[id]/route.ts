@@ -101,7 +101,7 @@ export async function PATCH(
     }
 
     const body = await req.json();
-    const { title, body: noticeBody, type, date, attachmentUrl } = body;
+    const { title, body: noticeBody, type, attachmentUrl } = body;
 
     if (title) notice.title = title;
     if (noticeBody) notice.body = noticeBody;
