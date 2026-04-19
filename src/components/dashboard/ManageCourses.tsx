@@ -1,5 +1,6 @@
 'use client';
 
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 import { Course } from '@/types';
 import {
   BookOpen,
@@ -15,17 +16,12 @@ import { useEffect, useRef, useState } from 'react';
 
 // ── helpers ────────────────────────────────────────────────────────────────────
 
-async function uploadImage(
-  file: File,
-  folderKey: string,
-  token: string
-): Promise<string> {
+async function uploadImage(file: File, folderKey: string): Promise<string> {
   const form = new FormData();
   form.append('file', file);
   form.append('folderKey', folderKey);
-  const res = await fetch('/api/upload/image', {
+  const res = await fetchWithAuth('/api/upload/image', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
     body: form
   });
   const data = await res.json();
@@ -59,10 +55,6 @@ const EMPTY_FORM: CourseForm = {
 // ── component ──────────────────────────────────────────────────────────────────
 
 export function ManageCourses() {
-  const getToken = () =>
-    typeof window !== 'undefined'
-      ? (localStorage.getItem('accessToken') ?? '')
-      : '';
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -173,7 +165,7 @@ export function ManageCourses() {
       // Upload new syllabus files
       const newSyllabusUrls: string[] = [];
       for (const file of form.syllabusFiles) {
-        const url = await uploadImage(file, 'syllabus', getToken());
+        const url = await uploadImage(file, 'syllabus');
         newSyllabusUrls.push(url);
       }
 
@@ -190,12 +182,9 @@ export function ManageCourses() {
       const url = editingId ? `/api/courses/${editingId}` : '/api/courses';
       const method = editingId ? 'PATCH' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await fetchWithAuth(url, {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${getToken()}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
       const data = await res.json();
@@ -217,9 +206,8 @@ export function ManageCourses() {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/courses/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${getToken()}` }
+      const res = await fetchWithAuth(`/api/courses/${id}`, {
+        method: 'DELETE'
       });
       const data = await res.json();
       if (data.success) {
