@@ -44,6 +44,7 @@ export interface Course {
   _id: string;
   code: string;
   title: string;
+  type: 'theory' | 'practical';
   credit: number;
   description?: string;
   syllabus: string[];

@@ -34,6 +34,7 @@ async function uploadImage(file: File, folderKey: string): Promise<string> {
 interface CourseForm {
   title: string;
   code: string;
+  type: 'theory' | 'practical' | '';
   credit: number | '';
   description: string;
   syllabusFiles: File[];
@@ -45,6 +46,7 @@ interface CourseForm {
 const EMPTY_FORM: CourseForm = {
   title: '',
   code: '',
+  type: '',
   credit: '',
   description: '',
   syllabusFiles: [],
@@ -99,6 +101,7 @@ export function ManageCourses() {
     setForm({
       title: course.title,
       code: course.code,
+      type: course.type ?? '',
       credit: course.credit ?? '',
       description: course.description ?? '',
       syllabusFiles: [],
@@ -159,6 +162,10 @@ export function ManageCourses() {
       setError('A valid credit amount is required.');
       return;
     }
+    if (!form.type) {
+      setError('Course type is required.');
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -174,6 +181,7 @@ export function ManageCourses() {
       const body = {
         title: form.title.trim(),
         code: finalCode,
+        type: form.type,
         credit: Number(form.credit),
         description: form.description.trim() || undefined,
         syllabus
@@ -271,6 +279,9 @@ export function ManageCourses() {
                   </span>
                   <span className='rounded-md bg-indigo-50 px-2 py-0.5 text-[10px] font-bold tracking-wider text-indigo-600'>
                     {course.credit} Credits
+                  </span>
+                  <span className='rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-bold tracking-wider text-slate-600 capitalize'>
+                    {course.type}
                   </span>
                 </div>
                 <h3 className='text-navy mb-1 font-serif text-base leading-snug font-bold'>
@@ -371,27 +382,50 @@ export function ManageCourses() {
                 </div>
               </div>
 
-              {/* Code */}
-              <div>
-                <label className='mb-1.5 block text-[11px] font-bold tracking-widest text-slate-500 uppercase'>
-                  Course Code *
-                </label>
-                <div className='focus-within:border-navy flex overflow-hidden rounded-lg border border-slate-200 transition-colors'>
-                  <span className='flex items-center border-r border-slate-200 bg-slate-50 px-3 font-mono text-sm font-semibold text-slate-500'>
-                    STAT-
-                  </span>
-                  <input
-                    type='text'
-                    value={form.code.replace(/^STAT-/, '')}
+              {/* Code & Type */}
+              <div className='grid grid-cols-2 gap-4'>
+                <div>
+                  <label className='mb-1.5 block text-[11px] font-bold tracking-widest text-slate-500 uppercase'>
+                    Course Code *
+                  </label>
+                  <div className='focus-within:border-navy flex overflow-hidden rounded-lg border border-slate-200 transition-colors'>
+                    <span className='flex items-center border-r border-slate-200 bg-slate-50 px-3 font-mono text-sm font-semibold text-slate-500'>
+                      STAT-
+                    </span>
+                    <input
+                      type='text'
+                      value={form.code.replace(/^STAT-/, '')}
+                      onChange={(e) =>
+                        setForm((f) => ({
+                          ...f,
+                          code: `STAT-${e.target.value.toUpperCase().replace(/^STAT-/, '')}`
+                        }))
+                      }
+                      placeholder='101'
+                      className='w-full px-3 py-2.5 font-mono text-sm text-slate-800 outline-none'
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className='mb-1.5 block text-[11px] font-bold tracking-widest text-slate-500 uppercase'>
+                    Type *
+                  </label>
+                  <select
+                    value={form.type}
                     onChange={(e) =>
                       setForm((f) => ({
                         ...f,
-                        code: `STAT-${e.target.value.toUpperCase().replace(/^STAT-/, '')}`
+                        type: e.target.value as 'theory' | 'practical' | ''
                       }))
                     }
-                    placeholder='101'
-                    className='w-full px-3 py-2.5 font-mono text-sm text-slate-800 outline-none'
-                  />
+                    className='focus:border-navy w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 transition-colors outline-none'
+                  >
+                    <option value='' disabled>
+                      Select Type
+                    </option>
+                    <option value='theory'>Theory</option>
+                    <option value='practical'>Practical</option>
+                  </select>
                 </div>
               </div>
 

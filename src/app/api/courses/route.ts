@@ -41,10 +41,14 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { title, code, credit, description, syllabus } = body;
+    const { title, code, credit, type, description, syllabus } = body;
 
-    if (!title || !code || credit === undefined) {
-      return errorResponse('title, code, and credit are required', 400);
+    if (!title || !code || credit === undefined || !type) {
+      return errorResponse('title, code, credit, and type are required', 400);
+    }
+
+    if (!['theory', 'practical'].includes(type)) {
+      return errorResponse('type must be theory or practical', 400);
     }
 
     const existing = await Course.findOne({ code: code.trim() });
@@ -54,6 +58,7 @@ export async function POST(req: NextRequest) {
       title: title.trim(),
       code: code.trim(),
       credit: Number(credit),
+      type,
       description: description?.trim(),
       syllabus: Array.isArray(syllabus) ? syllabus : []
     });

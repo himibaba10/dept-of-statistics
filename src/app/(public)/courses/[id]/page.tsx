@@ -97,6 +97,17 @@ export default function CourseDetailPage() {
                 <p className='text-navy font-serif text-xl font-bold'>
                   {course.credit}
                 </p>
+                {course.type && (
+                  <>
+                    <div className='my-3 border-t border-slate-100' />
+                    <p className='mb-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
+                      Type
+                    </p>
+                    <p className='text-navy font-serif text-xl font-bold capitalize'>
+                      {course.type}
+                    </p>
+                  </>
+                )}
                 {course.syllabus?.length > 0 && (
                   <>
                     <div className='my-3 border-t border-slate-100' />

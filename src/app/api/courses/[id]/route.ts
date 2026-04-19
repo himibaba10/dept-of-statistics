@@ -62,6 +62,9 @@ export async function PATCH(
     if (body.title) body.title = body.title.trim();
     if (body.description) body.description = body.description.trim();
     if (body.credit !== undefined) body.credit = Number(body.credit);
+    if (body.type && !['theory', 'practical'].includes(body.type)) {
+      return errorResponse('type must be theory or practical', 400);
+    }
 
     const course = await Course.findByIdAndUpdate(id, body, {
       new: true,
