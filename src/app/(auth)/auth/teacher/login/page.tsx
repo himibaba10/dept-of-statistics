@@ -50,7 +50,9 @@ export default function TeacherLoginPage() {
         data.data.accessToken,
         data.data.refreshToken
       );
-      router.push('/teacher');
+      // Teachers with isAdmin go to /dashboard, otherwise to public site
+      const u = data.data.user;
+      router.push(u.isAdmin ? '/dashboard' : '/');
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {

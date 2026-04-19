@@ -1,16 +1,18 @@
 'use client';
 
 import { useAuth } from '@/components/providers/AuthProvider';
-import { GraduationCap, LayoutDashboard, LogOut, User } from 'lucide-react';
+import { User } from '@/types';
+import { GraduationCap, LayoutDashboard, LogOut, UserIcon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-const LOGIN_ROUTES: Record<string, string> = {
-  student: '/auth/student/login',
-  teacher: '/auth/teacher/login',
-  official: '/auth/official/login'
-};
+function canAccessDashboard(user: User): boolean {
+  if (user.isAdmin) return true;
+  if (user.role === 'official') return true;
+  if (user.role === 'student' && user.isCR) return true;
+  return false;
+}
 
 export default function DashboardLayout({
   children
@@ -25,34 +27,20 @@ export default function DashboardLayout({
     if (isLoading) return;
 
     if (!user) {
-      // Redirect to the appropriate login page based on the route
-      if (pathname.startsWith('/official')) {
-        router.push('/auth/official/login');
-      } else if (pathname.startsWith('/teacher')) {
-        router.push('/auth/teacher/login');
-      } else if (pathname.startsWith('/student')) {
+      // Send to role-appropriate login based on URL, default to student
+      if (pathname.startsWith('/dashboard')) {
         router.push('/auth/student/login');
-      } else if (pathname.startsWith('/admin')) {
-        router.push('/auth/teacher/login');
-      } else {
-        router.push('/');
       }
       return;
     }
 
-    // Role guards
-    if (pathname.startsWith('/official') && user.role !== 'official') {
-      router.push('/');
-    } else if (pathname.startsWith('/teacher') && user.role !== 'teacher') {
-      router.push('/');
-    } else if (pathname.startsWith('/student') && user.role !== 'student') {
-      router.push('/');
-    } else if (pathname.startsWith('/admin') && !user.isAdmin) {
+    // Teachers with no special role have no dashboard
+    if (!canAccessDashboard(user)) {
       router.push('/');
     }
   }, [user, isLoading, router, pathname]);
 
-  if (isLoading || !user) {
+  if (isLoading || !user || !canAccessDashboard(user)) {
     return (
       <div className='bg-surface flex min-h-screen items-center justify-center'>
         <div className='flex flex-col items-center gap-3'>
@@ -64,22 +52,16 @@ export default function DashboardLayout({
   }
 
   const navItems = [
-    ...(user.role === 'official'
-      ? [{ href: '/official', label: 'Official Portal', icon: LayoutDashboard }]
-      : []),
-    ...(user.role === 'teacher'
-      ? [{ href: '/teacher', label: 'Faculty Portal', icon: LayoutDashboard }]
-      : []),
-    ...(user.role === 'student'
-      ? [{ href: '/student', label: 'Student Portal', icon: LayoutDashboard }]
-      : []),
-    ...(user.isAdmin
-      ? [{ href: '/admin', label: 'Admin Panel', icon: LayoutDashboard }]
-      : []),
-    { href: '/profile/edit', label: 'My Profile', icon: User }
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/profile/edit', label: 'My Profile', icon: UserIcon }
   ];
 
-  const loginRoute = LOGIN_ROUTES[user.role] ?? '/';
+  const loginRoute =
+    user.role === 'official'
+      ? '/auth/official/login'
+      : user.role === 'student'
+        ? '/auth/student/login'
+        : '/auth/teacher/login';
 
   return (
     <div className='bg-surface flex min-h-screen'>
@@ -112,7 +94,13 @@ export default function DashboardLayout({
               <p className='truncate text-sm font-semibold text-white'>
                 {user.name}
               </p>
-              <p className='text-xs text-white/50 capitalize'>{user.role}</p>
+              <p className='text-xs text-white/50 capitalize'>
+                {user.isAdmin
+                  ? 'Admin'
+                  : user.role === 'student' && user.isCR
+                    ? 'Class Rep'
+                    : user.role}
+              </p>
             </div>
           </div>
         </div>
@@ -120,7 +108,7 @@ export default function DashboardLayout({
         {/* Nav */}
         <nav className='flex-1 space-y-1 px-3 py-4'>
           {navItems.map(({ href, label, icon: Icon }) => {
-            const active = pathname.startsWith(href);
+            const active = pathname === href || pathname.startsWith(href + '/');
             return (
               <Link
                 key={href}

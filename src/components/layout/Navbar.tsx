@@ -22,11 +22,11 @@ const navLinks = [
   { href: '/notice-board', label: 'Notice Board' }
 ];
 
-const DASHBOARD_ROUTES: Record<string, string> = {
-  student: '/student',
-  teacher: '/teacher',
-  official: '/official'
-};
+function getDashboardHref(user: import('@/types').User | null): string {
+  if (!user) return '/';
+  if (user.role === 'teacher' && !user.isAdmin) return '/'; // teachers have no dashboard
+  return '/dashboard';
+}
 
 function UserMenu() {
   const { user, logout, isLoading } = useAuth();
@@ -91,7 +91,7 @@ function UserMenu() {
     );
   }
 
-  const dashboardHref = DASHBOARD_ROUTES[user.role] ?? '/';
+  const dashboardHref = getDashboardHref(user);
 
   return (
     <div ref={ref} className='relative'>
@@ -163,7 +163,7 @@ export function Navbar() {
   const pathname = usePathname();
   const { user } = useAuth();
 
-  const dashboardHref = user ? (DASHBOARD_ROUTES[user.role] ?? '/') : '/';
+  const dashboardHref = getDashboardHref(user);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 16);

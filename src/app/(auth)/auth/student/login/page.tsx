@@ -50,7 +50,9 @@ export default function StudentLoginPage() {
         data.data.accessToken,
         data.data.refreshToken
       );
-      router.push('/student');
+      // CRs and admins go to /dashboard, other students to public site
+      const u = data.data.user;
+      router.push(u.isCR || u.isAdmin ? '/dashboard' : '/');
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {

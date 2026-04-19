@@ -51,7 +51,7 @@ export default function OfficialLoginPage() {
         data.data.refreshToken
       );
 
-      router.push('/official');
+      router.push('/dashboard');
     } catch {
       setError('Something went wrong. Please try again.');
     } finally {
