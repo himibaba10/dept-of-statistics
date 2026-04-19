@@ -45,7 +45,6 @@ export interface Course {
   code: string;
   title: string;
   description?: string;
-  thumbnailUrl: string;
   syllabus: string[];
   createdAt?: string;
   updatedAt?: string;

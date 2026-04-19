@@ -1,6 +1,6 @@
 import { errorResponse, successResponse } from '@/lib/apiResponse';
-import { connectDB } from '@/lib/db';
 import { isSeniorTeacher } from '@/lib/authHelpers';
+import { connectDB } from '@/lib/db';
 import { verifyAccessToken } from '@/lib/jwt';
 import Course from '@/models/Course';
 import User from '@/models/User';
@@ -41,10 +41,10 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { title, code, description, thumbnailUrl, syllabus } = body;
+    const { title, code, description, syllabus } = body;
 
-    if (!title || !code || !thumbnailUrl) {
-      return errorResponse('title, code, and thumbnailUrl are required', 400);
+    if (!title || !code) {
+      return errorResponse('title and code are required', 400);
     }
 
     const existing = await Course.findOne({ code: code.trim() });
@@ -54,7 +54,6 @@ export async function POST(req: NextRequest) {
       title: title.trim(),
       code: code.trim(),
       description: description?.trim(),
-      thumbnailUrl,
       syllabus: Array.isArray(syllabus) ? syllabus : []
     });
 

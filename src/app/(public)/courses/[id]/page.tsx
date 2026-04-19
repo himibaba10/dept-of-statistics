@@ -80,17 +80,9 @@ export default function CourseDetailPage() {
 
       <div className='mx-auto max-w-7xl px-6 py-10 lg:px-8'>
         <div className='flex flex-col gap-10 lg:flex-row'>
-          {/* Thumbnail */}
+          {/* Sidebar */}
           <div className='w-full shrink-0 lg:w-80'>
             <div className='sticky top-28'>
-              <div className='relative h-60 overflow-hidden rounded-2xl border border-slate-200 bg-indigo-50 lg:h-72'>
-                <Image
-                  src={course.thumbnailUrl}
-                  alt={course.title}
-                  fill
-                  className='object-cover object-center'
-                />
-              </div>
               <div className='mt-4 rounded-xl border border-slate-200 bg-white p-5'>
                 <p className='mb-1 text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
                   Course Code

@@ -2,7 +2,6 @@
 
 import { Course } from '@/types';
 import { BookOpen, Search } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -103,20 +102,14 @@ export default function CoursesPage() {
                     href={`/courses/${course._id}`}
                     className='group overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(15,42,107,0.12)]'
                   >
-                    {/* Thumbnail */}
-                    <div className='relative h-48 overflow-hidden bg-indigo-50'>
-                      <Image
-                        src={course.thumbnailUrl}
-                        alt={course.title}
-                        fill
-                        className='object-cover object-center transition-transform duration-500 group-hover:scale-105'
-                      />
+                    {/* Thumbnail placeholder */}
+                    <div className='relative flex h-48 items-center justify-center overflow-hidden bg-indigo-50 p-6'>
+                      <BookOpen className='absolute -right-6 -bottom-6 h-24 w-24 rotate-12 text-[#1E3A8A]/10' />
                       <div className='absolute top-3 right-3'>
                         <span className='bg-navy rounded-full px-3 py-1 text-xs font-bold tracking-wider text-white shadow'>
                           {course.code}
                         </span>
                       </div>
-                      <div className='from-navy/30 absolute inset-0 bg-linear-to-t to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
                     </div>
 
                     {/* Body */}

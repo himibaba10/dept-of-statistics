@@ -39,12 +39,9 @@ interface CourseForm {
   title: string;
   code: string;
   description: string;
-  thumbnailFile: File | null;
-  thumbnailPreview: string;
   syllabusFiles: File[];
   syllabusPreviews: string[];
   // existing URLs (when editing)
-  existingThumbnailUrl: string;
   existingSyllabus: string[];
 }
 
@@ -52,11 +49,8 @@ const EMPTY_FORM: CourseForm = {
   title: '',
   code: '',
   description: '',
-  thumbnailFile: null,
-  thumbnailPreview: '',
   syllabusFiles: [],
   syllabusPreviews: [],
-  existingThumbnailUrl: '',
   existingSyllabus: []
 };
 
@@ -76,7 +70,6 @@ export function ManageCourses() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [error, setError] = useState('');
 
-  const thumbnailInputRef = useRef<HTMLInputElement>(null);
   const syllabusInputRef = useRef<HTMLInputElement>(null);
 
   // ── fetch ──────────────────────────────────────────────────────────────────
@@ -113,11 +106,8 @@ export function ManageCourses() {
       title: course.title,
       code: course.code,
       description: course.description ?? '',
-      thumbnailFile: null,
-      thumbnailPreview: '',
       syllabusFiles: [],
       syllabusPreviews: [],
-      existingThumbnailUrl: course.thumbnailUrl,
       existingSyllabus: course.syllabus ?? []
     });
     setError('');
@@ -132,13 +122,6 @@ export function ManageCourses() {
   };
 
   // ── file pickers ───────────────────────────────────────────────────────────
-
-  const onThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const preview = URL.createObjectURL(file);
-    setForm((f) => ({ ...f, thumbnailFile: file, thumbnailPreview: preview }));
-  };
 
   const onSyllabusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
@@ -172,28 +155,14 @@ export function ManageCourses() {
 
   const handleSubmit = async () => {
     setError('');
-    if (!form.title.trim() || !form.code.trim()) {
+    const finalCode = form.code.trim() === 'STAT-' ? '' : form.code.trim();
+    if (!form.title.trim() || !finalCode) {
       setError('Title and code are required.');
-      return;
-    }
-
-    const hasThumbnail = form.thumbnailFile || form.existingThumbnailUrl;
-    if (!hasThumbnail) {
-      setError('A thumbnail image is required.');
       return;
     }
 
     setSubmitting(true);
     try {
-      let thumbnailUrl = form.existingThumbnailUrl;
-      if (form.thumbnailFile) {
-        thumbnailUrl = await uploadImage(
-          form.thumbnailFile,
-          'course',
-          getToken()
-        );
-      }
-
       // Upload new syllabus files
       const newSyllabusUrls: string[] = [];
       for (const file of form.syllabusFiles) {
@@ -205,9 +174,8 @@ export function ManageCourses() {
 
       const body = {
         title: form.title.trim(),
-        code: form.code.trim(),
+        code: finalCode,
         description: form.description.trim() || undefined,
-        thumbnailUrl,
         syllabus
       };
 
@@ -299,20 +267,13 @@ export function ManageCourses() {
               key={course._id}
               className='overflow-hidden rounded-2xl border border-slate-200 bg-white'
             >
-              {/* Thumbnail */}
-              <div className='relative h-40 bg-indigo-50'>
-                <Image
-                  src={course.thumbnailUrl}
-                  alt={course.title}
-                  fill
-                  className='object-cover object-center'
-                />
-                <span className='bg-navy absolute top-3 right-3 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider text-white'>
-                  {course.code}
-                </span>
-              </div>
               {/* Body */}
               <div className='p-4'>
+                <div className='mb-2 flex items-center gap-2'>
+                  <span className='bg-navy rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider text-white'>
+                    {course.code}
+                  </span>
+                </div>
                 <h3 className='text-navy mb-1 font-serif text-base leading-snug font-bold'>
                   {course.title}
                 </h3>
@@ -394,18 +355,23 @@ export function ManageCourses() {
                 <label className='mb-1.5 block text-[11px] font-bold tracking-widest text-slate-500 uppercase'>
                   Course Code *
                 </label>
-                <input
-                  type='text'
-                  value={form.code}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      code: e.target.value.toUpperCase()
-                    }))
-                  }
-                  placeholder='e.g. STAT-101'
-                  className='focus:border-navy w-full rounded-lg border border-slate-200 px-3 py-2.5 font-mono text-sm text-slate-800 transition-colors outline-none'
-                />
+                <div className='focus-within:border-navy flex overflow-hidden rounded-lg border border-slate-200 transition-colors'>
+                  <span className='flex items-center border-r border-slate-200 bg-slate-50 px-3 font-mono text-sm font-semibold text-slate-500'>
+                    STAT-
+                  </span>
+                  <input
+                    type='text'
+                    value={form.code.replace(/^STAT-/, '')}
+                    onChange={(e) =>
+                      setForm((f) => ({
+                        ...f,
+                        code: `STAT-${e.target.value.toUpperCase().replace(/^STAT-/, '')}`
+                      }))
+                    }
+                    placeholder='101'
+                    className='w-full px-3 py-2.5 font-mono text-sm text-slate-800 outline-none'
+                  />
+                </div>
               </div>
 
               {/* Description */}
@@ -422,62 +388,6 @@ export function ManageCourses() {
                   placeholder='Brief overview of the course...'
                   className='focus:border-navy w-full resize-none rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-800 transition-colors outline-none'
                 />
-              </div>
-
-              {/* Thumbnail */}
-              <div>
-                <label className='mb-1.5 block text-[11px] font-bold tracking-widest text-slate-500 uppercase'>
-                  Thumbnail Image *
-                </label>
-                <input
-                  ref={thumbnailInputRef}
-                  type='file'
-                  accept='image/*'
-                  className='hidden'
-                  onChange={onThumbnailChange}
-                />
-                {form.thumbnailPreview || form.existingThumbnailUrl ? (
-                  <div className='relative'>
-                    <div className='relative h-36 overflow-hidden rounded-xl border border-slate-200 bg-slate-50'>
-                      <Image
-                        src={form.thumbnailPreview || form.existingThumbnailUrl}
-                        alt='Thumbnail preview'
-                        fill
-                        className='object-cover object-center'
-                      />
-                    </div>
-                    <button
-                      onClick={() =>
-                        setForm((f) => ({
-                          ...f,
-                          thumbnailFile: null,
-                          thumbnailPreview: '',
-                          existingThumbnailUrl: ''
-                        }))
-                      }
-                      className='absolute top-2 right-2 rounded-full bg-white/90 p-1 shadow hover:bg-white'
-                    >
-                      <X size={14} className='text-slate-600' />
-                    </button>
-                    <button
-                      onClick={() => thumbnailInputRef.current?.click()}
-                      className='mt-2 text-xs font-semibold text-slate-500 hover:underline'
-                    >
-                      Change thumbnail
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => thumbnailInputRef.current?.click()}
-                    className='flex w-full flex-col items-center gap-2 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 px-4 py-8 text-sm text-slate-500 transition-colors hover:border-[#1E3A8A]/40 hover:bg-indigo-50/50'
-                  >
-                    <UploadCloud size={24} className='text-slate-400' />
-                    <span className='font-semibold'>Click to upload</span>
-                    <span className='text-xs text-slate-400'>
-                      JPEG, PNG, WebP up to 10MB
-                    </span>
-                  </button>
-                )}
               </div>
 
               {/* Syllabus */}
