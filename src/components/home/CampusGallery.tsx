@@ -66,14 +66,14 @@ export function CampusGallery() {
           {photos.slice(0, 6).map((photo, i) => (
             <div
               key={photo._id}
-              className={`group relative aspect-4/3 cursor-pointer overflow-hidden rounded-xl ${i === 0 || i === 3 ? 'col-span-2' : 'col-span-1'}`}
+              className={`group relative aspect-4/3 h-full w-full cursor-pointer overflow-hidden rounded-xl ${i === 0 || i === 3 ? 'col-span-2' : 'col-span-1'}`}
               onClick={() => setLightbox(i)}
             >
               <Image
                 src={photo.url}
                 alt={photo.caption ?? 'Gallery photo'}
                 fill
-                className='object-cover transition-transform duration-500 group-hover:scale-105'
+                className='h-full object-cover transition-transform duration-500 group-hover:scale-105'
                 sizes='(max-width: 768px) 100vw, 50vw'
               />
               <div className='from-navy/70 absolute inset-0 flex items-end bg-linear-to-t to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100'>

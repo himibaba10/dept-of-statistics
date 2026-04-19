@@ -1,6 +1,6 @@
 'use client';
 
-import { Calendar, Clock, FileText, Filter, Paperclip } from 'lucide-react';
+import { Clock, FileText, Filter, Paperclip } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
@@ -241,15 +241,6 @@ export default function NoticeBoardPage() {
 
                           {/* Footer — dates + publisher */}
                           <div className='mt-auto space-y-1.5 border-t border-slate-100 pt-3'>
-                            <div className='flex items-center gap-1.5 text-xs text-slate-400'>
-                              <Calendar size={11} />
-                              <span>
-                                Notice date:{' '}
-                                <span className='font-medium text-slate-600'>
-                                  {formatDate(notice.date)}
-                                </span>
-                              </span>
-                            </div>
                             <div className='flex items-center gap-1.5 text-xs text-slate-400'>
                               <Clock size={11} />
                               <span>
