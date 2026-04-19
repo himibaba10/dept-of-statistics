@@ -37,6 +37,12 @@ export async function POST(req: NextRequest) {
       return errorResponse('Invalid credentials', 401);
     }
 
+    if (user.status === 'pending') {
+      return errorResponse(
+        'Your account is pending approval from your class representative.',
+        403
+      );
+    }
     if (user.status === 'blocked') {
       return errorResponse(
         'Your account has been blocked. Contact the administrator.',

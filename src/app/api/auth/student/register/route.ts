@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       address: address ?? {},
       bloodGroup: bloodGroup || undefined,
       role: 'student',
-      status: 'active', // students are active immediately
+      status: 'pending', // awaiting CR approval
       isAdmin: false,
       password: hashedPassword,
       studentId: studentId || undefined,

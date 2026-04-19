@@ -109,10 +109,15 @@ export default function StudentRegisterPage() {
             </div>
             <div>
               <h2 className='text-navy mb-2 font-serif text-2xl font-bold'>
-                Account Created!
+                Registration Submitted!
               </h2>
               <p className='text-sm leading-relaxed text-slate-500'>
-                Your student account is ready. You can now sign in.
+                Your account is{' '}
+                <span className='font-semibold text-amber-600'>
+                  pending approval
+                </span>
+                . Your class representative will review and activate your
+                account.
               </p>
             </div>
             <Link
