@@ -5,6 +5,8 @@ import Notice from '@/models/Notice';
 import User from '@/models/User';
 import { NextRequest } from 'next/server';
 
+const SENIOR_DESIGNATIONS = ['professor', 'chairman'];
+
 // GET /api/notices — public, returns all notices sorted by date desc
 export async function GET(req: NextRequest) {
   try {
@@ -50,8 +52,11 @@ export async function POST(req: NextRequest) {
     const user = await User.findById(payload.userId);
     if (!user) return errorResponse('User not found', 404);
 
-    // Only officials and admins can publish notices
-    if (user.role !== 'official' && !user.isAdmin) {
+    const isSeniorTeacher =
+      user.role === 'teacher' &&
+      SENIOR_DESIGNATIONS.includes(user.designation?.toLowerCase() ?? '');
+
+    if (user.role !== 'official' && !user.isAdmin && !isSeniorTeacher) {
       return errorResponse('Forbidden', 403);
     }
 

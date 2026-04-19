@@ -13,7 +13,8 @@ const API_SECRET = process.env.CLOUDINARY_API_SECRET!;
 const FOLDER_MAP: Record<string, string> = {
   student: 'Dept of Statistics/students',
   teacher: 'Dept of Statistics/teachers',
-  official: 'Dept of Statistics/officials'
+  official: 'Dept of Statistics/officials',
+  notice: 'Dept of Statistics/notices'
 };
 
 function signRequest(params: Record<string, string>, secret: string): string {
@@ -49,6 +50,10 @@ export async function POST(req: NextRequest) {
     const file = formData.get('file') as File | null;
     if (!file) return errorResponse('No file provided', 400);
 
+    // Optional explicit folder key (e.g. 'notice'), falls back to role
+    const folderKey =
+      (formData.get('folderKey') as string | null) ?? payload.role;
+
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
       return errorResponse(
@@ -67,7 +72,8 @@ export async function POST(req: NextRequest) {
       .webp({ quality: 80 })
       .toBuffer();
 
-    const folder = FOLDER_MAP[payload.role] ?? 'Dept of Statistics';
+    const folder =
+      FOLDER_MAP[folderKey] ?? FOLDER_MAP[payload.role] ?? 'Dept of Statistics';
     const timestamp = String(Math.floor(Date.now() / 1000));
 
     const firstName = user.name

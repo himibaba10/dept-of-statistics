@@ -5,6 +5,8 @@ import Notice from '@/models/Notice';
 import User from '@/models/User';
 import { NextRequest } from 'next/server';
 
+const SENIOR_DESIGNATIONS = ['professor', 'chairman'];
+
 // DELETE /api/notices/[id] — official (own) or admin
 export async function DELETE(
   req: NextRequest,
@@ -28,7 +30,11 @@ export async function DELETE(
     const user = await User.findById(payload.userId);
     if (!user) return errorResponse('User not found', 404);
 
-    if (user.role !== 'official' && !user.isAdmin) {
+    const isSeniorTeacher =
+      user.role === 'teacher' &&
+      SENIOR_DESIGNATIONS.includes(user.designation?.toLowerCase() ?? '');
+
+    if (user.role !== 'official' && !user.isAdmin && !isSeniorTeacher) {
       return errorResponse('Forbidden', 403);
     }
 
@@ -36,7 +42,7 @@ export async function DELETE(
     const notice = await Notice.findById(id);
     if (!notice) return errorResponse('Notice not found', 404);
 
-    // Non-admin officials can only delete their own notices
+    // Non-admin can only delete their own notices
     if (
       !user.isAdmin &&
       notice.publishedBy.toString() !== user._id.toString()
@@ -75,7 +81,11 @@ export async function PATCH(
     const user = await User.findById(payload.userId);
     if (!user) return errorResponse('User not found', 404);
 
-    if (user.role !== 'official' && !user.isAdmin) {
+    const isSeniorTeacherPatch =
+      user.role === 'teacher' &&
+      SENIOR_DESIGNATIONS.includes(user.designation?.toLowerCase() ?? '');
+
+    if (user.role !== 'official' && !user.isAdmin && !isSeniorTeacherPatch) {
       return errorResponse('Forbidden', 403);
     }
 
