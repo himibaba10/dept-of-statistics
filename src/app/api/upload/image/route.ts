@@ -14,7 +14,8 @@ const FOLDER_MAP: Record<string, string> = {
   student: 'Dept of Statistics/students',
   teacher: 'Dept of Statistics/teachers',
   official: 'Dept of Statistics/officials',
-  notice: 'Dept of Statistics/notices'
+  notice: 'Dept of Statistics/notices',
+  gallery: 'Dept of Statistics/gallery'
 };
 
 function signRequest(params: Record<string, string>, secret: string): string {

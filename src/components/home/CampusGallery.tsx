@@ -4,42 +4,33 @@ import { useReveal } from '@/hooks/useReveal';
 import { ArrowUpRight, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const photos = [
-  {
-    src: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=900&auto=format&fit=crop',
-    alt: 'Campus lecture hall',
-    aspect: '4/3',
-    colSpan: 2
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=600&auto=format&fit=crop',
-    alt: 'University building exterior',
-    aspect: '4/3',
-    colSpan: 1
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=600&auto=format&fit=crop',
-    alt: 'Students studying together',
-    aspect: '4/3',
-    colSpan: 1
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=900&auto=format&fit=crop',
-    alt: 'Campus library',
-    aspect: '4/3',
-    colSpan: 2
-  }
-];
+interface GalleryPhoto {
+  _id: string;
+  url: string;
+  caption?: string;
+}
 
 export function CampusGallery() {
   const ref = useReveal();
+  const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
   const [lightbox, setLightbox] = useState<number>(-1);
+
+  useEffect(() => {
+    fetch('/api/gallery')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success) setPhotos(d.data ?? []);
+      })
+      .catch(() => {});
+  }, []);
 
   const prev = () =>
     setLightbox((i) => (i - 1 + photos.length) % photos.length);
   const next = () => setLightbox((i) => (i + 1) % photos.length);
+
+  if (photos.length === 0) return null;
 
   return (
     <section
@@ -65,24 +56,27 @@ export function CampusGallery() {
         </Link>
       </div>
 
-      {/* Grid */}
+      {/* Grid — first photo spans 2 cols, rest single */}
       <div className='grid grid-cols-3 gap-3 md:gap-4'>
-        {photos.map((photo, i) => (
+        {photos.slice(0, 6).map((photo, i) => (
           <div
-            key={i}
-            className={`group relative cursor-pointer overflow-hidden rounded-xl ${photo.aspect === '3/4' ? 'aspect-3/4' : photo.aspect === '1/1' ? 'aspect-square' : photo.aspect === '4/3' ? 'aspect-4/3' : ''}`}
+            key={photo._id}
+            className={`group relative aspect-4/3 cursor-pointer overflow-hidden rounded-xl ${i === 0 || i === 3 ? 'col-span-2' : 'col-span-1'}`}
             onClick={() => setLightbox(i)}
           >
             <Image
-              src={photo.src}
-              alt={photo.alt}
+              src={photo.url}
+              alt={photo.caption ?? 'Gallery photo'}
               fill
               className='object-cover transition-transform duration-500 group-hover:scale-105'
               sizes='(max-width: 768px) 100vw, 50vw'
             />
-            {/* Hover overlay */}
             <div className='from-navy/70 absolute inset-0 flex items-end bg-linear-to-t to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
-              <p className='text-sm font-medium text-white'>{photo.alt}</p>
+              {photo.caption && (
+                <p className='text-sm font-medium text-white'>
+                  {photo.caption}
+                </p>
+              )}
             </div>
           </div>
         ))}
@@ -100,20 +94,18 @@ export function CampusGallery() {
           >
             <div className='relative aspect-video overflow-hidden rounded-xl'>
               <Image
-                src={photos[lightbox].src}
-                alt={photos[lightbox].alt}
+                src={photos[lightbox].url}
+                alt={photos[lightbox].caption ?? 'Gallery photo'}
                 fill
                 className='object-cover'
                 sizes='90vw'
               />
             </div>
-
-            {/* Caption */}
-            <p className='mt-3 text-center text-sm text-white/70'>
-              {photos[lightbox].alt}
-            </p>
-
-            {/* Controls */}
+            {photos[lightbox].caption && (
+              <p className='mt-3 text-center text-sm text-white/70'>
+                {photos[lightbox].caption}
+              </p>
+            )}
             <button
               onClick={() => setLightbox(-1)}
               className='absolute -top-4 -right-4 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20'
@@ -132,8 +124,6 @@ export function CampusGallery() {
             >
               <ChevronRight size={20} />
             </button>
-
-            {/* Counter */}
             <div className='absolute top-3 left-3 text-xs font-semibold text-white/50 tabular-nums'>
               {String(lightbox + 1).padStart(2, '0')} /{' '}
               {String(photos.length).padStart(2, '0')}

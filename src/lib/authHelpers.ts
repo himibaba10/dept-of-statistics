@@ -9,6 +9,15 @@ export function isSeniorTeacher(user: User): boolean {
   );
 }
 
+export function canManageGallery(user: User | null): boolean {
+  if (!user) return false;
+  if (user.isAdmin) return true;
+  if (user.role === 'official') return true;
+  if (user.role === 'student' && (user as { isCR?: boolean }).isCR) return true;
+  if (isSeniorTeacher(user)) return true;
+  return false;
+}
+
 export function canAccessDashboard(user: User | null): boolean {
   if (!user) return false;
   if (user.isAdmin) return true;
