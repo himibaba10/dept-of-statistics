@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 import { User } from '@/types';
 import { CheckCircle2, Clock, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -23,11 +24,6 @@ interface PendingStudent {
   gender?: 'male' | 'female';
   status: string;
   createdAt: string;
-}
-
-function getAccessToken() {
-  if (typeof window === 'undefined') return '';
-  return localStorage.getItem('accessToken') ?? '';
 }
 
 interface Props {
@@ -65,13 +61,9 @@ export function StudentApprovals({ currentUser }: Props) {
   const approve = async (id: string) => {
     setApproving(id);
     try {
-      const token = getAccessToken();
-      const res = await fetch(`/api/users/${id}/status`, {
+      const res = await fetchWithAuth(`/api/users/${id}/status`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'active' })
       });
 

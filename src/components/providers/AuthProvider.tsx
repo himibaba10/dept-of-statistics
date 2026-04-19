@@ -48,6 +48,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setUser(resolveInitialUser());
     setIsLoading(false);
+
+    const handleForceLogout = () => setUser(null);
+    window.addEventListener('auth:logout', handleForceLogout);
+    return () => window.removeEventListener('auth:logout', handleForceLogout);
   }, []);
 
   const loginWithToken = useCallback(
