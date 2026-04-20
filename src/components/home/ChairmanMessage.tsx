@@ -3,9 +3,42 @@
 import { useReveal } from '@/hooks/useReveal';
 import { Quote } from 'lucide-react';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+
+// Define a minimal interface for the teacher user
+interface Teacher {
+  name: string;
+  designation?: string;
+  imageUrl?: string;
+}
 
 export function ChairmanMessage() {
   const ref = useReveal();
+  const [chairman, setChairman] = useState<Teacher | null>(null);
+
+  useEffect(() => {
+    fetch('/api/users?role=teacher&status=active')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data)) {
+          const found = data.data.find(
+            (u: Teacher) =>
+              u.designation && u.designation.toLowerCase().includes('chairman')
+          );
+          console.log({ found });
+          if (found) {
+            setChairman(found);
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const chairmanName = chairman?.name || 'Dr. Firstname Lastname';
+  const chairmanDesignation = chairman?.designation || 'Professor & Chairman';
+  const chairmanPhoto =
+    chairman?.imageUrl ||
+    'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=600&auto=format&fit=crop';
 
   return (
     <div
@@ -57,26 +90,31 @@ export function ChairmanMessage() {
           {/* Signature */}
           <div className='border-navy-light flex items-center gap-4 border-t pt-2'>
             <div className='bg-navy flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white'>
-              DL
+              {chairmanName
+                .split(' ')
+                .map((n) => n[0])
+                .slice(0, 2)
+                .join('')}
             </div>
             <div>
               <p className='text-navy font-serif text-base font-bold'>
-                Dr. Firstname Lastname
+                {chairmanName}
               </p>
               <p className='text-gold text-xs tracking-widest uppercase'>
-                Professor &amp; Chairman
+                {chairmanDesignation}
               </p>
             </div>
           </div>
         </div>
 
         {/* Right: Photo */}
-        <div className='relative min-h-70 shrink-0 md:w-56 lg:w-64'>
+        <div className='relative min-h-75 shrink-0 md:w-56 lg:w-64'>
           <Image
-            src='https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=600&auto=format&fit=crop'
-            alt='Department Chairman'
+            src={chairmanPhoto}
+            alt={chairmanName}
             fill
             className='object-cover'
+            sizes='(max-width: 768px) 100vw, 300px'
           />
           {/* Overlay gradient for text readability at bottom */}
           <div className='from-navy/50 absolute inset-0 bg-linear-to-t to-transparent to-50%' />
