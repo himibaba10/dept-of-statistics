@@ -12,7 +12,7 @@ interface Teacher {
   imageUrl?: string;
 }
 
-const SENIOR = ['professor', 'chairman'];
+const SENIOR = ['chairman', 'professor'];
 
 export function FeaturedTeachers() {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
@@ -44,6 +44,16 @@ export function FeaturedTeachers() {
         const senior = all.filter((t) =>
           SENIOR.includes(t.designation?.toLowerCase() ?? '')
         );
+
+        // Sort to ensure the Chairman appears first
+        senior.sort((a, b) => {
+          const aIsChair = a.designation?.toLowerCase().includes('chairman');
+          const bIsChair = b.designation?.toLowerCase().includes('chairman');
+          if (aIsChair && !bIsChair) return -1;
+          if (!aIsChair && bIsChair) return 1;
+          return 0;
+        });
+
         setTeachers(senior);
       })
       .catch(() => {})

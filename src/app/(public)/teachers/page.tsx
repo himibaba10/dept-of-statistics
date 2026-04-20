@@ -3,6 +3,7 @@
 import { Teacher } from '@/types';
 import { Filter, Search, Users } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 const DESIGNATION_ORDER = [
@@ -196,9 +197,10 @@ export default function TeachersPage() {
               ) : (
                 <div className='grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3'>
                   {filtered.map((teacher) => (
-                    <div
+                    <Link
+                      href={`/teachers/${teacher._id}`}
                       key={teacher._id}
-                      className='group overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(15,42,107,0.12)]'
+                      className='group block overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(15,42,107,0.12)]'
                     >
                       <div className='relative h-80 overflow-hidden bg-indigo-50'>
                         <Image
@@ -298,7 +300,7 @@ export default function TeachersPage() {
                           )}
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               )}
