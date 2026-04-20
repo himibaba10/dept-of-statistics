@@ -11,9 +11,11 @@ import {
   User,
   X
 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import logo from '../../../public/University_of_Chittagong_logo.png';
 
 const navLinks = [
   { href: '/students', label: 'Students' },
@@ -190,9 +192,13 @@ export function Navbar() {
           <div className='flex h-17 items-center justify-between gap-8'>
             {/* Logo */}
             <Link href='/' className='flex shrink-0 items-center gap-3'>
-              <div className='bg-navy flex h-9 w-9 shrink-0 items-center justify-center rounded-lg'>
-                <GraduationCap size={20} className='text-white' />
-              </div>
+              <Image
+                src={logo}
+                alt='CU Logo'
+                width={80}
+                height={80}
+                className='w-8'
+              />
               <div className='flex flex-col leading-none'>
                 <span className='text-navy font-serif text-[17px] font-bold tracking-tight'>
                   Dept. of Statistics
