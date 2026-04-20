@@ -18,8 +18,6 @@ export function CampusGallery() {
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
   const [lightbox, setLightbox] = useState<number>(-1);
 
-  console.log(photos);
-
   useEffect(() => {
     fetch('/api/gallery')
       .then((r) => r.json())

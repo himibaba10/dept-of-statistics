@@ -21,8 +21,6 @@ export async function POST(req: NextRequest) {
       session
     } = body;
 
-    console.log(gender);
-
     if (!name || !phone || !password) {
       return errorResponse('name, phone, and password are required', 400);
     }

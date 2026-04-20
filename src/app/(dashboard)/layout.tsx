@@ -1,7 +1,11 @@
 'use client';
 
 import { useAuth } from '@/components/providers/AuthProvider';
-import { canAccessDashboard, canManageGallery } from '@/lib/authHelpers';
+import {
+  canAccessDashboard,
+  canManageGallery,
+  isSeniorTeacher
+} from '@/lib/authHelpers';
 import {
   GraduationCap,
   Images,
@@ -25,8 +29,6 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (isLoading) return;
-
-    console.log(user);
 
     if (!user) {
       // Send to role-appropriate login based on URL, default to student
@@ -59,7 +61,7 @@ export default function DashboardLayout({
       ? [{ href: '/dashboard/gallery', label: 'Campus Gallery', icon: Images }]
       : []),
     { href: '/profile/edit', label: 'My Profile', icon: UserIcon },
-    ...(user.isAdmin
+    ...(user.isAdmin || isSeniorTeacher(user)
       ? [
           {
             href: '/dashboard/settings',

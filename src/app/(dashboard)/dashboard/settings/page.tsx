@@ -2,6 +2,7 @@
 
 import { GeneralSettings } from '@/components/dashboard/GeneralSettings';
 import { useAuth } from '@/components/providers/AuthProvider';
+import { isSeniorTeacher } from '@/lib/authHelpers';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -11,12 +12,13 @@ export default function SettingsPage() {
 
   useEffect(() => {
     if (isLoading) return;
-    if (!user || !user.isAdmin) {
+    if (!user || (!user.isAdmin && !isSeniorTeacher(user))) {
       router.replace('/dashboard');
     }
   }, [user, isLoading, router]);
 
-  if (isLoading || !user?.isAdmin) return null;
+  if (isLoading || !user || (!user.isAdmin && !isSeniorTeacher(user)))
+    return null;
 
   return <GeneralSettings />;
 }

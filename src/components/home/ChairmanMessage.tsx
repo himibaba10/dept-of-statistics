@@ -25,10 +25,7 @@ export function ChairmanMessage() {
             (u: Teacher) =>
               u.designation && u.designation.toLowerCase().includes('chairman')
           );
-          console.log({ found });
-          if (found) {
-            setChairman(found);
-          }
+          if (found) setChairman(found);
         }
       })
       .catch(() => {});
