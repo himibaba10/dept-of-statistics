@@ -1,36 +1,42 @@
 'use client';
 
 import { useReveal } from '@/hooks/useReveal';
-import { ArrowUpRight, Bell } from 'lucide-react';
+import { ArrowUpRight, Bell, FileText, Paperclip } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
-const mockNotices = [
-  {
-    id: '1',
-    title: 'Midterm Examination Schedule published for 2020-2021 Session',
-    tag: 'Exam'
-  },
-  {
-    id: '2',
-    title:
-      'Guest Lecture: Modern Applications of Machine Learning in Statistics',
-    tag: 'Event'
-  },
-  {
-    id: '3',
-    title: 'Data Science Bootcamp Registration Open for All Students',
-    tag: 'Registration'
-  }
-];
+interface Notice {
+  _id: string;
+  title: string;
+  body: string;
+  type: string;
+  attachmentUrl?: string;
+  publishedBy?: { name: string };
+  createdAt: string;
+}
 
-const tagColors: Record<string, string> = {
-  Exam: 'bg-[#FEF3C7] text-[#92400E]',
-  Event: 'bg-blue-100 text-blue-800',
-  Registration: 'bg-green-100 text-green-800'
+const TYPE_COLORS: Record<string, string> = {
+  notice: 'bg-blue-100 text-blue-800',
+  event: 'bg-purple-100 text-purple-800',
+  exam: 'bg-red-100 text-red-800',
+  circular: 'bg-amber-100 text-amber-800',
+  other: 'bg-slate-100 text-slate-800'
 };
 
 export function NoticeBoardPreview() {
   const ref = useReveal();
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/notices')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success) setNotices((d.data ?? []).slice(0, 3));
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div
@@ -67,33 +73,66 @@ export function NoticeBoardPreview() {
         </div>
 
         <div className='divide-y divide-slate-100'>
-          {mockNotices.map((notice) => {
-            const colors =
-              tagColors[notice.tag] || 'bg-slate-100 text-slate-600';
-            return (
-              <div
-                key={notice.id}
-                className='group hover:border-l-gold cursor-pointer border-l-2 border-l-white px-5 py-4 transition-colors duration-200 hover:bg-slate-50'
-              >
-                {/* Tag + date */}
-                <div className='mb-2 flex items-center justify-between'>
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase ${colors}`}
-                  >
-                    {notice.tag}
-                  </span>
+          {loading ? (
+            <div className='flex flex-col items-center justify-center p-8'>
+              <span className='h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-[#1E3A8A]' />
+            </div>
+          ) : notices.length === 0 ? (
+            <div className='flex flex-col items-center justify-center p-8 text-center'>
+              <FileText size={24} className='mb-2 text-slate-300' />
+              <p className='text-sm font-semibold text-slate-500'>
+                No notices yet
+              </p>
+            </div>
+          ) : (
+            notices.map((notice) => {
+              const colors =
+                TYPE_COLORS[notice.type] || 'bg-slate-100 text-slate-600';
+              return (
+                <div
+                  key={notice._id}
+                  className='group hover:border-l-gold cursor-pointer border-l-2 border-l-white px-5 py-4 transition-colors duration-200 hover:bg-slate-50'
+                >
+                  {/* Tag + date */}
+                  <div className='mb-2 flex items-center justify-between'>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase ${colors}`}
+                    >
+                      {notice.type}
+                    </span>
+                    <span className='relative text-[10px] font-semibold text-slate-400'>
+                      {new Date(notice.createdAt).toLocaleDateString('en-GB', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                      })}
+                      <span>
+                        {notice.attachmentUrl && (
+                          <a
+                            href={notice.attachmentUrl}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='flex items-center gap-1.5 text-xs font-semibold text-[#1E3A8A] hover:underline'
+                          >
+                            <Paperclip size={11} />
+                            View Attachment
+                          </a>
+                        )}
+                      </span>
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <p className='group-hover:text-navy line-clamp-2 text-sm leading-snug font-semibold text-slate-800 transition-colors duration-200'>
+                    {notice.title}
+                  </p>
+
+                  {/* Gold left indicator on hover */}
+                  <div className='bg-gold absolute top-0 bottom-0 left-0 w-0.5 opacity-0 transition-opacity duration-200 group-hover:opacity-100' />
                 </div>
-
-                {/* Title */}
-                <p className='group-hover:text-navy text-sm leading-snug font-semibold text-slate-800 transition-colors duration-200'>
-                  {notice.title}
-                </p>
-
-                {/* Gold left indicator on hover */}
-                <div className='bg-gold absolute top-0 bottom-0 left-0 w-0.5 opacity-0 transition-opacity duration-200 group-hover:opacity-100' />
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
 
         {/* Footer CTA */}

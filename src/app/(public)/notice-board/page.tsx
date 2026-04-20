@@ -32,7 +32,6 @@ interface Notice {
   title: string;
   body: string;
   type: string;
-  date: string;
   attachmentUrl?: string;
   publishedBy?: { name: string };
   createdAt: string;
