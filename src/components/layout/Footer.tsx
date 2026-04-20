@@ -75,22 +75,11 @@ export function Footer() {
 
       {/* Bottom bar */}
       <div className='border-t border-white/10'>
-        <div className='mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-5 sm:flex-row'>
+        <div className='mx-auto flex max-w-7xl flex-col items-center justify-center gap-3 px-6 py-5 sm:flex-row'>
           <p className='text-xs text-white/40'>
             © {new Date().getFullYear()} Department of Statistics, University of
             Chittagong. All rights reserved.
           </p>
-          <div className='flex gap-5'>
-            {['About', 'Privacy Policy', 'Contact'].map((label) => (
-              <Link
-                key={label}
-                href={`/${label.toLowerCase().replace(' ', '-')}`}
-                className='text-xs text-white/40 transition-colors duration-200 hover:text-white/80'
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
         </div>
       </div>
     </footer>
