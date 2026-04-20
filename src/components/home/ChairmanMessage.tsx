@@ -105,12 +105,12 @@ export function ChairmanMessage() {
         </div>
 
         {/* Right: Photo */}
-        <div className='relative min-h-75 shrink-0 md:w-56 lg:w-64'>
+        <div className='relative min-h-96 shrink-0 sm:min-h-75 md:w-56 lg:w-64'>
           <Image
             src={chairmanPhoto}
             alt={chairmanName}
             fill
-            className='object-cover'
+            className='object-cover object-top'
             sizes='(max-width: 768px) 100vw, 300px'
           />
           {/* Overlay gradient for text readability at bottom */}
