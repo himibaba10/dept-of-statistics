@@ -38,25 +38,35 @@ export async function PATCH(req: NextRequest) {
     if (!user.isAdmin) return errorResponse('Forbidden', 403);
 
     const body = await req.json();
-    const { heroSlides } = body;
+    const { heroSlides, contact } = body;
 
-    if (!Array.isArray(heroSlides)) {
-      return errorResponse('heroSlides must be an array', 400);
+    const update: Record<string, unknown> = {};
+
+    if (heroSlides !== undefined) {
+      if (!Array.isArray(heroSlides)) {
+        return errorResponse('heroSlides must be an array', 400);
+      }
+      for (const slide of heroSlides) {
+        if (!slide.src || !slide.headline || !slide.sub || !slide.body) {
+          return errorResponse(
+            'Each slide requires src, headline, sub, and body',
+            400
+          );
+        }
+      }
+      update.heroSlides = heroSlides;
     }
 
-    // Validate each slide
-    for (const slide of heroSlides) {
-      if (!slide.src || !slide.headline || !slide.sub || !slide.body) {
-        return errorResponse(
-          'Each slide requires src, headline, sub, and body',
-          400
-        );
+    if (contact !== undefined) {
+      if (!contact.email || !contact.phone || !contact.address) {
+        return errorResponse('contact requires email, phone, and address', 400);
       }
+      update.contact = contact;
     }
 
     const settings = await SiteSettings.findOneAndUpdate(
       {},
-      { heroSlides },
+      { $set: update },
       { upsert: true, new: true, runValidators: true }
     ).lean();
 

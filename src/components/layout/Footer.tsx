@@ -2,14 +2,38 @@
 
 import { Mail, MapPin, Phone } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+interface ContactInfo {
+  email: string;
+  phone: string;
+  address: string;
+}
+
+const DEFAULT_CONTACT: ContactInfo = {
+  email: 'statistics@cu.ac.bd',
+  phone: '+880-31-726-310',
+  address: 'Dept. of Statistics, University of Chittagong, Chattogram 4331'
+};
 
 export function Footer() {
+  const [contact, setContact] = useState<ContactInfo>(DEFAULT_CONTACT);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((r) => r.json())
+      .then((data) => {
+        const c: ContactInfo = data?.data?.contact;
+        if (c?.email) setContact(c);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <footer className='bg-navy-dark text-white'>
-      {/* Main footer content */}
       <div className='mx-auto max-w-7xl px-6 py-16'>
         <div className='grid grid-cols-1 gap-12 md:grid-cols-3'>
-          {/* Brand col */}
+          {/* Brand */}
           <div className='space-y-4'>
             <div>
               <h3 className='mb-1 font-serif text-2xl font-bold text-white'>
@@ -58,15 +82,15 @@ export function Footer() {
             <ul className='space-y-4'>
               <li className='flex items-start gap-3 text-sm text-white/60'>
                 <MapPin size={16} className='text-gold mt-0.5 shrink-0' />
-                Dept. of Statistics, University of Chittagong, Chattogram 4331
+                {contact.address}
               </li>
               <li className='flex items-center gap-3 text-sm text-white/60'>
                 <Mail size={16} className='text-gold shrink-0' />
-                statistics@cu.ac.bd
+                {contact.email}
               </li>
               <li className='flex items-center gap-3 text-sm text-white/60'>
                 <Phone size={16} className='text-gold shrink-0' />
-                +880-31-726-310
+                {contact.phone}
               </li>
             </ul>
           </div>

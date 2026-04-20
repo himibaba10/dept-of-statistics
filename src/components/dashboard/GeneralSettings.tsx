@@ -5,6 +5,9 @@ import {
   GripVertical,
   ImagePlus,
   Loader2,
+  Mail,
+  MapPin,
+  Phone,
   Plus,
   Save,
   Trash2,
@@ -21,6 +24,12 @@ interface HeroSlide {
   headline: string;
   sub: string;
   body: string;
+}
+
+interface ContactInfo {
+  email: string;
+  phone: string;
+  address: string;
 }
 
 const DEFAULT_SLIDES: HeroSlide[] = [
@@ -43,6 +52,12 @@ const DEFAULT_SLIDES: HeroSlide[] = [
     body: 'A vibrant community of learners, researchers, and professionals dedicated to the science of data.'
   }
 ];
+
+const DEFAULT_CONTACT: ContactInfo = {
+  email: 'statistics@cu.ac.bd',
+  phone: '+880-31-726-310',
+  address: 'Dept. of Statistics, University of Chittagong, Chattogram 4331'
+};
 
 const EMPTY_SLIDE: HeroSlide = {
   src: '',
@@ -70,6 +85,7 @@ async function uploadHeroImage(file: File): Promise<string> {
 
 export function GeneralSettings() {
   const [slides, setSlides] = useState<HeroSlide[]>([]);
+  const [contact, setContact] = useState<ContactInfo>(DEFAULT_CONTACT);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
@@ -79,7 +95,7 @@ export function GeneralSettings() {
   const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  // ── fetch current settings ─────────────────────────────────────────────────
+  // ── fetch ──────────────────────────────────────────────────────────────────
 
   useEffect(() => {
     (async () => {
@@ -88,6 +104,8 @@ export function GeneralSettings() {
         const data = await res.json();
         const fetched: HeroSlide[] = data?.data?.heroSlides ?? [];
         setSlides(fetched.length > 0 ? fetched : DEFAULT_SLIDES);
+        const fetchedContact: ContactInfo = data?.data?.contact;
+        if (fetchedContact?.email) setContact(fetchedContact);
       } catch {
         setSlides(DEFAULT_SLIDES);
       } finally {
@@ -96,15 +114,13 @@ export function GeneralSettings() {
     })();
   }, []);
 
-  // ── slide field update ─────────────────────────────────────────────────────
+  // ── slide helpers ──────────────────────────────────────────────────────────
 
   const updateSlide = (idx: number, field: keyof HeroSlide, value: string) => {
     setSlides((prev) =>
       prev.map((s, i) => (i === idx ? { ...s, [field]: value } : s))
     );
   };
-
-  // ── image upload ───────────────────────────────────────────────────────────
 
   const handleFileChange = async (
     idx: number,
@@ -125,10 +141,7 @@ export function GeneralSettings() {
     }
   };
 
-  // ── add / remove ───────────────────────────────────────────────────────────
-
   const addSlide = () => setSlides((prev) => [...prev, { ...EMPTY_SLIDE }]);
-
   const removeSlide = (idx: number) =>
     setSlides((prev) => prev.filter((_, i) => i !== idx));
 
@@ -161,7 +174,7 @@ export function GeneralSettings() {
 
   const handleSave = async () => {
     setError('');
-    // Validate
+
     for (let i = 0; i < slides.length; i++) {
       const s = slides[i];
       if (
@@ -175,12 +188,21 @@ export function GeneralSettings() {
       }
     }
 
+    if (
+      !contact.email.trim() ||
+      !contact.phone.trim() ||
+      !contact.address.trim()
+    ) {
+      setError('Contact email, phone, and address are all required.');
+      return;
+    }
+
     setSaving(true);
     try {
       const res = await fetchWithAuth('/api/settings', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ heroSlides: slides })
+        body: JSON.stringify({ heroSlides: slides, contact })
       });
       const data = await res.json();
       if (!data.success) {
@@ -207,7 +229,7 @@ export function GeneralSettings() {
   }
 
   return (
-    <div className='space-y-8'>
+    <div className='space-y-10'>
       {/* Header */}
       <div className='flex items-start justify-between gap-4'>
         <div>
@@ -215,7 +237,7 @@ export function GeneralSettings() {
             General Settings
           </h2>
           <p className='mt-1 text-sm text-slate-500'>
-            Manage the homepage hero slider images and content.
+            Manage site-wide settings — contact info and homepage hero slider.
           </p>
         </div>
         <button
@@ -240,11 +262,74 @@ export function GeneralSettings() {
 
       {saved && !error && (
         <div className='rounded-lg bg-green-50 px-4 py-3 text-sm font-medium text-green-700'>
-          Settings saved — changes will reflect on the homepage.
+          Settings saved — changes are now live on the site.
         </div>
       )}
 
-      {/* Section: Hero Slides */}
+      {/* ── Section: Contact Info ── */}
+      <section className='rounded-2xl border border-slate-200 bg-white p-6 shadow-sm'>
+        <h3 className='text-navy mb-1 font-serif text-lg font-bold'>
+          Contact Information
+        </h3>
+        <p className='mb-6 text-xs text-slate-400'>
+          Shown in the site footer. Changes reflect immediately after saving.
+        </p>
+
+        <div className='space-y-4'>
+          {/* Email */}
+          <div>
+            <label className='mb-1.5 flex items-center gap-1.5 text-[11px] font-bold tracking-widest text-slate-500 uppercase'>
+              <Mail size={11} />
+              Email Address *
+            </label>
+            <input
+              type='email'
+              value={contact.email}
+              onChange={(e) =>
+                setContact((c) => ({ ...c, email: e.target.value }))
+              }
+              placeholder='statistics@cu.ac.bd'
+              className='focus:border-navy w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-800 transition-colors outline-none'
+            />
+          </div>
+
+          {/* Phone */}
+          <div>
+            <label className='mb-1.5 flex items-center gap-1.5 text-[11px] font-bold tracking-widest text-slate-500 uppercase'>
+              <Phone size={11} />
+              Phone Number *
+            </label>
+            <input
+              type='text'
+              value={contact.phone}
+              onChange={(e) =>
+                setContact((c) => ({ ...c, phone: e.target.value }))
+              }
+              placeholder='+880-31-726-310'
+              className='focus:border-navy w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-800 transition-colors outline-none'
+            />
+          </div>
+
+          {/* Address */}
+          <div>
+            <label className='mb-1.5 flex items-center gap-1.5 text-[11px] font-bold tracking-widest text-slate-500 uppercase'>
+              <MapPin size={11} />
+              Address *
+            </label>
+            <textarea
+              value={contact.address}
+              onChange={(e) =>
+                setContact((c) => ({ ...c, address: e.target.value }))
+              }
+              rows={2}
+              placeholder='Dept. of Statistics, University of Chittagong...'
+              className='focus:border-navy w-full resize-none rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-800 transition-colors outline-none'
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ── Section: Hero Slides ── */}
       <section>
         <div className='mb-4 flex items-center justify-between'>
           <div className='flex items-center gap-2'>
@@ -285,7 +370,7 @@ export function GeneralSettings() {
                   : 'border-slate-200'
               } ${dragIdx === idx ? 'opacity-50' : 'opacity-100'}`}
             >
-              {/* Slide header bar */}
+              {/* Slide header */}
               <div className='flex items-center justify-between border-b border-slate-100 px-4 py-3'>
                 <div className='flex items-center gap-2'>
                   <GripVertical
@@ -306,9 +391,9 @@ export function GeneralSettings() {
                 </button>
               </div>
 
-              {/* Slide content */}
+              {/* Slide body */}
               <div className='flex gap-5 p-5'>
-                {/* Image preview + upload */}
+                {/* Image */}
                 <div className='flex w-44 shrink-0 flex-col gap-2'>
                   <div className='relative h-28 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100'>
                     {slide.src ? (
@@ -334,7 +419,6 @@ export function GeneralSettings() {
                     )}
                   </div>
 
-                  {/* Hidden file input */}
                   <input
                     ref={(el) => {
                       fileInputRefs.current[idx] = el;
@@ -354,7 +438,6 @@ export function GeneralSettings() {
                     Upload Image
                   </button>
 
-                  {/* Or URL */}
                   <div className='relative'>
                     <input
                       type='text'

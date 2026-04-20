@@ -2,6 +2,7 @@
 
 import { CampusGallery } from '@/components/home/CampusGallery';
 import { ChairmanMessage } from '@/components/home/ChairmanMessage';
+import { FeaturedTeachers } from '@/components/home/FeaturedTeachers';
 import { HeroSlider } from '@/components/home/HeroSlider';
 import { NoticeBoardPreview } from '@/components/home/NoticeBoardPreview';
 import { StatsGrid } from '@/components/home/StatsGrid';
@@ -22,6 +23,8 @@ export default function Home() {
         </section>
 
         <CampusGallery />
+
+        <FeaturedTeachers />
       </div>
     </div>
   );
