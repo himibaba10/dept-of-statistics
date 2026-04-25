@@ -237,7 +237,10 @@ export default function TeacherRegisterPage() {
                   <option value=''>Select</option>
                   {DESIGNATIONS.map((d) => (
                     <option key={d} value={d}>
-                      {d}
+                      {d
+                        .split('-')
+                        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                        .join(' ')}
                     </option>
                   ))}
                 </select>

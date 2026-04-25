@@ -69,7 +69,10 @@ export function TeachersList() {
           <option value=''>All Designations</option>
           {DESIGNATIONS.map((d) => (
             <option key={d} value={d}>
-              {d.charAt(0).toUpperCase() + d.slice(1)}
+              {d
+                .split('-')
+                .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                .join(' ')}
             </option>
           ))}
         </select>
@@ -129,7 +132,7 @@ export function TeachersList() {
                       </p>
                       {teacher.designation && (
                         <p className='text-xs text-[#1E3A8A] capitalize'>
-                          {teacher.designation}
+                          {teacher.designation.replace(/-/g, ' ')}
                         </p>
                       )}
                       <div className='mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-slate-500'>

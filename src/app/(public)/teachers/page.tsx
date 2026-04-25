@@ -9,11 +9,11 @@ import { useEffect, useState } from 'react';
 const DESIGNATION_ORDER = [
   'chairman',
   'professor',
-  'associate professor',
-  'assistant professor',
-  'senior lecturer',
+  'associate-professor',
+  'assistant-professor',
+  'senior-lecturer',
   'lecturer',
-  'adjunct faculty'
+  'adjunct-faculty'
 ];
 
 function sortByDesignation(teachers: Teacher[]): Teacher[] {
@@ -138,7 +138,7 @@ export default function TeachersPage() {
                             : 'bg-transparent text-slate-600'
                         }`}
                       >
-                        <span>{d}</span>
+                        <span>{d.replace(/-/g, ' ')}</span>
                         <span
                           className={`rounded-full px-1.5 py-0.5 text-xs ${
                             active
@@ -161,7 +161,9 @@ export default function TeachersPage() {
               <div className='mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-center'>
                 <div>
                   <h2 className='text-navy font-serif text-xl font-bold capitalize'>
-                    {selectedDesignation ?? 'All Faculty'}
+                    {selectedDesignation
+                      ? selectedDesignation.replace(/-/g, ' ')
+                      : 'All Faculty'}
                   </h2>
                   <p className='mt-0.5 text-sm text-slate-400'>
                     {filtered.length} member{filtered.length !== 1 ? 's' : ''}{' '}
@@ -217,7 +219,7 @@ export default function TeachersPage() {
                         {teacher.designation && (
                           <div className='absolute top-3 right-3'>
                             <span className='bg-navy/80 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider text-white capitalize shadow-md backdrop-blur-sm'>
-                              {teacher.designation}
+                              {teacher.designation.replace(/-/g, ' ')}
                             </span>
                           </div>
                         )}
