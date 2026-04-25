@@ -4,8 +4,8 @@ export type UserStatus = 'pending' | 'active' | 'blocked';
 export interface UserBase {
   _id: string;
   name: string;
-  email?: string;
-  phone: string;
+  email: string;
+  phone?: string;
   address?: {
     street?: string;
     city?: string;

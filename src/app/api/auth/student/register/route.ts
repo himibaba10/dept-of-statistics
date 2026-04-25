@@ -21,23 +21,23 @@ export async function POST(req: NextRequest) {
       session
     } = body;
 
-    if (!name || !phone || !password) {
-      return errorResponse('name, phone, and password are required', 400);
+    if (!name || !email || !password) {
+      return errorResponse('name, email, and password are required', 400);
     }
 
-    if (email) {
-      const existingEmail = await User.findOne({ email });
-      if (existingEmail) {
-        return errorResponse('An account with this email already exists', 409);
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return errorResponse('An account with this email already exists', 409);
+    }
+
+    if (phone) {
+      const existingPhone = await User.findOne({ phone, role: 'student' });
+      if (existingPhone) {
+        return errorResponse(
+          'A student account with this phone already exists',
+          409
+        );
       }
-    }
-
-    const existingPhone = await User.findOne({ phone, role: 'student' });
-    if (existingPhone) {
-      return errorResponse(
-        'A student account with this phone already exists',
-        409
-      );
     }
 
     if (studentId) {
@@ -57,8 +57,8 @@ export async function POST(req: NextRequest) {
 
     const user = await User.create({
       name,
-      email: email || undefined,
-      phone,
+      email,
+      phone: phone || undefined,
       address: address ?? {},
       bloodGroup: bloodGroup || undefined,
       gender: gender || undefined,

@@ -13,8 +13,8 @@ export type UserStatus = 'pending' | 'active' | 'blocked';
 
 export interface IUser extends Document {
   name: string;
-  email?: string;
-  phone: string;
+  email: string;
+  phone?: string;
   address: IAddress;
   bloodGroup?: string;
   gender?: 'male' | 'female';
@@ -58,14 +58,13 @@ const userSchema = new Schema<IUser>(
     },
     email: {
       type: String,
+      required: [true, 'Email is required'],
       trim: true,
       lowercase: true,
-      sparse: true,
       match: [/^\S+@\S+\.\S+$/, 'Invalid email format']
     },
     phone: {
       type: String,
-      required: [true, 'Phone is required'],
       trim: true
     },
     address: {

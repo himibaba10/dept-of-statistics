@@ -1,5 +1,5 @@
-import { connectDB } from '@/lib/db';
 import { errorResponse, successResponse } from '@/lib/apiResponse';
+import { connectDB } from '@/lib/db';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 import { NextRequest } from 'next/server';
@@ -20,31 +20,31 @@ export async function POST(req: NextRequest) {
       designation
     } = body;
 
-    if (!name || !phone || !password) {
-      return errorResponse('name, phone, and password are required', 400);
+    if (!name || !email || !password) {
+      return errorResponse('name, email, and password are required', 400);
     }
 
-    if (email) {
-      const existingEmail = await User.findOne({ email });
-      if (existingEmail) {
-        return errorResponse('An account with this email already exists', 409);
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return errorResponse('An account with this email already exists', 409);
+    }
+
+    if (phone) {
+      const existingPhone = await User.findOne({ phone, role: 'teacher' });
+      if (existingPhone) {
+        return errorResponse(
+          'A teacher account with this phone already exists',
+          409
+        );
       }
-    }
-
-    const existingPhone = await User.findOne({ phone, role: 'teacher' });
-    if (existingPhone) {
-      return errorResponse(
-        'A teacher account with this phone already exists',
-        409
-      );
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const user = await User.create({
       name,
-      email: email || undefined,
-      phone,
+      email,
+      phone: phone || undefined,
       address: address ?? {},
       bloodGroup: bloodGroup || undefined,
       gender: gender || undefined,
