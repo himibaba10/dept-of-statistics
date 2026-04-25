@@ -12,7 +12,15 @@ interface Teacher {
   imageUrl?: string;
 }
 
-const SENIOR = ['chairman', 'professor'];
+const DESIGNATION_ORDER = [
+  'chairman',
+  'professor',
+  'associate-professor',
+  'assistant-professor',
+  'senior-lecturer',
+  'lecturer',
+  'adjunct-faculty'
+];
 
 export function FeaturedTeachers() {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
@@ -41,20 +49,21 @@ export function FeaturedTeachers() {
       .then((r) => r.json())
       .then((data) => {
         const all: Teacher[] = data?.data ?? [];
-        const senior = all.filter((t) =>
-          SENIOR.includes(t.designation?.toLowerCase() ?? '')
-        );
 
-        // Sort to ensure the Chairman appears first
-        senior.sort((a, b) => {
-          const aIsChair = a.designation?.toLowerCase().includes('chairman');
-          const bIsChair = b.designation?.toLowerCase().includes('chairman');
-          if (aIsChair && !bIsChair) return -1;
-          if (!aIsChair && bIsChair) return 1;
-          return 0;
+        // Sort from senior to junior
+        all.sort((a, b) => {
+          const ai = DESIGNATION_ORDER.indexOf(
+            a.designation?.toLowerCase() ?? ''
+          );
+          const bi = DESIGNATION_ORDER.indexOf(
+            b.designation?.toLowerCase() ?? ''
+          );
+          const aIdx = ai === -1 ? 999 : ai;
+          const bIdx = bi === -1 ? 999 : bi;
+          return aIdx - bIdx;
         });
 
-        setTeachers(senior);
+        setTeachers(all);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -131,7 +140,7 @@ export function FeaturedTeachers() {
 
               {/* Designation */}
               <p className='mb-5 text-xs font-semibold text-slate-400 capitalize'>
-                {teacher.designation ?? 'Faculty'}
+                {teacher.designation?.replace(/-/g, ' ') ?? 'Faculty'}
               </p>
 
               {/* View More */}

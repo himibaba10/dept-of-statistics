@@ -102,7 +102,12 @@ export function Footer() {
         <div className='mx-auto flex max-w-7xl flex-col items-center justify-center gap-3 px-6 py-5 sm:flex-row'>
           <p className='text-xs text-white/40'>
             © {new Date().getFullYear()} Department of Statistics, University of
-            Chittagong. All rights reserved.
+            Chittagong. All rights reserved. Created by{' '}
+            <Link target='_blank' href={'https://reactiveferdous.com/'}>
+              <span className='font-bold text-white underline'>
+                Ferdous Ahmed
+              </span>
+            </Link>
           </p>
         </div>
       </div>
