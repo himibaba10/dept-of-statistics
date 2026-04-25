@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { fetchWithAuth } from '@/lib/fetchWithAuth';
 import { User } from '@/types';
-import { Camera, Loader2 } from 'lucide-react';
+import { Camera, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
@@ -54,6 +54,18 @@ export default function ProfileEditPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Password state
+  const [pwdData, setPwdData] = useState({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [pwdSaving, setPwdSaving] = useState(false);
+  const [pwdError, setPwdError] = useState<string | null>(null);
+  const [pwdSuccess, setPwdSuccess] = useState(false);
+  const [showOldPwd, setShowOldPwd] = useState(false);
+  const [showNewPwd, setShowNewPwd] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -186,6 +198,46 @@ export default function ProfileEditPage() {
     }
   };
 
+  const handlePwdSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPwdError(null);
+    setPwdSuccess(false);
+
+    if (pwdData.newPassword.length < 6) {
+      setPwdError('New password must be at least 6 characters.');
+      return;
+    }
+    if (pwdData.newPassword !== pwdData.confirmPassword) {
+      setPwdError('Passwords do not match.');
+      return;
+    }
+
+    try {
+      setPwdSaving(true);
+      const res = await fetchWithAuth('/api/auth/reset-password', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          oldPassword: pwdData.oldPassword,
+          newPassword: pwdData.newPassword
+        })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setPwdError(data.message ?? 'Failed to update password.');
+        return;
+      }
+
+      setPwdSuccess(true);
+      setPwdData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+    } catch {
+      setPwdError('Something went wrong. Please try again.');
+    } finally {
+      setPwdSaving(false);
+    }
+  };
+
   const avatarSrc =
     imagePreview ??
     (user.gender === 'female'
@@ -258,6 +310,7 @@ export default function ProfileEditPage() {
               type='email'
               value={formData.email}
               onChange={handleChange}
+              required
             />
           </div>
 
@@ -267,7 +320,6 @@ export default function ProfileEditPage() {
               name='phone'
               value={formData.phone}
               onChange={handleChange}
-              required
             />
           </div>
 
@@ -408,6 +460,112 @@ export default function ProfileEditPage() {
               </span>
             ) : (
               'Save Changes'
+            )}
+          </Button>
+        </div>
+      </form>
+
+      <form
+        onSubmit={handlePwdSubmit}
+        className='mt-8 space-y-6 rounded-xl border border-slate-200 bg-white p-8 shadow-sm'
+      >
+        <div className='border-b border-slate-100 pb-4'>
+          <h2 className='text-xl font-bold text-[#1E3A8A]'>Change Password</h2>
+          <p className='text-sm text-slate-500'>
+            Ensure your account is using a long, secure password.
+          </p>
+        </div>
+
+        <div className='grid grid-cols-1 gap-5'>
+          <div className='space-y-1.5'>
+            <label className='text-sm font-medium text-slate-700'>
+              Old Password
+            </label>
+            <div className='relative'>
+              <Input
+                type={showOldPwd ? 'text' : 'password'}
+                value={pwdData.oldPassword}
+                onChange={(e) =>
+                  setPwdData({ ...pwdData, oldPassword: e.target.value })
+                }
+                required
+              />
+              <button
+                type='button'
+                onClick={() => setShowOldPwd(!showOldPwd)}
+                className='absolute top-1/2 right-3 -translate-y-1/2 text-slate-400 hover:text-slate-600'
+              >
+                {showOldPwd ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
+
+          <div className='space-y-1.5'>
+            <label className='text-sm font-medium text-slate-700'>
+              New Password
+            </label>
+            <div className='relative'>
+              <Input
+                type={showNewPwd ? 'text' : 'password'}
+                value={pwdData.newPassword}
+                onChange={(e) =>
+                  setPwdData({ ...pwdData, newPassword: e.target.value })
+                }
+                required
+                minLength={6}
+              />
+              <button
+                type='button'
+                onClick={() => setShowNewPwd(!showNewPwd)}
+                className='absolute top-1/2 right-3 -translate-y-1/2 text-slate-400 hover:text-slate-600'
+              >
+                {showNewPwd ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
+
+          <div className='space-y-1.5'>
+            <label className='text-sm font-medium text-slate-700'>
+              Confirm New Password
+            </label>
+            <div className='relative'>
+              <Input
+                type={showNewPwd ? 'text' : 'password'}
+                value={pwdData.confirmPassword}
+                onChange={(e) =>
+                  setPwdData({ ...pwdData, confirmPassword: e.target.value })
+                }
+                required
+                minLength={6}
+              />
+            </div>
+          </div>
+        </div>
+
+        {pwdError && (
+          <p className='rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-600'>
+            {pwdError}
+          </p>
+        )}
+        {pwdSuccess && (
+          <p className='rounded-lg bg-green-50 px-4 py-2.5 text-sm text-green-700'>
+            Password updated successfully!
+          </p>
+        )}
+
+        <div className='flex justify-end border-t border-slate-100 pt-4'>
+          <Button
+            type='submit'
+            disabled={pwdSaving}
+            className='min-w-30 bg-[#1E3A8A] hover:bg-[#1E3A8A]/90'
+          >
+            {pwdSaving ? (
+              <span className='flex items-center gap-2'>
+                <Loader2 size={15} className='animate-spin' />
+                Updating...
+              </span>
+            ) : (
+              'Update Password'
             )}
           </Button>
         </div>
