@@ -3,6 +3,7 @@
 import { AlertCircle, CheckCircle2, Eye, EyeOff, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 const DIVISIONS = [
@@ -47,21 +48,35 @@ export default function StudentRegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.password || !form.gender) {
-      setError('Name, email, gender, and password are required.');
+    if (
+      !form.name ||
+      !form.email ||
+      !form.password ||
+      !form.gender ||
+      !form.studentId ||
+      !form.session
+    ) {
+      toast.error(
+        'Name, email, student ID, session, gender, and password are required.'
+      );
       return;
     }
     if (form.password.length < 6) {
-      setError('Password must be at least 6 characters.');
+      toast.error('Password must be at least 6 characters.');
       return;
     }
     if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match.');
+      toast.error('Passwords do not match.');
+      return;
+    }
+    if (!/^\d{4}-\d{4}$/.test(form.session)) {
+      toast.error(
+        'Session must be exactly in YYYY-YYYY format (e.g. 2019-2020).'
+      );
       return;
     }
 
     setLoading(true);
-    setError('');
 
     try {
       const res = await fetch('/api/auth/student/register', {
@@ -88,13 +103,14 @@ export default function StudentRegisterPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message ?? 'Registration failed.');
+        toast.error(data.message ?? 'Registration failed.');
         return;
       }
 
+      toast.success('Registration successful. Please wait for CR approval.');
       setSuccess(true);
     } catch {
-      setError('Something went wrong. Please try again.');
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -159,7 +175,11 @@ export default function StudentRegisterPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
+          <form
+            onSubmit={handleSubmit}
+            className='flex flex-col gap-5'
+            noValidate
+          >
             <p className='text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
               Personal Information
             </p>
@@ -212,7 +232,7 @@ export default function StudentRegisterPage() {
 
               <div className='flex flex-col gap-1.5'>
                 <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
-                  Student ID
+                  Student ID <span className='text-red-400'>*</span>
                 </label>
                 <input
                   name='studentId'
@@ -226,12 +246,12 @@ export default function StudentRegisterPage() {
 
               <div className='flex flex-col gap-1.5'>
                 <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
-                  Session
+                  Session <span className='text-red-400'>*</span>
                 </label>
                 <input
                   name='session'
                   type='text'
-                  placeholder='e.g. 2021-2022'
+                  placeholder='YYYY-YYYY (e.g. 2019-2020)'
                   value={form.session}
                   onChange={handleChange}
                   className='focus:border-navy focus:ring-navy/10 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 transition-all outline-none placeholder:text-slate-400 focus:bg-white focus:ring-2'

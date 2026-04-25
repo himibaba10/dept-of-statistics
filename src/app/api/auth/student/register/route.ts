@@ -87,8 +87,22 @@ export async function POST(req: NextRequest) {
       },
       201
     );
-  } catch (err) {
+  } catch (err: unknown) {
     console.error('[STUDENT_REGISTER]', err);
+    if (
+      err &&
+      typeof err === 'object' &&
+      'name' in err &&
+      (err as Error).name === 'ValidationError'
+    ) {
+      const mongooseErr = err as unknown as {
+        errors: Record<string, { message: string }>;
+      };
+      const messages = Object.values(mongooseErr.errors).map(
+        (val) => val.message
+      );
+      return errorResponse(messages.join(', '), 400);
+    }
     return errorResponse('Internal server error', 500);
   }
 }

@@ -1,6 +1,7 @@
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import type { Metadata } from 'next';
 import { Nunito_Sans, Playfair_Display } from 'next/font/google';
+import { Toaster } from 'react-hot-toast';
 import './globals.css';
 
 const nunitoSans = Nunito_Sans({
@@ -33,7 +34,10 @@ export default function RootLayout({
       className={`${nunitoSans.variable} ${playfairDisplay.variable} h-full font-sans antialiased`}
     >
       <body className='flex min-h-full flex-col'>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {children}
+          <Toaster position='top-right' />
+        </AuthProvider>
       </body>
     </html>
   );

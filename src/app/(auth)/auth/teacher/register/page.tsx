@@ -3,6 +3,7 @@
 import { AlertCircle, CheckCircle2, Eye, EyeOff, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 const DIVISIONS = [
@@ -62,20 +63,21 @@ export default function TeacherRegisterPage() {
       !form.gender ||
       !form.designation
     ) {
-      setError('Name, email, gender, designation, and password are required.');
+      toast.error(
+        'Name, email, gender, designation, and password are required.'
+      );
       return;
     }
     if (form.password.length < 6) {
-      setError('Password must be at least 6 characters.');
+      toast.error('Password must be at least 6 characters.');
       return;
     }
     if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match.');
+      toast.error('Passwords do not match.');
       return;
     }
 
     setLoading(true);
-    setError('');
 
     try {
       const res = await fetch('/api/auth/teacher/register', {
@@ -101,13 +103,14 @@ export default function TeacherRegisterPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message ?? 'Registration failed.');
+        toast.error(data.message ?? 'Registration failed.');
         return;
       }
 
+      toast.success('Registration successful. Please wait for admin approval.');
       setSuccess(true);
     } catch {
-      setError('Something went wrong. Please try again.');
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -173,7 +176,11 @@ export default function TeacherRegisterPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
+          <form
+            onSubmit={handleSubmit}
+            className='flex flex-col gap-5'
+            noValidate
+          >
             <p className='text-[10px] font-bold tracking-widest text-slate-400 uppercase'>
               Personal Information
             </p>

@@ -132,6 +132,10 @@ const userSchema = new Schema<IUser>(
           return this.role === 'student';
         },
         'Session is required for students'
+      ],
+      match: [
+        /^\d{4}-\d{4}$/,
+        'Session must be exactly in YYYY-YYYY format (e.g. 2019-2020)'
       ]
     },
     isCR: {
