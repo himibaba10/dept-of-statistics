@@ -4,10 +4,9 @@ import { ManageCourses } from '@/components/dashboard/ManageCourses';
 import { MyClassmates } from '@/components/dashboard/MyClassmates';
 import { PublishNotices } from '@/components/dashboard/PublishNotices';
 import { StudentApprovals } from '@/components/dashboard/StudentApprovals';
-import { StudentReports } from '@/components/dashboard/StudentReports';
+import { StudentsList } from '@/components/dashboard/StudentsList';
 import { TeacherApprovals } from '@/components/dashboard/TeacherApprovals';
 import { TeachersList } from '@/components/dashboard/TeachersList';
-import { StudentsList } from '@/components/dashboard/StudentsList';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { canAccessDashboard, isSeniorTeacher } from '@/lib/authHelpers';
 import { User } from '@/types';
@@ -64,10 +63,6 @@ function getTabs(user: User): Tab[] {
 
   if (user.isAdmin || isSeniorTeacher(user)) {
     tabs.push({ id: 'courses', label: 'Manage Courses' });
-  }
-
-  if (user.isAdmin) {
-    tabs.push({ id: 'students', label: 'Student Reports' });
   }
 
   return tabs;
@@ -182,7 +177,6 @@ export default function DashboardPage() {
             <MyClassmates session={user.session} currentUserId={user._id} />
           )}
         {activeTab === 'courses' && <ManageCourses />}
-        {activeTab === 'students' && <StudentReports />}
       </div>
     </div>
   );

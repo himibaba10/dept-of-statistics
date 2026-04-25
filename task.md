@@ -20,7 +20,6 @@ Single /dashboard route. Role-based tabs/content. Delete /official, /admin route
 - **Notices** — officials + admins → publish/manage notices
 - **Student Approvals** — CR (same session) + admins → approve pending students
 - **Manage Courses** — admins only
-- **Student Reports** — admins only
 - **Manage Users** — admins only (approve teachers/officials, block/unblock)
 
 ## Data / Models needed
