@@ -30,7 +30,7 @@ export interface Student extends UserBase {
 
 export interface Teacher extends UserBase {
   role: 'teacher';
-  designation?: string;
+  designation: string;
   galleryUrls?: string[];
 }
 

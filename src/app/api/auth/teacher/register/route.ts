@@ -20,8 +20,11 @@ export async function POST(req: NextRequest) {
       designation
     } = body;
 
-    if (!name || !email || !password) {
-      return errorResponse('name, email, and password are required', 400);
+    if (!name || !email || !password || !designation) {
+      return errorResponse(
+        'name, email, designation, and password are required',
+        400
+      );
     }
 
     const existingEmail = await User.findOne({ email });

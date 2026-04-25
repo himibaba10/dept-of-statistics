@@ -30,7 +30,7 @@ export interface IUser extends Document {
   session?: string;
   isCR?: boolean;
 
-  // Teacher-only (optional)
+  // Teacher-only
   designation?: string;
   galleryUrls?: string[];
 
@@ -151,6 +151,12 @@ const userSchema = new Schema<IUser>(
         'senior-lecturer',
         'adjunct-faculty',
         'chairman'
+      ],
+      required: [
+        function (this: IUser) {
+          return this.role === 'teacher';
+        },
+        'Designation is required for teachers'
       ]
     },
     galleryUrls: {

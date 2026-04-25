@@ -55,8 +55,14 @@ export default function TeacherRegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.password || !form.gender) {
-      setError('Name, email, gender, and password are required.');
+    if (
+      !form.name ||
+      !form.email ||
+      !form.password ||
+      !form.gender ||
+      !form.designation
+    ) {
+      setError('Name, email, gender, designation, and password are required.');
       return;
     }
     if (form.password.length < 6) {
@@ -220,10 +226,7 @@ export default function TeacherRegisterPage() {
 
               <div className='flex flex-col gap-1.5'>
                 <label className='text-xs font-bold tracking-wide text-slate-600 uppercase'>
-                  Designation{' '}
-                  <span className='font-normal text-slate-400 normal-case'>
-                    (optional)
-                  </span>
+                  Designation <span className='text-red-400'>*</span>
                 </label>
                 <select
                   name='designation'
