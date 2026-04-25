@@ -33,7 +33,7 @@ export default function RootLayout({
       lang='en'
       className={`${nunitoSans.variable} ${playfairDisplay.variable} h-full font-sans antialiased`}
     >
-      <body className='flex min-h-full flex-col'>
+      <body className='flex min-h-full flex-col justify-center'>
         <AuthProvider>
           {children}
           <Toaster position='top-right' />
