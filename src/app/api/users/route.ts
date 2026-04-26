@@ -1,5 +1,5 @@
-import { connectDB } from '@/lib/db';
 import { errorResponse, successResponse } from '@/lib/apiResponse';
+import { connectDB } from '@/lib/db';
 import User from '@/models/User';
 import { NextRequest } from 'next/server';
 
@@ -19,6 +19,7 @@ export async function GET(req: NextRequest) {
     if (session) filter.session = session;
 
     const users = await User.find(filter)
+      .sort({ sortOrder: 1, createdAt: 1 })
       .select('-password -refreshToken')
       .lean();
 

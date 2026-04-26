@@ -33,6 +33,7 @@ export interface IUser extends Document {
   // Teacher-only
   designation?: string;
   galleryUrls?: string[];
+  sortOrder?: number;
 
   createdAt: Date;
   updatedAt: Date;
@@ -166,6 +167,10 @@ const userSchema = new Schema<IUser>(
     galleryUrls: {
       type: [String],
       default: undefined
+    },
+    sortOrder: {
+      type: Number,
+      default: 0
     }
   },
   {
