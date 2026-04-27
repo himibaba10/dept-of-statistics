@@ -126,7 +126,7 @@ export function PublishNotices() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.title || !form.body) {
+    if (!form.title) {
       setError('Title and body are required.');
       return;
     }
