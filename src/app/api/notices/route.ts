@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     if (type) filter.type = type;
 
     const notices = await Notice.find(filter)
-      .sort({ createdBy: -1 })
+      .sort({ createdAt: -1 })
       .limit(limit)
       .populate('publishedBy', 'name role')
       .lean();
