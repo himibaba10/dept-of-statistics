@@ -100,7 +100,11 @@ export function GeneralSettings() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/settings');
+        const res = await fetchWithAuth('/api/settings');
+        if (!res.ok) {
+          setSlides(DEFAULT_SLIDES);
+          return;
+        }
         const data = await res.json();
         const fetched: HeroSlide[] = data?.data?.heroSlides ?? [];
         setSlides(fetched.length > 0 ? fetched : DEFAULT_SLIDES);

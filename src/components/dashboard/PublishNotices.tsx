@@ -53,15 +53,18 @@ export function PublishNotices() {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const fetchNotices = () => {
+  const fetchNotices = async () => {
     setLoading(true);
-    fetch('/api/notices')
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.success) setNotices(d.data ?? []);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    try {
+      const res = await fetchWithAuth('/api/notices');
+      if (!res.ok) return;
+      const d = await res.json();
+      if (d.success) setNotices(d.data ?? []);
+    } catch {
+      /* noop */
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

@@ -73,7 +73,8 @@ export function ManageCourses() {
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/courses');
+      const res = await fetchWithAuth('/api/courses');
+      if (!res.ok) return;
       const data = await res.json();
       if (data.success) setCourses(data.data ?? []);
     } catch {

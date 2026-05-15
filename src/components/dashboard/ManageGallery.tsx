@@ -29,10 +29,13 @@ export function ManageGallery() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetch('/api/gallery')
-      .then((r) => r.json())
+    fetchWithAuth('/api/gallery')
+      .then((r) => {
+        if (!r.ok) return null;
+        return r.json();
+      })
       .then((d) => {
-        if (d.success) setPhotos(d.data ?? []);
+        if (d?.success) setPhotos(d.data ?? []);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
