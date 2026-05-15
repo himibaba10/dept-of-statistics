@@ -7,6 +7,25 @@ import { NextRequest } from 'next/server';
 
 const SENIOR_DESIGNATIONS = ['professor', 'chairman'];
 
+// GET /api/notices/[id]
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    await connectDB();
+    const { id } = await params;
+    const notice = await Notice.findById(id)
+      .populate('publishedBy', 'name role')
+      .lean();
+    if (!notice) return errorResponse('Notice not found', 404);
+    return successResponse(notice);
+  } catch (err) {
+    console.error('[NOTICE_GET]', err);
+    return errorResponse('Internal server error', 500);
+  }
+}
+
 // DELETE /api/notices/[id] — official (own) or admin
 export async function DELETE(
   req: NextRequest,

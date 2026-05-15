@@ -2,6 +2,7 @@
 
 import { Clock, FileText, Filter, Paperclip } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 const TYPE_COLORS: Record<string, { pill: string; bar: string }> = {
@@ -188,7 +189,8 @@ export default function NoticeBoardPage() {
                     const colors =
                       TYPE_COLORS[notice.type] ?? TYPE_COLORS.other;
                     return (
-                      <div
+                      <Link
+                        href={`/notice-board/${notice._id}`}
                         key={notice._id}
                         className='group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(15,42,107,0.12)]'
                       >
@@ -225,17 +227,12 @@ export default function NoticeBoardPage() {
                             {notice.body}
                           </p>
 
-                          {/* Attachment link */}
+                          {/* Attachment indicator */}
                           {notice.attachmentUrl && (
-                            <a
-                              href={notice.attachmentUrl}
-                              target='_blank'
-                              rel='noopener noreferrer'
-                              className='mb-3 flex items-center gap-1.5 text-xs font-semibold text-[#1E3A8A] hover:underline'
-                            >
+                            <span className='mb-3 flex items-center gap-1.5 text-xs font-semibold text-[#1E3A8A]'>
                               <Paperclip size={11} />
-                              View Attachment
-                            </a>
+                              Includes Attachment
+                            </span>
                           )}
 
                           {/* Footer — dates + publisher */}
@@ -259,7 +256,7 @@ export default function NoticeBoardPage() {
                             )}
                           </div>
                         </div>
-                      </div>
+                      </Link>
                     );
                   })}
                 </div>

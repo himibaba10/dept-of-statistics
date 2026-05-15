@@ -89,9 +89,10 @@ export function NoticeBoardPreview() {
               const colors =
                 TYPE_COLORS[notice.type] || 'bg-slate-100 text-slate-600';
               return (
-                <div
+                <Link
+                  href={`/notice-board/${notice._id}`}
                   key={notice._id}
-                  className='group hover:border-l-gold cursor-pointer border-l-2 border-l-white px-5 py-4 transition-colors duration-200 hover:bg-slate-50'
+                  className='group hover:border-l-gold block cursor-pointer border-l-2 border-l-white px-5 py-4 transition-colors duration-200 hover:bg-slate-50'
                 >
                   {/* Tag + date */}
                   <div className='mb-2 flex items-center justify-between'>
@@ -108,15 +109,10 @@ export function NoticeBoardPreview() {
                       })}
                       <span>
                         {notice.attachmentUrl && (
-                          <a
-                            href={notice.attachmentUrl}
-                            target='_blank'
-                            rel='noopener noreferrer'
-                            className='flex items-center gap-1.5 text-xs font-semibold text-[#1E3A8A] hover:underline'
-                          >
+                          <span className='flex items-center gap-1.5 text-xs font-semibold text-[#1E3A8A]'>
                             <Paperclip size={11} />
-                            View Attachment
-                          </a>
+                            Includes Attachment
+                          </span>
                         )}
                       </span>
                     </span>
@@ -129,7 +125,7 @@ export function NoticeBoardPreview() {
 
                   {/* Gold left indicator on hover */}
                   <div className='bg-gold absolute top-0 bottom-0 left-0 w-0.5 opacity-0 transition-opacity duration-200 group-hover:opacity-100' />
-                </div>
+                </Link>
               );
             })
           )}
