@@ -30,10 +30,13 @@ export function TeacherApprovals() {
 
   const fetchPending = () => {
     setLoading(true);
-    fetch('/api/users?role=teacher&status=pending')
-      .then((r) => r.json())
+    fetchWithAuth('/api/users?role=teacher&status=pending')
+      .then((r) => {
+        if (!r.ok) return null;
+        return r.json();
+      })
       .then((d) => {
-        if (d.success) setTeachers(d.data ?? []);
+        if (d?.success) setTeachers(d.data ?? []);
       })
       .catch(() => {})
       .finally(() => setLoading(false));

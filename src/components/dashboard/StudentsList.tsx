@@ -1,6 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { fetchWithAuth } from '@/lib/fetchWithAuth';
 import { Student } from '@/types';
 import {
   Droplets,
@@ -19,10 +20,13 @@ export function StudentsList() {
   const [session, setSession] = useState('');
 
   useEffect(() => {
-    fetch('/api/users?role=student&status=active')
-      .then((r) => r.json())
+    fetchWithAuth('/api/users?role=student&status=active')
+      .then((r) => {
+        if (!r.ok) return null;
+        return r.json();
+      })
       .then((d) => {
-        if (d.success) setStudents(d.data ?? []);
+        if (d?.success) setStudents(d.data ?? []);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
